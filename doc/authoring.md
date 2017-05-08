@@ -34,11 +34,13 @@ mkdir -p build/armeabi
 cd build/armeabi
 ../../cmake-3.8.1-Linux-x86_64/bin/cmake --install \
   -H../../openssl-cmake-1.0.1e-src \
+  -B. \
+  -DCMAKE_ANDROID_NDK_TOOLCHAIN_DEBUG=1 \
   -DCMAKE_ANDROID_NDK_TOOLCHAIN_VERSION=clang \
   -DCMAKE_SYSTEM_NAME=Android \
-  -DCMAKE_SYSTEM_VERSION=12 \
+  -DCMAKE_SYSTEM_VERSION=21 \
   -DCMAKE_ANDROID_STL_TYPE=c++_static \
-  -DCMAKE_ANDROID_NDK=../../android-ndk-r14 \
+  -DCMAKE_ANDROID_NDK=`pwd`/../../android-ndk-r14 \
   -DCMAKE_ANDROID_ARCH_ABI=armeabi
 ```
 
