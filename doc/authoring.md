@@ -41,4 +41,18 @@ example: |
   }
 ```
 
+### coordinate section
+CDep uses a three part coordinate to identify the package in a unique way. Once you have published a package with a particular coordinate then you should not touch it further.
+```
+coordinate:
+  groupId: com.github.jomof
+  artifactId: re2
+  version: 17.3.1-rev18
+```
+
+
+
+
+
+
 
