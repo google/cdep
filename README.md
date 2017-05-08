@@ -1,8 +1,9 @@
 [![Build Status](https://travis-ci.org/jomof/cdep.svg?branch=master)](https://travis-ci.org/jomof/cdep)
 
 # CDep
-CDep is a decentralized native package dependency manager with a focus on Android. Runs on Windows, Linux, and MacOS.
+CDep is a decentralized native package dependency manager with a focus on Android. Runs on Windows, Linux, and MacOS. Anyone can author a package and there is a growing list of useful packages: [Freetype 2.0](https://github.com/jomof/freetype), [SDL](https://github.com/jomof/sdl)
    
+This is not an official Google product. Also, it is a work in progress and subject to change.
    
 ## Linux and Mac
 Get started with CDep on Linux and Mac.
