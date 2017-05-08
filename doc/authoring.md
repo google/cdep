@@ -14,14 +14,14 @@ wget https://cmake.org/files/v3.8/cmake-3.8.1-Linux-x86_64.tar.gz
 tar xvzf cmake-3.8.1-Linux-x86_64.tar.gz
 ```
 
-## Step 1 -- Get the Open SSL Source Code
+## Step 3 -- Get the Open SSL Source Code
 This tutorial uses the source code CMake project found on [LaunchPad](https://launchpad.net/openssl-cmake/1.0.1e/1.0.1e-1). I'd like to thank the author Brian Sidebotham for making this available.
 ```
 wget https://launchpad.net/openssl-cmake/1.0.1e/1.0.1e-1/+download/openssl-cmake-1.0.1e-src.tar.gz
 tar xvzf openssl-cmake-1.0.1e-src.tar.gz
 ```
 
-## Step 2 -- Build OpenSSL for a Single ABI
+## Step 4 -- Build OpenSSL for a Single ABI
 ```
 mkdir -p build/armeabi
 
