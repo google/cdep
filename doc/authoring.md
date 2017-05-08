@@ -44,13 +44,16 @@ example: |
 ```
 
 ### coordinate section
-CDep uses a three part coordinate to identify the package in a unique way. Once you have published a package with a particular coordinate then you should not touch it further.
+CDep uses a three part coordinate to identify the package in a unique way. Once you have published a package with a particular coordinate then you should not modify it later.
 ```
 coordinate:
   groupId: com.github.jomof
   artifactId: re2
   version: 17.3.1-rev18
 ```
+* groupId identifies the author of the package. It also tells CDep to search on Github for the package.
+* artifactId names the library.
+* version is the package. In this case, 17.3.1 is the version of RE2 that is in the package. The 'rev18' part indicates that this is the 18th attempt at packaging RE2 for CDep.
 
 
 
