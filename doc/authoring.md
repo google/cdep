@@ -14,6 +14,13 @@ wget https://cmake.org/files/v3.8/cmake-3.8.1-Linux-x86_64.tar.gz
 tar xvzf cmake-3.8.1-Linux-x86_64.tar.gz
 ```
 
+## Step 2 -- Install Android NDK
+This step installs a recent Android NDK. This has the libraries and compilers needed to target Android with C++.
+```
+wget https://dl.google.com/android/repository/android-ndk-r14-linux-x86_64.zip
+unzip android-ndk-r14-linux-x86_64.zip 
+```
+
 ## Step 3 -- Get the Open SSL Source Code
 This tutorial uses the source code CMake project found on [LaunchPad](https://launchpad.net/openssl-cmake/1.0.1e/1.0.1e-1). I'd like to thank the author Brian Sidebotham for making this available.
 ```
@@ -24,7 +31,14 @@ tar xvzf openssl-cmake-1.0.1e-src.tar.gz
 ## Step 4 -- Build OpenSSL for a Single ABI
 ```
 mkdir -p build/armeabi
-
-
+cd build/armeabi
+../../cmake-3.8.1-Linux-x86_64/bin/cmake --install \
+  -H../../openssl-cmake-1.0.1e-src \
+  -DCMAKE_ANDROID_NDK_TOOLCHAIN_VERSION=clang \
+  -DCMAKE_SYSTEM_NAME=Android \
+  -DCMAKE_SYSTEM_VERSION=12 \
+  -DCMAKE_ANDROID_STL_TYPE=c++_static \
+  -DCMAKE_ANDROID_NDK=../../android-ndk-r14 \
+  -DCMAKE_ANDROID_ARCH_ABI=armeabi
 ```
 
