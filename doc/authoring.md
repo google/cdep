@@ -3,6 +3,7 @@ This guide will show how to author your own CDep package and host it on github. 
 
 ## Anatomy of a CDep Package
 A CDep package is a manifest file called cdep-manifest.yml along with zipped source and compiled libraries. You can see an example of [here](https://github.com/jomof/re2/releases/download/17.3.1-rev18/cdep-manifest.yml). Here's a fragment of cdep-manifest.yml.
+
 ```
 coordinate:
   groupId: com.github.jomof
@@ -32,6 +33,12 @@ android:
     platform: 21
     abi: armeabi-v7a
     libs: [libre2.a]
+    ...
+example: |
+  #include <re2/re2.h>
+  void test() {
+    RE2::FullMatch("hello", "h.*o");
+  }
 ```
 
 
