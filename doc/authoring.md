@@ -51,9 +51,29 @@ coordinate:
   artifactId: re2
   version: 17.3.1-rev18
 ```
-* groupId identifies the author of the package. It also tells CDep to search on Github for the package.
-* artifactId names the library.
-* version is the package. In this case, 17.3.1 is the version of RE2 that is in the package. The 'rev18' part indicates that this is the 18th attempt at packaging RE2 for CDep.
+* 'groupId' identifies the author of the package. It also tells CDep to search on Github for the package.
+* 'artifactId' names the library.
+* 'version' is the package. In this case, 17.3.1 is the version of RE2 that is in the package. The 'rev18' part indicates that this is the 18th attempt at packaging RE2 for CDep.
+
+### license section
+There are two fields here--'name' and 'url'. These are freeform text and CDep mostly ignores them. It is a best practice to indicate the license of your library so users can know what they can do with it (commercial use, etc).
+
+### interfaces section
+This is the source-code entry point into your library. This is where header files (.h, .hpp, etc.) should go.
+```
+interfaces:
+  headers:
+    file: re2-headers.zip
+    sha256: 773c6c106e68e1494b8b73f46db4e98dfda901a18c2fbcc5ec762f9f27b94094
+    size: 43964
+    include: include
+    requires: [cxx_deleted_functions, cxx_variadic_templates]
+```
+* The 'file' field indicates the name of the archive that CDep should download when needed. This file must be right next to cdep-manifest.yml.
+* 'sha256' is the the hash of re2-headers.zip. CDep will not consume the package if this hash doesn't match the download file.
+* 'size' is the expected size of re2-headers.zip.
+* The field 'include' is the name of the relative folder within the .zip that holds the header files.
+* The field 'requires' indicates which C++ language features the header files require.
 
 
 
