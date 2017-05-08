@@ -21,7 +21,7 @@ wget https://dl.google.com/android/repository/android-ndk-r14-linux-x86_64.zip
 unzip android-ndk-r14-linux-x86_64.zip 
 ```
 
-## Step 3 -- Get the Open SSL Source Code
+## Step 3 -- Get the OpenSSL Source Code
 This tutorial uses the source code CMake project found on [LaunchPad](https://launchpad.net/openssl-cmake/1.0.1e/1.0.1e-1). I'd like to thank the author Brian Sidebotham for making this available.
 ```
 wget https://launchpad.net/openssl-cmake/1.0.1e/1.0.1e-1/+download/openssl-cmake-1.0.1e-src.tar.gz
