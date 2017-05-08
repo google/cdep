@@ -44,3 +44,6 @@ Get started with CDep on Windows.
      > ..\cdep-redist\cdep wrapper
      
 After this, the instructions are the same as Linux and Mac.
+
+## Authoring CDep Packages
+[This guide](https://github.com/google/cdep/blob/master/doc/authoring.md) will step you through authoring your first CDep package.
