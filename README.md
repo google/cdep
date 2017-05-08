@@ -8,7 +8,7 @@ Anyone can author a package and there is a growing list of useful packages like 
    
 This is not an official Google product. Also, it is a work in progress and subject to change.
    
-## Linux and Mac
+## Getting started on Linux and Mac
 Get started with CDep on Linux and Mac.
  
      $ git clone https://github.com/jomof/cdep-redist.git  
@@ -36,7 +36,7 @@ Next, run cdep command to download SQLite and build CMake modules for it.
     $ ./cdep
     Generating .cdep/modules/cdep-dependencies-config.cmake
 
-## Windows
+## Getting started on Windows
 Get started with CDep on Windows.
 
      > git clone https://github.com/jomof/cdep-redist.git  
