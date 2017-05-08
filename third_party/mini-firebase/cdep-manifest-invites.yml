@@ -1,0 +1,19 @@
+coordinate:
+  groupId: com.github.jomof
+  artifactId: firebase/invites
+  version: ${version}
+dependencies:
+  - compile: ${layout}/cdep-manifest-app.yml
+android:
+  archives:
+  - file: ${source}/libs/android/x86_64/c++/libinvites.a
+  - file: ${source}/libs/android/x86/c++/libinvites.a
+example: |
+  #include "firebase/app.h"
+  #include "firebase/invites.h"
+  
+  void test() {
+    ::firebase::App * app = ::firebase::App::Create(
+      ::firebase::AppOptions(), NULL /* jni_env */, NULL /* activity */);
+    ::firebase::invites::Initialize(*app);
+  }

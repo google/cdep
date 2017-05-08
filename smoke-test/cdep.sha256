@@ -1,0 +1,79 @@
+# This file is automatically maintained by CDep.
+#
+#     MANUAL EDITS WILL BE LOST ON THE NEXT CDEP RUN
+#
+# This file contains a list of CDep coordinates along with the SHA256 hash of their
+# manifest file. This is to ensure that a manifest hasn't changed since the last
+# time CDep ran.
+# The recommended best practice is to check this file into source control so that
+# anyone else who builds this project is guaranteed to get the same dependencies.
+
+- coordinate: com.github.jomof:stb/connected_components:0.0.0-rev2
+  sha256: fc14f90deaf2abc3c517f588ae986929d109f9b86d1f314607cd1d0e5ed1ad88
+- coordinate: com.github.jomof:protobuf:3.2.0-rev0
+  sha256: 5a35f2217d01c738f2c928a1a54f6416ac693b52b1bd19c109a9503106b1ffb5
+- coordinate: com.github.jomof:stb/perlin:0.0.0-rev2
+  sha256: 0ce439e7aa65266d352d24d3b702ac24508640392c7839f4d52f38ca8ade094e
+- coordinate: com.github.jomof:stb/dxt:0.0.0-rev2
+  sha256: 98db9b0f906f11a73307e07f1c8620a55e63591aeb3fec0d9c07c53fcb1ec16a
+- coordinate: com.github.jomof:stb/rect_pack:0.0.0-rev2
+  sha256: 2bb0a05477fc00e87da2e14cc504611a1439770f540045135156502b9d0db997
+- coordinate: com.github.jomof:stb/voxel_render:0.0.0-rev2
+  sha256: a0c6134a5dcf19a0d59765002c3b200ef6595fb6e2477e1bae456a2c4476a60e
+- coordinate: com.github.jomof:sqlite:3.16.2-rev51
+  sha256: 959d4e9c043390fae621a2d622cbae56424c48ed8ab70215e85d08176cede73d
+- coordinate: com.github.jomof:freetype:2.6.2-rev14
+  sha256: 4adc3c5302d6bd2d9b0374812c7d4206295b4377bc8a49c99c69fc357aec6c01
+- coordinate: com.github.jomof:stb/image_write:0.0.0-rev2
+  sha256: 6cb94e14afd28e78aa55eed4c7d26cf5557c7c6bfd7dfd79e369cbb8128bfcd8
+- coordinate: com.github.jomof:stb/image:0.0.0-rev2
+  sha256: 20f33a975d139547f74fec1d9f984b07854552cd0391d16d4152fdd2774f9318
+- coordinate: com.github.jomof:stb/textedit:0.0.0-rev2
+  sha256: f8b180183556cb4038b6b7ebe66a4162bcd0161a26bf3a4b58fffb8e52f2cdb4
+- coordinate: com.github.jomof:firebase/invites:2.1.3-rev22
+  sha256: 960dfa927170e2493292af0e135e8ee36a3568c377beecce133bc1cadca7bf84
+- coordinate: com.github.jomof:stb/sprintf:0.0.0-rev2
+  sha256: 2e2ca87347746f454ae19be0ee369240e4c1a31d0871be2cbb1d063ef75b1d81
+- coordinate: com.github.jomof:stb/divide:0.0.0-rev2
+  sha256: ba7499078496cd049f2230fee3ea70de118d4b6bf7729a13263819c0ba6d4175
+- coordinate: com.github.jomof:firebase/admob:2.1.3-rev22
+  sha256: 3ec7f035deef9be02b921973abade0f339f15a9d3741e80596ed4b9bdce999cb
+- coordinate: com.github.jomof:firebase/analytics:2.1.3-rev22
+  sha256: 7751ba275c41c05d191865dcb7e6fdc4e90b8480b7e4d0fa30a9311a22ded342
+- coordinate: com.github.jomof:firebase/messaging:2.1.3-rev22
+  sha256: dcbff2be654ae20a8f9234e7f0e9eab4f8017cf39cd6df5bc366943922495caf
+- coordinate: com.github.jomof:firebase/app:2.1.3-rev22
+  sha256: 865d344804bc0e472f464584cf6935ba0e2f5582b64b63db7aac7f6dbaa73f33
+- coordinate: com.github.jomof:stb/leakcheck:0.0.0-rev2
+  sha256: e60e643ed3162d84843fc28f8e7e4c0c4bf66da048d8e0f840051a6231b67144
+- coordinate: com.github.jomof:firebase/auth:2.1.3-rev22
+  sha256: 4b9a153ddc563ffafbc0e64bf33b04176e8e36e6dbbdc0d9a73d8717dfc08419
+- coordinate: com.github.jomof:firebase/storage:2.1.3-rev22
+  sha256: e313336d87ba12c7d2d8ad0df73a1205b0fee01789a5fbc87cbaa6f99c1ba0a1
+- coordinate: com.github.jomof:mathfu:1.1.0-rev1
+  sha256: eedf796c7b48ce378e78b7cc793d8e8a1c009cf9402a0a6dc3cba62eab743f3c
+- coordinate: com.github.jomof:stb/c_lexer:0.0.0-rev2
+  sha256: 442febd7fe3d068e5036fa71ab77b9943b698669dd0197bbee52468e4fd4d8ea
+- coordinate: com.github.jomof:stb/tilemap_editor:0.0.0-rev2
+  sha256: 09026e7db0c94b95a01c881b3fc334fabe36ceb1975de9c1572d636a3e5b0d6d
+- coordinate: com.github.jomof:stb/easy_font:0.0.0-rev2
+  sha256: f6f2b9b5406a7f4afdc90bf57ab1f97fd5caf28ef70c4a7b6222d7654bb7a8ec
+- coordinate: com.github.jomof:stb/image_resize:0.0.0-rev2
+  sha256: 7944aaf458c4da84ec94489f51622fa0c7e5d32e0c025b4ab61ffd15de7b58f3
+- coordinate: com.github.jomof:tinydir:0.0.0-rev7
+  sha256: 6094e013862cbd82a57338039dc3f33483fafdbdc8000ea2f4e66aa9534124ee
+- coordinate: com.github.jomof:firebase/remote_config:2.1.3-rev22
+  sha256: 0e0f67f66ec99260f9bc396eede39afdcdacf3960edcbe4968f1f82770350a77
+- coordinate: com.github.jomof:boost:1.0.63-rev18
+  sha256: 3010adccbf87a78c5ab44940d212aab56797b53548226be16ca6532f66b44af3
+- coordinate: com.github.jomof:sdl2:2.0.5-rev26
+  sha256: e42718fa2c52f5782e4154c560d547781e04894fea0d1b9cdacf0b2c1427a486
+- coordinate: com.github.jomof:stb/herringbone_wang_tile:0.0.0-rev2
+  sha256: 8f012a3451bc3477f3e9ff927631323b23521ae37c6a31e1bdcbb7f65c6e23c3
+- coordinate: com.github.jomof:vectorial:0.0.0-rev16
+  sha256: f4808cc386bce1dfbebfc37c48e89ffa70f70768ab6311b659d81dc0819e6588
+- coordinate: com.github.jomof:firebase/database:2.1.3-rev22
+  sha256: bb8e9ef8998f34bc75c900c139364c32e3481a9b53f6f94e3b80f21d5673deb7
+- coordinate: com.github.jomof:stb/truetype:0.0.0-rev2
+  sha256: 8c4530ea17528f2edf69189a32938c01b40c00590b7537b93696ea1951b3f624
+

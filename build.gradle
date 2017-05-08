@@ -1,0 +1,16 @@
+apply plugin: 'java'
+group 'io.cdep'
+
+if (System.getenv()["TRAVIS_TAG"] != null && System.getenv()["TRAVIS_TAG"].length() > 0) {
+    version System.getenv()["TRAVIS_TAG"]
+} else {
+    version 'dev'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile 'junit:junit:4.11'
+}

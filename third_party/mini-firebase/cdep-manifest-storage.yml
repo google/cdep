@@ -1,0 +1,19 @@
+coordinate:
+  groupId: com.github.jomof
+  artifactId: firebase/storage
+  version: ${version}
+dependencies:
+  - compile: ${layout}/cdep-manifest-app.yml
+android:
+  archives:
+  - file: ${source}/libs/android/x86_64/c++/libstorage.a
+  - file: ${source}/libs/android/x86/c++/libstorage.a
+example: |
+  #include "firebase/app.h"
+  #include "firebase/storage.h"
+  
+  void test() {
+    ::firebase::storage::Storage *storage = ::firebase::storage::Storage::GetInstance(
+      ::firebase::App::Create(::firebase::AppOptions(), NULL /* jni_env */ , NULL /* activity */ )
+    );
+  }

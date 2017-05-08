@@ -1,0 +1,43 @@
+builders: [cmake, cmakeExamples, ndk-build]
+dependencies:
+- compile: com.github.jomof:sqlite:3.16.2-rev51
+- compile: com.github.jomof:firebase/admob:2.1.3-rev22
+- compile: com.github.jomof:firebase/analytics:2.1.3-rev22
+- compile: com.github.jomof:firebase/auth:2.1.3-rev22
+- compile: com.github.jomof:firebase/database:2.1.3-rev22
+- compile: com.github.jomof:firebase/invites:2.1.3-rev22
+- compile: com.github.jomof:firebase/messaging:2.1.3-rev22
+- compile: com.github.jomof:firebase/remote_config:2.1.3-rev22
+- compile: com.github.jomof:firebase/storage:2.1.3-rev22
+- compile: com.github.jomof:boost:1.0.63-rev18
+#- compile: com.github.jomof:vectorial:0.0.0-rev16
+#- compile: com.github.jomof:vectorial:0.0.0-rev18
+- compile: com.github.jomof:mathfu:1.1.0-rev3
+- compile: com.github.jomof:sdl2:2.0.5-rev26
+
+# Yaml-cpp only currently supports a small number of ABI
+#- compile: com.github.jomof:yaml-cpp:0.5.3-rev20
+
+- compile: com.github.jomof:freetype:2.6.2-rev14
+- compile: com.github.jomof:tinydir:0.0.0-rev8
+- compile: com.github.jomof:protobuf:3.2.0-rev0
+
+- compile: com.github.jomof:re2:17.3.1-rev18
+- compile: com.github.jomof:openssl:1.0.1-e-rev7
+- compile: com.github.jomof:stb/c_lexer:0.0.0-rev6
+- compile: com.github.jomof:stb/divide:0.0.0-rev6
+- compile: com.github.jomof:stb/dxt:0.0.0-rev6
+- compile: com.github.jomof:stb/easy_font:0.0.0-rev6
+- compile: com.github.jomof:stb/connected_components:0.0.0-rev6
+- compile: com.github.jomof:stb/rect_pack:0.0.0-rev6
+- compile: com.github.jomof:stb/leakcheck:0.0.0-rev6
+- compile: com.github.jomof:stb/perlin:0.0.0-rev6
+- compile: com.github.jomof:stb/image:0.0.0-rev6
+- compile: com.github.jomof:stb/image_resize:0.0.0-rev6
+- compile: com.github.jomof:stb/image_write:0.0.0-rev6
+- compile: com.github.jomof:stb/herringbone_wang_tile:0.0.0-rev6
+- compile: com.github.jomof:stb/sprintf:0.0.0-rev6
+- compile: com.github.jomof:stb/textedit:0.0.0-rev6
+- compile: com.github.jomof:stb/tilemap_editor:0.0.0-rev6
+- compile: com.github.jomof:stb/truetype:0.0.0-rev6
+- compile: com.github.jomof:stb/voxel_render:0.0.0-rev6

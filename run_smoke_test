@@ -1,0 +1,3 @@
+pushd smoke-test
+../travis_cdep
+popd

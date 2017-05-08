@@ -1,0 +1,19 @@
+coordinate:
+  groupId: com.github.jomof
+  artifactId: firebase/messaging
+  version: ${version}
+dependencies:
+  - compile: ${layout}/cdep-manifest-app.yml
+android:
+  archives:
+  - file: ${source}/libs/android/x86_64/c++/libmessaging.a
+  - file: ${source}/libs/android/x86/c++/libmessaging.a
+example: |
+  #include "firebase/app.h"
+  #include "firebase/messaging.h"
+  
+  void test() {
+    ::firebase::App * app = ::firebase::App::Create(
+      ::firebase::AppOptions(), NULL /* jni_env */, NULL /* activity */);
+    ::firebase::messaging::Initialize(*app, NULL /* listener */);
+  }

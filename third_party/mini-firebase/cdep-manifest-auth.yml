@@ -1,0 +1,19 @@
+coordinate:
+  groupId: com.github.jomof
+  artifactId: firebase/auth
+  version: ${version}
+dependencies:
+  - compile: ${layout}/cdep-manifest-app.yml
+android:
+  archives:
+  - file: ${source}/libs/android/x86_64/c++/libauth.a
+  - file: ${source}/libs/android/x86/c++/libauth.a
+example: |
+  #include "firebase/app.h"
+  #include "firebase/auth.h"
+  
+  void test() {
+    ::firebase::App * app = ::firebase::App::Create(
+      ::firebase::AppOptions(), NULL /* jni_env */, NULL /* activity */);
+    ::firebase::auth::Auth* auth = ::firebase::auth::Auth::GetAuth(app);
+  }

@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+CMAKEIFY_SCRIPT=https://raw.githubusercontent.com/jomof/cmakeify/master/cmakeify-production
+CMAKEIFY_DOWNLOAD_FOLDER=.cmakeify/downloads
+
+# Read any directives from .cmakeify.yml
+# eval $(cat .cmakeify.yml | grep "#directive" | sed -r 's/^.{11}/export /')
+
+CMAKEIFY_RUN=$CMAKEIFY_DOWNLOAD_FOLDER/cmakeify-run
+
+# Create the download folder
+if [ ! -d "$CMAKEIFY_DOWNLOAD_FOLDER" ]; then
+  mkdir -p $CMAKEIFY_DOWNLOAD_FOLDER
+fi
+
+echo Downloading $CMAKEIFY_SCRIPT
+if [ -f "$CMAKEIFY_RUN" ]; then
+    rm $CMAKEIFY_RUN
+fi
+curl -o $CMAKEIFY_RUN $CMAKEIFY_SCRIPT &> $CMAKEIFY_DOWNLOAD_FOLDER/download-cmakeify-run.log
+chmod +x $CMAKEIFY_RUN
+echo $CMAKEIFY_RUN $@
+$CMAKEIFY_RUN $@

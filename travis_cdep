@@ -1,0 +1,25 @@
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+LIBS=$DIR/cdep/build/libs
+
+TRAVIS_CDEP_JAR=$LIBS/cdep-dev.jar
+if [ ! -f "$TRAVIS_CDEP_JAR" ]; then
+    TRAVIS_CDEP_JAR=$LIBS/cdep-${TRAVIS_TAG}.jar
+fi
+if [ ! -f "$TRAVIS_CDEP_JAR" ]; then
+    echo Could not local cdep-xxx.jar, files available: $(ls $DIR/cdep/libs/*.jar)
+    exit -1
+fi
+
+BOOTSTRAP_MANIFEST=$DIR/cdep/build/libs/bootstrap.yml
+echo entry: io.cdep.CDep > $BOOTSTRAP_MANIFEST
+echo dependencies: >> $BOOTSTRAP_MANIFEST
+printf "%s\n" "- $TRAVIS_CDEP_JAR" >>$BOOTSTRAP_MANIFEST
+
+$DIR/.package/redist/cdep $BOOTSTRAP_MANIFEST wrapper > /tmp/nul
+rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+./cdep $BOOTSTRAP_MANIFEST "$@"
+rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
+
+
+

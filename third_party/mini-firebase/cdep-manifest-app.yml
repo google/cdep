@@ -1,0 +1,18 @@
+coordinate:
+  groupId: com.github.jomof
+  artifactId: firebase/app
+  version: ${version}
+interfaces:
+  headers:
+    file: ${source}/include/firebase/...
+android:
+  archives:
+  - file: ${source}/libs/android/x86_64/c++/libapp.a
+  - file: ${source}/libs/android/x86/c++/libapp.a
+example: |
+  #include "firebase/app.h"
+  void test() {
+    ::firebase::App::Create(::firebase::AppOptions(), NULL /* jni_env */ , NULL /* activity */ );
+  }
+
+

@@ -1,0 +1,57 @@
+import java.nio.file.Files
+apply plugin: 'java'
+group 'io.cdep'
+
+if (System.getenv()["TRAVIS_TAG"] != null && System.getenv()["TRAVIS_TAG"].length() > 0) {
+    version System.getenv()["TRAVIS_TAG"]
+} else {
+    version 'dev'
+}
+repositories {
+    mavenCentral()
+}
+
+def packageFolder = file('../.package').absoluteFile
+def redistFolder = file('../.package/redist').absoluteFile
+def redistZip = file('../.package/redist.zip')
+
+task prepareToZip << {
+    def bootstrapFolder = file('../.package/redist/bootstrap/wrapper').absoluteFile
+    def bootstrapFile = file('../bootstrap/build/libs/bootstrap-' + version +'.jar')
+    println '-----------------------------------------------------------------------------------------'
+    println 'Package folder: ' + packageFolder
+    println 'Redist folder: ' + redistFolder
+    println 'Redist zip: ' + redistZip
+    println 'Bootstrap folder: ' + bootstrapFolder
+    println 'Bootstrap file: ' + bootstrapFile
+    println 'Version: ' + version
+    packageFolder.deleteDir()
+    redistFolder.mkdirs()
+    bootstrapFolder.mkdirs()
+    new File(redistFolder, 'cdep.bat').text = file('../redist/cdep.bat').text
+    new File(redistFolder, 'cdep.yml').text = file('../redist/cdep.yml').text
+    new File(redistFolder, 'cdep').text = file('../redist/cdep').text
+    new File(redistFolder, 'cdep').setExecutable(true)
+    new File(bootstrapFolder, 'bootstrap.jar').bytes = bootstrapFile.bytes
+    println '-----------------------------------------------------------------------------------------'
+}
+
+task zipRedist(type: Zip) {
+    from fileTree(redistFolder)
+    destinationDir packageFolder
+    archiveName 'redist.zip'
+}
+
+task packageArtifacts << {
+
+}
+
+zipRedist.dependsOn(prepareToZip)
+packageArtifacts.dependsOn(assemble)
+packageArtifacts.dependsOn(zipRedist)
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile project(':cdep')
+    compile project(':bootstrap')
+}
