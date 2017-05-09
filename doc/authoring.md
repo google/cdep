@@ -3,7 +3,7 @@ This guide will show how to author your own CDep package and host it on github. 
 
 Prequisites: Github account, read [Anatomy of a CDep Package](https://github.com/google/cdep/blob/master/doc/anatomy.md)
 
-In this tutorial we'll author a BoringSSL package and host it on Github. This tutorial runs on Ubuntu but it should work with simple modifications on MacOS and Windows.
+In this tutorial we'll author a BoringSSL package and host it on Github. This tutorial runs on Ubuntu but it should work with some modifications on MacOS and Windows.
 
 ## Step 1 -- Fork BoringSSL on Github
 Navigate to https://github.com/google/boringssl and click the Fork button.
@@ -43,17 +43,32 @@ At this point CMake should have built a couple of static libraries.
 build/armeabi/ssl/libssl.a
 build/armeabi/crypto/libcrypto.a
 ```
+If these files aren't there then something went wrong in the steps above.
 
-
-## Step 5 -- Prepare a staging folder to place the manifest and archive files
-This folder is going to hold the files that we will eventually host on github as a CDep package
+## Step 5 -- Prepare a staging folder for the libraries
+The staging folder holds the library files in a convenient form for zipping 
 ```
-mkdir -p staging/armeabi
+mkdir -p staging/lib/armeabi
+cp build/armeabi/ssl/libssl.a staging/lib/armeabi
+cp build/armeabi/crypto/libcrypto.a staging/lib/armeabi
 ```
-## Step 6 -- Prepare a stag
+## Step 6 -- Create a zip file with the two libraries
+The upload folder contains the files we will eventually upload to Github as a Release.
+```
+mkdir upload
+cp build/armeabi/ssl/libssl.a staging/lib/armeabi
+cp build/armeabi/crypto/crypto.a staging/lib/armeabi
+zip upload/boringssl-tutorial-armeabi.zip staging/lib/armeabi/*
+```
 
+## Step 7 -- Create another zip file with include files
+```
+zip -r upload/boringssl-tutorial-headers.zip include/
+```
 
-
+## Step 8 -- Create a manifest file with coordinate for this package
+```
+echo 
 
 
 
