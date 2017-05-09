@@ -227,15 +227,29 @@ Press the 'Copy Token' button to copy the token to the clipboard.
 Now, go back to the bash command-prompt and set an environment variable.
 
 ```
-GITHUB_TOKEN=<paste your token here>
+export GITHUB_TOKEN=<paste your token here>
 ```
 
 ## Step 15 -- Upload local files to Github
 Get a tool that will help us upload.
 
 ```
+wget https://github.com/aktau/github-release/releases/download/v0.7.2/linux-amd64-github-release.tar.bz2
+untar xvjf linux-amd64-github-release.tar.bz2
 ```
 
+Do the actual upload to Github.
+
+```
+bin/linux/amd64/github-release upload --user jomof --repo boringssl-tutorial --tag 0.0.0 \
+  --file upload/cdep-manifest.yml --name cdep-manifest.yml
+bin/linux/amd64/github-release upload --user jomof --repo boringssl-demo --tag 0.0.0 \
+  --file upload/boringssl-tutorial-headers.zip --name boringssl-tutorial-headers.zip
+bin/linux/amd64/github-release upload --user jomof --repo boringssl-demo --tag 0.0.0 \
+  --file upload/boringssl-tutorial-armeabi.zip --name boringssl-tutorial-armeabi.zip
+
+
+```
 
 
 
