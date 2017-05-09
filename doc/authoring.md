@@ -137,11 +137,20 @@ Specify the libraries that the archive holds.
 ```
 printf "      libs: [libssl.a, libcrypto.a]\r\n" >> upload/cdep-manifest.yml
 ```
-
-printf "    %s\r\n" "include: include" >> upload/cdep-manifest.yml
-printf "    sha256: " >> upload/cdep-manifest.yml
+## Step 12 -- Add an example to the manifest
+CDep requires the manifest contain a small example of how to use the library. This is so that tools and the end-user can prove that the library links using only information contain in the package.
 ```
-
+printf "%s\r\n" "example: |" >> upload/cdep-manifest.yml
+printf "%s\r\n" "  #include <openssl/bio.h>" >> upload/cdep-manifest.yml
+printf "%s\r\n" "  #include <openssl/ssl.h>" >> upload/cdep-manifest.yml
+printf "%s\r\n" "  #include <openssl/err.h>" >> upload/cdep-manifest.yml
+  
+printf "%s\r\n" "  void example() {" >> upload/cdep-manifest.yml
+printf "%s\r\n" "    SSL_load_error_strings();" >> upload/cdep-manifest.yml
+printf "%s\r\n" "    ERR_load_BIO_strings();" >> upload/cdep-manifest.yml
+printf "%s\r\n" "    OpenSSL_add_all_algorithms();" >> upload/cdep-manifest.yml
+printf "%s\r\n" "  }" >> upload/cdep-manifest.yml
+```
 
 
 
