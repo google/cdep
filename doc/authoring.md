@@ -243,9 +243,9 @@ Do the actual upload to Github.
 ```
 bin/linux/amd64/github-release upload --user *yourname* --repo boringssl-tutorial --tag 0.0.0 \
   --file upload/cdep-manifest.yml --name cdep-manifest.yml
-bin/linux/amd64/github-release upload --user *yourname* --repo boringssl-demo --tag 0.0.0 \
+bin/linux/amd64/github-release upload --user *yourname* --repo boringssl-tutorial --tag 0.0.0 \
   --file upload/boringssl-tutorial-headers.zip --name boringssl-tutorial-headers.zip
-bin/linux/amd64/github-release upload --user *yourname* --repo boringssl-demo --tag 0.0.0 \
+bin/linux/amd64/github-release upload --user *yourname* --repo boringssl-tutorial --tag 0.0.0 \
   --file upload/boringssl-tutorial-armeabi.zip --name boringssl-tutorial-armeabi.zip
 ```
 
