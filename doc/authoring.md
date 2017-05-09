@@ -3,7 +3,7 @@ This guide will show how to author your own CDep package and host it on github. 
 
 Prequisites: Github account, read [Anatomy of a CDep Package](https://github.com/google/cdep/blob/master/doc/anatomy.md)
 
-In this tutorial we'll author a BoringSSL package and host it on Github. This tutorial runs on Ubuntu but it should work with some modifications on MacOS and Windows.
+In this tutorial we'll author a BoringSSL package and host it on Github. This tutorial runs on Ubuntu and it will require some modifications to work on MacOS or Windows.
 
 ## Step 1 -- Fork BoringSSL on Github
 Navigate to https://github.com/google/boringssl and click the Fork button.
@@ -81,7 +81,37 @@ printf "  %s\r\n" "version: 0.0.0"  >> upload/cdep-manifest.yml
 BoringSSL doesn't have version numbers so we just use '0.0.0' as a starting version.
 
 
+## Step 9 -- Add BoringSSL license information to the manifest
+BoringSSL has a rather complicated license to just reference the LICENSE file in the original project so end users have access to it.
 
+```
+printf "%s\r\n" "license:" >> upload/cdep-manifest.yml
+printf "  %s\r\n" "url: https://raw.githubusercontent.com/google/boringssl/master/LICENSE" >> upload/cdep-manifest.yml
+```
+
+## Step 10 -- Add header file archive to the manifest
+This step adds information to the manifest about the header files archive.
+
+```
+printf "%s\r\n" "interfaces:" >> upload/cdep-manifest.yml
+printf "  %s\r\n" "headers:" >> upload/cdep-manifest.yml
+printf "    %s\r\n" "file: boringssl-tutorial-headers.zip" >> upload/cdep-manifest.yml
+printf "    %s\r\n" "include: include" >> upload/cdep-manifest.yml
+printf "    sha256: " >> upload/cdep-manifest.yml
+```
+
+At this point, we need to compute the sha256 of the header zip and add it to the manifest.
+
+```
+shasum -a 256 upload/boringssl-tutorial-headers.zip | awk '{print $1}' >> upload/cdep-manifest.yml
+```
+
+Last, we need add the size of the zip file to the manifest
+
+```
+printf "    size: " >> upload/cdep-manifest.yml
+ls -l upload/boringssl-tutorial-headers.zip | awk '{print $5}' >> upload/cdep-manifest.yml
+```
 
 
 
