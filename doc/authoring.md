@@ -86,7 +86,8 @@ BoringSSL has a rather complicated license to just reference the LICENSE file in
 
 ```
 printf "%s\r\n" "license:" >> upload/cdep-manifest.yml
-printf "  %s\r\n" "url: https://raw.githubusercontent.com/google/boringssl/master/LICENSE" >> upload/cdep-manifest.yml
+printf "  %s\r\n" "url: https://raw.githubusercontent.com/google/boringssl/master/LICENSE" \
+  >> upload/cdep-manifest.yml
 ```
 
 ## Step 10 -- Add header file archive to the manifest
