@@ -212,5 +212,17 @@ cmake-3.8.1-Linux-x86_64/bin/cmake --build build/examples
 
 If that builds successfully then you can be pretty confident you have a working package.
 
+Now, let's release it on Github so other people can use it.
+
+## Step 14 -- Create a Github release to hold this package
+Go to https://github.com/*yourname*/boringssl-tutorial/releases and press 'Create new release'. Tag the release as '0.0.0'. This has to match the version from Step 8.
+
+## Step 15 -- Create a Github personal access token 
+This token is required to upload files from the local filesystem to Github. Go to https://github.com/settings/tokens and press 'Generate new token'. Name the token something like 'BoringSSL Tutorial'. Click the 'public_repo' checkbox. Then 'Generate token'.
+
+!Important: Keep this token a secret. If someone has it then they can alter your projects on Github.
+
+Press the 'Cop
+
 
 
