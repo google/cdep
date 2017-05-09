@@ -137,6 +137,7 @@ Specify the libraries that the archive holds.
 ```
 printf "      libs: [libssl.a, libcrypto.a]\r\n" >> upload/cdep-manifest.yml
 ```
+
 ## Step 12 -- Add an example to the manifest
 CDep requires the manifest contain a small example of how to use the library. This is so that tools and the end-user can prove that the library links using only information contain in the package.
 ```
@@ -151,6 +152,22 @@ printf "%s\r\n" "    ERR_load_BIO_strings();" >> upload/cdep-manifest.yml
 printf "%s\r\n" "    OpenSSL_add_all_algorithms();" >> upload/cdep-manifest.yml
 printf "%s\r\n" "  }" >> upload/cdep-manifest.yml
 ```
+
+## Step 13 -- Test the package
+At this point, there should be a valid CDep package in the upload folder. Use CDep to validate this.
+
+First, install CDep in the current folder.
+```
+git clone https://github.com/jomof/cdep-redist.git
+cdep-redist/cdep wrapper
+```
+
+Now use CDep to fetch the package from the upload folder.
+```
+./cdep fetch upload/cdep-manifest.yml
+```
+
+
 
 
 
