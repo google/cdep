@@ -114,6 +114,33 @@ printf "    size: " >> upload/cdep-manifest.yml
 ls -l upload/boringssl-tutorial-headers.zip | awk '{print $5}' >> upload/cdep-manifest.yml
 ```
 
+## Step 11 -- Add library file archive to the manifest
+This step is similar to step 10. It adds the zipped libraries archive along with size and sha256.
+```
+printf "%s\r\n" "android:" >> upload/cdep-manifest.yml
+printf "  %s\r\n" "archives:" >> upload/cdep-manifest.yml
+printf "    %s\r\n" "- file: boringssl-tutorial-armeabi.zip" >> upload/cdep-manifest.yml
+printf "      sha256: " >> upload/cdep-manifest.yml
+shasum -a 256 upload/boringssl-tutorial-armeabi.zip | awk '{print $1}' >> upload/cdep-manifest.yml
+printf "      size: " >> upload/cdep-manifest.yml
+ls -l upload/boringssl-tutorial-armeabi.zip | awk '{print $5}' >> upload/cdep-manifest.yml
+```
+Specify the ABI that this libraries target.
+```
+printf "    %s\r\n" "  abi: armeabi" >> upload/cdep-manifest.yml
+```
+Specify the Android platform that the libraries are built for
+```
+printf "    %s\r\n" "  platform: 16" >> upload/cdep-manifest.yml
+```
+Specify the libraries that the archive holds.
+```
+printf "      libs: [libssl.a, libcrypto.a]\r\n" >> upload/cdep-manifest.yml
+```
+
+printf "    %s\r\n" "include: include" >> upload/cdep-manifest.yml
+printf "    sha256: " >> upload/cdep-manifest.yml
+```
 
 
 
