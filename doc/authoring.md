@@ -58,7 +58,9 @@ The upload folder contains the files we will eventually upload to Github as a Re
 mkdir upload
 cp build/armeabi/ssl/libssl.a staging/lib/armeabi
 cp build/armeabi/crypto/crypto.a staging/lib/armeabi
-zip upload/boringssl-tutorial-armeabi.zip staging/lib/armeabi/*
+pushd staging
+zip -r ../upload/boringssl-tutorial-armeabi.zip .
+popd
 ```
 
 ## Step 7 -- Create another zip file with include files
@@ -69,11 +71,11 @@ zip -r upload/boringssl-tutorial-headers.zip include/
 ## Step 8 -- Create a manifest file with coordinate for this package
 This creates a file called cdep-manifest.yml that describes the package. You can also do this step in a text editor if you like.
 
-Note that *GITHUB_NAME* below should be replaced by your Github user name. Also note that artifactId must match the name of the Github repo from the fork in Step 1. If it doesn't CDep won't be able to locate it later.
+Note that my name (jomof) below should be replaced by your Github user name. Also note that artifactId must match the name of the Github repo from the fork in Step 1. If it doesn't CDep won't be able to locate it later.
 
 ```
 printf "%s\r\n" "coordinate:" > upload/cdep-manifest.yml
-printf "  %s\r\n" "groupId: com.github.*GITHUB_NAME*" >> upload/cdep-manifest.yml
+printf "  %s\r\n" "groupId: com.github.jomof" >> upload/cdep-manifest.yml
 printf "  %s\r\n" "artifactId: boringssl-tutorial" >> upload/cdep-manifest.yml
 printf "  %s\r\n" "version: 0.0.0"  >> upload/cdep-manifest.yml
 ```
@@ -166,7 +168,11 @@ Now use CDep to fetch the package from the upload folder.
 ```
 ./cdep fetch upload/cdep-manifest.yml
 ```
-
+If the manifest is well formed then you should see a message like this.
+```
+Downloading boringssl-tutorial/upload/boringssl-tutorial-armeabi.zip
+Fetch complete
+```
 
 
 
