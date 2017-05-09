@@ -71,6 +71,37 @@ interfaces:
 * The field 'requires' indicates which C++ language features the header files require.
 
 
+### android section
+This section contains the android static libraries that are referenced by the package. There are usually many of these in the manifest. Archives are broken down in a granular way so that CDep can download only what is needed.
+```
+android:
+  archives:
+  - file: re2-android-21-armeabi.zip
+    sha256: 162e6fbe36b1b097c815a629d7c94492b491cf68f8cb2d079c6c97e23fd9785d
+    size: 3063095
+    platform: 21
+    abi: armeabi
+    libs: [libre2.a]
+```
+* The 'file' field indicates the name of the archive that CDep should download when needed. This file must be right next to cdep-manifest.yml.
+* 'sha256' is the the hash of re2-android-21-armeabi.zip. CDep will not consume the package if this hash doesn't match the download file.
+* 'size' is the expected size of re2-android-21-armeabi.zip.
+* 'platform' is the Android platform that the library targets.
+* 'abi' is the Android ABI that the library targets.
+* 'libs' is a list of the libraries that is contained within re2-android-21-armeabi.zip. Often there is only one, but multiple libs is allowed.
+
+### example section
+This section contains a working example of how the user should get started using the code.
+
+```
+example: |
+  #include <re2/re2.h>
+  void test() {
+    RE2::FullMatch("hello", "h.*o");
+  }
+```
+
+The purpose of this is to help the user get started and also so that tools can automatically prove that the package can link.
 
 
 
