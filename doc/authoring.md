@@ -155,7 +155,7 @@ printf "%s\r\n" "    OpenSSL_add_all_algorithms();" >> upload/cdep-manifest.yml
 printf "%s\r\n" "  }" >> upload/cdep-manifest.yml
 ```
 
-## Step 13 -- Test the package
+## Step 13 -- Test package integrity
 At this point, there should be a valid CDep package in the upload folder. Use CDep to validate this.
 
 First, install CDep in the current folder.
