@@ -71,11 +71,11 @@ zip -r upload/boringssl-tutorial-headers.zip include/
 ## Step 8 -- Create a manifest file with coordinate for this package
 This creates a file called cdep-manifest.yml that describes the package. You can also do this step in a text editor if you like.
 
-Note that my name (jomof) below should be replaced by your Github user name. Also note that artifactId must match the name of the Github repo from the fork in Step 1. If it doesn't CDep won't be able to locate it later.
+Note that *yourname* below should be replaced by your Github user name. Also note that artifactId must match the name of the Github repo from the fork in Step 1. If it doesn't CDep won't be able to locate it later.
 
 ```
 printf "%s\r\n" "coordinate:" > upload/cdep-manifest.yml
-printf "  %s\r\n" "groupId: com.github.jomof" >> upload/cdep-manifest.yml
+printf "  %s\r\n" "groupId: com.github.*yourname*" >> upload/cdep-manifest.yml
 printf "  %s\r\n" "artifactId: boringssl-tutorial" >> upload/cdep-manifest.yml
 printf "  %s\r\n" "version: 0.0.0"  >> upload/cdep-manifest.yml
 ```
@@ -241,16 +241,25 @@ untar xvjf linux-amd64-github-release.tar.bz2
 Do the actual upload to Github.
 
 ```
-bin/linux/amd64/github-release upload --user jomof --repo boringssl-tutorial --tag 0.0.0 \
+bin/linux/amd64/github-release upload --user *yourname* --repo boringssl-tutorial --tag 0.0.0 \
   --file upload/cdep-manifest.yml --name cdep-manifest.yml
-bin/linux/amd64/github-release upload --user jomof --repo boringssl-demo --tag 0.0.0 \
+bin/linux/amd64/github-release upload --user *yourname* --repo boringssl-demo --tag 0.0.0 \
   --file upload/boringssl-tutorial-headers.zip --name boringssl-tutorial-headers.zip
-bin/linux/amd64/github-release upload --user jomof --repo boringssl-demo --tag 0.0.0 \
+bin/linux/amd64/github-release upload --user *yourname* --repo boringssl-demo --tag 0.0.0 \
   --file upload/boringssl-tutorial-armeabi.zip --name boringssl-tutorial-armeabi.zip
-
-
 ```
 
+## Step 15 -- Fetch the package using coordinate
+At this point, assuming your Github repo is piblic, the package should be available to any CDep user.
+Let's prove this by fetching by coordinate.
+```
+./cdep fetch com.github.*yourname*:boringssl-tutorial:0.0.0
+```
+You should see something like this.
+```
+Downloading https://github.com/*yourname*/boringssl-tutorial/releases/download/0.0.0/cdep-manifest.yml
+Fetch complete
+```
 
 
 
