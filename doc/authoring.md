@@ -38,11 +38,20 @@ cmake-3.8.1-Linux-x86_64/bin/cmake --install \
   -DCMAKE_ANDROID_ARCH_ABI=armeabi
 cmake-3.8.1-Linux-x86_64/bin/cmake --build build/armeabi
 ```
+At this point CMake should have built a couple of static libraries.
+```
+build/armeabi/ssl/libssl.a
+build/armeabi/crypto/libcrypto.a
+```
 
-## Step 5 -- Prepare a staging folder to place the manifest and archive files.
+
+## Step 5 -- Prepare a staging folder to place the manifest and archive files
+This folder is going to hold the files that we will eventually host on github as a CDep package
 ```
 mkdir -p staging/armeabi
 ```
+## Step 6 -- Prepare a stag
+
 
 
 
