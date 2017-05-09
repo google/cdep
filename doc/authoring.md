@@ -27,7 +27,7 @@ unzip android-ndk-r14-linux-x86_64.zip
 ## Step 4 -- Build BoringSSL for a single ABI
 This step builds BoringSSL for a armeabi. You can repeat this step for other ABIs to get them but that's not necessary for this demo.
 ```
-cmake-3.8.1-Linux-x86_64/bin/cmake --install \
+cmake-3.8.1-Linux-x86_64/bin/cmake \
   -H. \
   -Bbuild/armeabi \
   -DCMAKE_ANDROID_NDK_TOOLCHAIN_VERSION=clang \
@@ -174,7 +174,43 @@ Downloading boringssl-tutorial/upload/boringssl-tutorial-armeabi.zip
 Fetch complete
 ```
 
+## Step 14 -- Prove the package can link
+Now we'll use the example code from step 12 to prove that the package can be built into a final .so.
+First, generate example projects.
 
+```
+printf "%s\r\n" "builders: [cmake, cmakeExamples, ndk-build]" > cdep.yml
+printf "%s\r\n" "dependencies:" >> cdep.yml
+printf "%s\r\n" "- compile: upload/cdep-manifest.yml" >> cdep.yml
+./cdep
+```
+
+If that worked you should see a message like this.
+
+```
+Generating .cdep/modules/cdep-dependencies-config.cmake
+Generating .cdep/examples/cmake/com.github.jomof/boringssl-tutorial/0.0.0/boringssl-tutorial.cpp
+Generating .cdep/examples/cmake/com.github.jomof/boringssl-tutorial/0.0.0/CMakeLists.txt
+Generating .cdep/examples/cmake/CMakeLists.txt
+Generating .cdep/modules/ndk-build/cdep-dependencies/Android.mk
+```
+
+Now build the example project.
+
+```
+cmake-3.8.1-Linux-x86_64/bin/cmake \
+  -H.cdep/examples/cmake/ \
+  -Bbuild/examples \
+  -DCMAKE_ANDROID_NDK_TOOLCHAIN_VERSION=clang \
+  -DCMAKE_SYSTEM_NAME=Android \
+  -DCMAKE_SYSTEM_VERSION=16 \
+  -DCMAKE_ANDROID_STL_TYPE=c++_static \
+  -DCMAKE_ANDROID_NDK=`pwd`/android-ndk-r14 \
+  -DCMAKE_ANDROID_ARCH_ABI=armeabi
+cmake-3.8.1-Linux-x86_64/bin/cmake --build build/examples
+```
+
+If that builds successfully then you can be pretty confident you have a working package.
 
 
 
