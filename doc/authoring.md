@@ -220,9 +220,24 @@ Go to https://github.com/*yourname*/boringssl-tutorial/releases and press 'Creat
 ## Step 15 -- Create a Github personal access token 
 This token is required to upload files from the local filesystem to Github. Go to https://github.com/settings/tokens and press 'Generate new token'. Name the token something like 'BoringSSL Tutorial'. Click the 'public_repo' checkbox. Then 'Generate token'.
 
-!Important: Keep this token a secret. If someone has it then they can alter your projects on Github.
+IMPORTANT: Keep this token a secret. If someone has it then they can alter your projects on Github.
 
-Press the 'Cop
+Press the 'Copy Token' button to copy the token to the clipboard.
+
+Now, go back to the bash command-prompt and set an environment variable.
+
+```
+GITHUB_TOKEN=<paste your token here>
+```
+
+## Step 15 -- Upload local files to Github
+Get a tool that will help us upload.
+
+```
+```
+
+
+
 
 
 
