@@ -67,8 +67,18 @@ zip -r upload/boringssl-tutorial-headers.zip include/
 ```
 
 ## Step 8 -- Create a manifest file with coordinate for this package
+This creates a file called cdep-manifest.yml that describes the package. You can also do this step in a text editor if you like.
+
+Note that *GITHUB_NAME* below should be replaced by your Github user name. Also note that artifactId must match the name of the Github repo from the fork in Step 1. If it doesn't CDep won't be able to locate it later.
+
 ```
-echo 
+printf "%s\r\n" "coordinate:" > upload/cdep-manifest.yml
+printf "  %s\r\n" "groupId: com.github.*GITHUB_NAME*" >> upload/cdep-manifest.yml
+printf "  %s\r\n" "artifactId: boringssl-tutorial" >> upload/cdep-manifest.yml
+printf "  %s\r\n" "version: 0.0.0"  >> upload/cdep-manifest.yml
+```
+
+BoringSSL doesn't have version numbers so we just use '0.0.0' as a starting version.
 
 
 
