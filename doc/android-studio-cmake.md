@@ -93,6 +93,32 @@ defaultConfig {
 ```
 After this, Android Studio may prompt you to sync. Don't worry about this yet because we're still making changes. It's okay to sync if you want to get rid of the banner message.
 
+## Step 7 -- Modify CMakeLists.txt to add CDep dependencies to native-lib target
+Now open CMakeLists.txt and add the following code at the end of the file.
+```
+find_package(cdep-dependencies REQUIRED)
+add_all_cdep_dependencies(native-lib)
+```
+This tells CMake to locate the module glue file and then to add all the dependencies in that file to the native-lib target.
+
+## Step 8 -- Modify native-lib.cpp to actually use SQLite
+Open up native-lib.cpp in Android Studio and replace the text there with the following
+```
+#include <jni.h>
+#include <string>
+#include <sqlite3.h>
+
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_example_jomof_myapplication_MainActivity_stringFromJNI(
+        JNIEnv *env,
+        jobject /* this */) {
+    sqlite3_initialize();
+    std::string hello = "Hello from C++";
+    return env->NewStringUTF(hello.c_str());
+}
+```
+
 
 
 
