@@ -119,7 +119,11 @@ Java_com_example_jomof_myapplication_MainActivity_stringFromJNI(
 }
 ```
 
+## Step 9 -- Build the project
+In Android Studio do Build->Rebuild Project. If everything above worked, the project should build with no errors.
 
+## Congratulations!
+You have a project with a working CDep dependency. Most of the steps above are only needed the first time. To add the next CDep dependency just edit cdep.yml and then re-run cdep from the command-line.
 
 
 
