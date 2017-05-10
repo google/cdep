@@ -6,11 +6,17 @@ If you'd rather just see a finished example of this then check out [CDep Freetyp
 This step creates a new Android Studio CMake project to use in this tutorial. If you already have a project to use then you can skip it.
 
 Follow these steps:
+
 (1) Start Android Studio 2.2 or later
+
 (2) File->New->New project...
+
 (3) Click Include C++ Support checkbox
+
 (4) Next, next
+
 (5) Choose Empty Activity
+
 (6) Next, next, finish
 
 
