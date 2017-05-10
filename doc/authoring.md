@@ -248,7 +248,7 @@ bin/linux/amd64/github-release upload --user *yourname* --repo boringssl-tutoria
   --file upload/boringssl-tutorial-armeabi.zip --name boringssl-tutorial-armeabi.zip
 ```
 
-## Step 15 -- Fetch the package using coordinate
+## Step 16 -- Fetch the package using coordinate
 At this point, assuming your Github repo is public, the package should be available to any CDep user.
 Let's prove this by fetching by coordinate.
 ```
