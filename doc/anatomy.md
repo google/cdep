@@ -1,5 +1,5 @@
 ## Anatomy of a CDep Package
-A CDep package is a manifest file called cdep-manifest.yml along with zipped source and compiled libraries. You can see an example of [here](https://github.com/jomof/re2/releases/download/17.3.1-rev18/cdep-manifest.yml). Here's a fragment of cdep-manifest.yml.
+A CDep package is a manifest file called cdep-manifest.yml along with zipped source and compiled libraries. You can see a live example [here](https://github.com/jomof/re2/releases/download/17.3.1-rev18/cdep-manifest.yml). Here's a fragment of cdep-manifest.yml.
 
 ```
 coordinate:
