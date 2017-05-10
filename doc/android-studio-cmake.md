@@ -81,6 +81,7 @@ defaultConfig {
     }
 }
 ```
+After this, Android Studio may prompt you to sync. Don't worry about this yet because we're still making changes. It's okay to sync if you want to get rid of the banner message.
 
 
 
