@@ -10,7 +10,7 @@ Anyone can author a package and there is a growing list of useful packages like 
 CDep comes from members of the Android Studio team and is not an official Google product. It is a work in progress and subject to change over time. Backward compatibility with existing packages will be maintained.
    
 ## Get started with CDep
-* [Author a new CDep package and host it on Github]((https://github.com/google/cdep/blob/master/doc/authoring.md)
+* [Author a new CDep package and host it on Github](https://github.com/google/cdep/blob/master/doc/authoring.md)
    
 ## Getting started on Linux and Mac
 Get started with CDep on Linux and Mac.
