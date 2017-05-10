@@ -262,5 +262,7 @@ Fetch complete
 
 
 ## Congratulations!
-At this point you have created and published a fully functioning CDep package.
+At this point you have created and published a fully functioning CDep package. 
+
+Now would be a good time to delete the personal access token from step 15.
 
