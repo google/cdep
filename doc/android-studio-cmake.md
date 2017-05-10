@@ -17,6 +17,14 @@ Follow these steps:
 At this point you should have a project open in Android Studio. Open a terminal window by clicking Terminal. It is usually in the lower part of Android Studio.
 
 ![Terminal](Terminal.png)
+ 
+In the terminal clone the cdep redist project.
+```
+pushd ..
+git clone https://github.com/jomof/cdep-redist.git
+popd
+```
+The folder you choose to clone into doesn't really matter. This tutorial places it in the folder next to the Android Studio project we're working on.
 
 
 
