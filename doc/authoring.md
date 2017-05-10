@@ -25,7 +25,7 @@ unzip android-ndk-r14-linux-x86_64.zip
 ```
 
 ## Step 4 -- Build BoringSSL for a single ABI
-This step builds BoringSSL for a armeabi. You can repeat this step for other ABIs to get them but that's not necessary for this demo.
+This step builds BoringSSL for a armeabi. You can repeat this step for other ABIs to get them but that's not necessary for this tutorial.
 ```
 cmake-3.8.1-Linux-x86_64/bin/cmake \
   -H. \
