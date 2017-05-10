@@ -48,7 +48,7 @@ These four files form the CDep 'wrapper'. The files are very small and are meant
 * cdep.yml is where you place references to CDep packages
 
 ## Step 3 -- Add a reference to SQLite in cdep.yml
-Open cdep.yml in a text editor and replace the existing text there with the following.
+Open cdep.yml in Android Studio and replace the existing text there with the following.
 ```
 builders: [cmake]
 
@@ -70,8 +70,17 @@ Generating .cdep/modules/cdep-dependencies-config.cmake
 ```
 At this point, CDep has only downloaded the package manifest. The parts of the package needed to build will be downloaded on demand.
 
-
-## Step 5 -- 
+## Step 5 -- Modify build.gradle to tell CMake where to find the module glue 
+Open the file app/build.gradle in Android Studio (not the root build.gradle) and add the following to the defaultConfig section of that file.
+```
+defaultConfig {
+    externalNativeBuild {
+        cmake {
+            arguments "-Dcdep-dependencies_DIR=../.cdep/modules"
+        }
+    }
+}
+```
 
 
 
