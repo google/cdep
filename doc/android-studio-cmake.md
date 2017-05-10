@@ -66,6 +66,10 @@ If this worked you should see a message like this.
 Downloading https://github.com/jomof/sqlite/releases/download/3.16.2-rev51/cdep-manifest.yml
 Generating .cdep/modules/cdep-dependencies-config.cmake
 ```
+At this point, CDep has only downloaded the package manifest. The parts of the package needed to build will be downloaded on demand.
+
+
+## Step 5 -- 
 
 
 
