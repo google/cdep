@@ -1,5 +1,5 @@
 # CDep Package Author's Guide
-This guide will show how to author your own CDep package and host it on github. When you're done you'll have a package that any CDep user can reference in their project.
+This guide will show how to author your own CDep package and host it on Github. When you're done you'll have a package that any CDep user can reference in their project.
 
 Prequisites: Have or create a Github account and read [Anatomy of a CDep Package](https://github.com/google/cdep/blob/master/doc/anatomy.md)
 
