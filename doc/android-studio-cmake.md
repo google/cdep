@@ -14,6 +14,9 @@ Follow these steps:
 6. Next, next, finish
 
 ## Step 1 -- Add CDep tool to the root of the project
-At this point you should have a project open in Android Studio. Open a terminal window,
+At this point you should have a project open in Android Studio. Open a terminal window by clicking Terminal. It is usually in the lower part of Android Studio.
+
 ![Terminal](Terminal.png)
+
+
 
