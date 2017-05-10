@@ -57,8 +57,15 @@ This tells CDep two things:
 1. This is a CMake project so generate CMake glue code for the modules
 2. This project references SQLite 
 
-
-
+## Step 4 -- Use CDep to generate CMake glue code for SQLite
+```
+./cdep
+```
+If this worked you should see a message like this.
+```
+Downloading https://github.com/jomof/sqlite/releases/download/3.16.2-rev51/cdep-manifest.yml
+Generating .cdep/modules/cdep-dependencies-config.cmake
+```
 
 
 
