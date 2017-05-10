@@ -61,6 +61,11 @@ This tells CDep two things:
 ```
 ./cdep
 ```
+or on Windows,
+```
+cdep
+```
+
 If this worked you should see a message like this.
 ```
 Downloading https://github.com/jomof/sqlite/releases/download/3.16.2-rev51/cdep-manifest.yml
