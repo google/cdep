@@ -7,7 +7,7 @@ CDep is a decentralized native package dependency manager with a focus on Androi
 
 Anyone can author a package and there is a growing list of useful packages like [Freetype 2.0](https://github.com/jomof/freetype), [SDL](https://github.com/jomof/sdl), [STB](https://github.com/jomof/stb), [RE2 Regular Expressions](https://github.com/jomof/re2), [Firebase](https://github.com/jomof/firebase), [MathFu](https://github.com/jomof/mathfu), [Vectorial](https://github.com/jomof/vectorial), [Boost](https://github.com/jomof/boost), [Yaml-CPP](https://github.com/jomof/yaml-cpp), [SQLite](https://github.com/jomof/sqlite).
    
-CDep comes from the Android Studio team and is not an official Google product. It is a work in progress and subject to change over time. However, backward compatibility with existing packages will be maintained.
+CDep comes from members of the Android Studio team and is not an official Google product. It is a work in progress and subject to change over time. Backward compatibility with existing packages will be maintained.
    
 ## Getting started on Linux and Mac
 Get started with CDep on Linux and Mac.
