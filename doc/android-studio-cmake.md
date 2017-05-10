@@ -70,7 +70,17 @@ Generating .cdep/modules/cdep-dependencies-config.cmake
 ```
 At this point, CDep has only downloaded the package manifest. The parts of the package needed to build will be downloaded on demand.
 
-## Step 5 -- Modify build.gradle to tell CMake where to find the module glue 
+## Step 5 -- Reduce ABIs built to those that SQLite supports
+Most CDep packages, including SQLite, don't support mips and mips64. However, some versions of Android Studio still build those ABIs by default. Let's reduce the set by editing the same build.gradle file from Step 4. Add the following section under defaultConfig.
+```
+defaultConfig {
+    ndk {
+        abiFilters "x86", "x86_64", "armeabi-v7a", "armeabie", "arm64-v8a"
+    }
+}
+```
+
+## Step 6 -- Modify build.gradle to tell CMake where to find the module glue 
 Open the file app/build.gradle in Android Studio (not the root build.gradle) and add the following to the defaultConfig section of that file.
 ```
 defaultConfig {
@@ -82,6 +92,7 @@ defaultConfig {
 }
 ```
 After this, Android Studio may prompt you to sync. Don't worry about this yet because we're still making changes. It's okay to sync if you want to get rid of the banner message.
+
 
 
 
