@@ -82,9 +82,8 @@ printf "  %s\r\n" "version: 0.0.0"  >> upload/cdep-manifest.yml
 
 BoringSSL doesn't have version numbers so we just use '0.0.0' as a starting version.
 
-
 ## Step 9 -- Add BoringSSL license information to the manifest
-BoringSSL has a rather complicated license to just reference the LICENSE file in the original project so end users have access to it.
+A CDep license section can have a 'name' or a 'url' or both. BoringSSL has a rather complicated license that is difficult to name so in this case we'll just use url to the LICENSE file in the original project.
 
 ```
 printf "%s\r\n" "license:" >> upload/cdep-manifest.yml
