@@ -1,9 +1,9 @@
 # CDep Package Author's Guide
-This tutorial will show how to author your own CDep package and host it on Github. When you're done you'll have a package that any CDep user can reference in their project.
+This tutorial will show how to author your own CDep package and host it on Github. We'll package BorningSSL so that it can be used by CDep. When you're done you'll have a package that any CDep user can reference in their project.
 
 Prerequisites: Have or create a Github account and read [Anatomy of a CDep Package](https://github.com/google/cdep/blob/master/doc/anatomy.md)
 
-In this tutorial we'll author a BoringSSL package and host it on Github. This tutorial runs on Ubuntu and it will require some modifications to work on MacOS or Windows.
+This tutorial runs on Ubuntu and it will require some modifications to work on MacOS or Windows.
 
 ## Step 1 -- Fork BoringSSL on Github
 Navigate to https://github.com/google/boringssl and click the Fork button.
