@@ -45,9 +45,17 @@ These four files form the CDep 'wrapper'. The files are very small and are meant
 * bootstrap/wrapper/bootstrap.jar is a small executable that has a function to download the main cdep executable
 * cdep.yml is where you place references to CDep packages
 
+## Step 3 -- Add a reference to SQLite in cdep.yml
+Open cdep.yml in a text editor and replace the existing text there with the following.
+```
+builders: [cmake]
 
-
-
+dependencies:
+- compile: com.github.jomof:sqlite:3.16.2-rev51
+```
+This tells CDep two things:
+1. This is a CMake project so generate CMake glue code for the modules
+2. This project references SQLite 
 
 
 
