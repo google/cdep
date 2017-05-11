@@ -1,0 +1,12 @@
+[submodule "third_party/stb"]
+	path = third_party/stb
+	url = https://github.com/jomof/stb
+[submodule "third_party/tinydir"]
+	path = third_party/tinydir
+	url = https://github.com/jomof/tinydir
+[submodule "third_party/mathfu"]
+	path = third_party/mathfu
+	url = https://github.com/jomof/mathfu
+[submodule "third_party/vectorial"]
+	path = third_party/vectorial
+	url = https://github.com/jomof/vectorial
