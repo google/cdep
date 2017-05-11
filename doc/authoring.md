@@ -205,6 +205,7 @@ Now build the example project.
 cmake-3.8.1-Linux-x86_64/bin/cmake \
   -H.cdep/examples/cmake/ \
   -Bbuild/examples \
+  -DCMAKE_BUILD_TYPE=RelWithDebInfo \
   -DCMAKE_ANDROID_NDK_TOOLCHAIN_VERSION=clang \
   -DCMAKE_SYSTEM_NAME=Android \
   -DCMAKE_SYSTEM_VERSION=16 \
