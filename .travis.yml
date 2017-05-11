@@ -1,0 +1,37 @@
+language: java
+git:
+  depth: 3
+matrix:
+  include:
+  - jdk: oraclejdk7
+    os: linux
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - gcc-4.8
+        - g++-4.8
+    script:
+    - ./gradlew assemble
+    - ./gradlew check
+    - ./gradlew packageArtifacts
+    - pushd smoke-test
+    - ../travis_cdep
+    #- cat .cdep/modules/cdep-dependencies-config.cmake
+    - ../cmakeify --group-id com.github.jomof --artifact-id smoke-test --target-version 0.0.0
+    - ../cmakeify -wf .cdep/examples/cmake --group-id com.github.jomof --artifact-id smoke-test-examples --target-version 0.0.0
+    - popd
+
+deploy:
+  api_key:
+    secure: eJTLT/plD9BdFDjy16+izosm8CvpIAFGXOj+RQ9DsYsK0xMp8CMGC41aMnevcAFjtdvlJZJwLAKhFCSgjw5bKhSh+YFvHi8SCTS2oKKZQtZun39ICU75sEOaPHwGOaNmzhNkU1H3t/BPSZjJAFfsvT+tr04zeeKwNf6SETfcxB5Qb2fWrAkqjbu6uKs6kLnUIMVB/xSHFNB8X6FwH0ZD1ZOhW8RnHuC9wrwuXIh/gY5t3GSuYtujHustXRvpppcAmzRCAibIrM+RNuA3kJzi7GMNA5N1adL58YcxwX7TKgOrOw53+uCiaffCBtD2j5RZMJE5OYEUzPThizIcD5RzQvpV8gIUMIXJs+geO1oD2BSHzXUFe075OMKtSGT/1XZsl3i9W0jyx3r6EeqhUy+kZgMgqXFuPGC20y2J9maIBUhVRgYhbOZ81/Hvj3c2CeNMZ1LmqqCkWaGO2fa+Bi6hoSl6lvFyVdj7IEr4eU7+kX4ys/N+i7omAJItwPpO3oyRYEr9SpOBAj83EIjmjhjuLA5rH+B4t/R3IyeK9bvfvTPjiQqbaerV6VNsKN59b4T3zA/ARZBlUMHUduOlLYPCZ5R/G0Cm25Ibd48C0WsxhJWD4ZDNgeu2+htwT7FDdR25z5wkgnSTJ3D7BIjmoCKFvYt6Eu3gEBZWMsmn9kUaKug=
+  file:
+    - cdep/build/libs/cdep-${TRAVIS_TAG}.jar
+    - cdep/build/libs/cdep-${TRAVIS_TAG}-sources.jar
+    - cdep/build/libs/cdep-${TRAVIS_TAG}-javadoc.jar
+    - .package/redist.zip
+  provider: releases
+  skip_cleanup: true
+  true:
+    tags: true

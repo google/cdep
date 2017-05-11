@@ -120,12 +120,12 @@ public class ZipFilesRewriter extends CDepManifestYmlRewriter {
         archive.abi.name);
     File stagingZipFolder = getStagingZipFolder(layoutZipFile, "lib/" + archive.abi);
 
-    copyFilesToStaging(mappings, stagingZipFolder);
+    List<String> libList = copyFilesToStaging(mappings, stagingZipFolder);
 
     // Record the names of the libraries.
-    String libs[] = new String[mappings.length];
-    for (int i = 0; i < mappings.length; ++ i) {
-      libs[i] = mappings[i].to.getName();
+    String libs[] = new String[libList.size()];
+    for (int i = 0; i < libList.size(); ++ i) {
+      libs[i] = libList.get(i);
     }
 
     // Zip that file
@@ -215,12 +215,17 @@ public class ZipFilesRewriter extends CDepManifestYmlRewriter {
     return new File(file.getParentFile(), baseName);
   }
 
-  private void copyFilesToStaging(@NotNull PathMapping[] mappings, File stagingZipFolder) {
+  private List<String> copyFilesToStaging(@NotNull PathMapping[] mappings, File stagingZipFolder) {
+    List<String> libs = new ArrayList<>();
     for (PathMapping mapping : mappings) {
       if (failIf(
           !mapping.from.exists(),
           "Could not zip file %s because it didn't exist",
           mapping.from.getAbsoluteFile())) {
+        continue;
+      }
+      if (!mapping.to.getPath().endsWith(".a")) {
+        // We only want .a files. Ignore others.
         continue;
       }
       File stagingZipFile = new File(stagingZipFolder, mapping.to.getPath());
@@ -231,7 +236,11 @@ public class ZipFilesRewriter extends CDepManifestYmlRewriter {
 
       // Copy the single header file to the staging zip folder.
       copyFileToStaging(mapping, stagingZipFile);
+
+      // Record the name
+      libs.add(mapping.to.getName());
     }
+    return libs;
   }
 
   private void zipStagingFilesIntoArchive(@NotNull File stagingZipFolder,
