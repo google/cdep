@@ -10,7 +10,7 @@ Navigate to https://github.com/google/boringssl and click the Fork button.
 After the fork is complete, go to settings and rename the repository to "boringssl-tutorial".
 
 ## Step 2 -- Install CMake
-This step installs CMake in a new folder. You can skip this step if you already have CMake 3.7.1 or later but you will need to modifiy subsequent steps to reference that CMake instead.
+This step installs CMake in a new folder. You can skip this step if you already have CMake 3.7.1 or later, but you will need to modifiy subsequent steps to reference that CMake instead.
 ```
 cd openssl-tutorial
 wget https://cmake.org/files/v3.8/cmake-3.8.1-Linux-x86_64.tar.gz
@@ -19,13 +19,16 @@ tar xvzf cmake-3.8.1-Linux-x86_64.tar.gz
 
 ## Step 3 -- Install Android NDK
 This step installs a recent Android NDK. This has the libraries and compilers needed to target Android with C++.
+
+Note: The latest NDK downloads are available on the [NDK website](https://developer.android.com/ndk/downloads/index.html).
+
 ```
-wget https://dl.google.com/android/repository/android-ndk-r14-linux-x86_64.zip
-unzip android-ndk-r14-linux-x86_64.zip 
+wget https://dl.google.com/android/repository/android-ndk-r14b-linux-x86_64.zip
+unzip android-ndk-r14b-linux-x86_64.zip 
 ```
 
 ## Step 4 -- Build BoringSSL for a single ABI
-This step builds BoringSSL for a armeabi. You can repeat this step for other ABIs to get them but that's not necessary for this tutorial.
+This step builds BoringSSL for armeabi. You can repeat this step for other ABIs, but that's not necessary for this tutorial.
 ```
 cmake-3.8.1-Linux-x86_64/bin/cmake \
   -H. \
@@ -35,7 +38,7 @@ cmake-3.8.1-Linux-x86_64/bin/cmake \
   -DCMAKE_SYSTEM_NAME=Android \
   -DCMAKE_SYSTEM_VERSION=16 \
   -DCMAKE_ANDROID_STL_TYPE=c++_static \
-  -DCMAKE_ANDROID_NDK=`pwd`/android-ndk-r14 \
+  -DCMAKE_ANDROID_NDK=`pwd`/android-ndk-r14b \
   -DCMAKE_ANDROID_ARCH_ABI=armeabi
 cmake-3.8.1-Linux-x86_64/bin/cmake --build build/armeabi
 ```
@@ -48,12 +51,12 @@ If these files aren't there then something went wrong in the steps above.
 
 A few notes while we're here. 
 
-1. CDep packages currently only support .a. It is expected that the final user that wants a .so they can link it using a simple CMake script. This saves complexity in the CDep tool and reduces the size of package.
+1. CDep packages currently only support static libraries (.a files). For an app, you will need a shared library (.so file), but shipping a static library allows the user to decide whether to statically or dynamically link to BoringSSL. This also saves complexity in the CDep tool and reduces the size of package.
 
 2. As a best practice, it is recommended that the libraries in the archive be optimized and have symbols (CMAKE_BUILD_TYPE=RelWithDebInfo). The Android gradle plugin will strip symbols so they don't end up in the APK.
 
 ## Step 5 -- Prepare a staging folder for the libraries
-The staging folder holds the library files in a convenient form for zipping 
+The staging folder holds the library files in a convenient form for zipping.
 ```
 mkdir -p staging/lib/armeabi
 cp build/armeabi/ssl/libssl.a staging/lib/armeabi
@@ -115,7 +118,7 @@ At this point, we need to compute the sha256 of the header zip and add it to the
 shasum -a 256 upload/boringssl-tutorial-headers.zip | awk '{print $1}' >> upload/cdep-manifest.yml
 ```
 
-Last, we need add the size of the zip file to the manifest
+Last, we need add the size of the zip file to the manifest.
 
 ```
 printf "    size: " >> upload/cdep-manifest.yml
@@ -133,11 +136,11 @@ shasum -a 256 upload/boringssl-tutorial-armeabi.zip | awk '{print $1}' >> upload
 printf "      size: " >> upload/cdep-manifest.yml
 ls -l upload/boringssl-tutorial-armeabi.zip | awk '{print $5}' >> upload/cdep-manifest.yml
 ```
-Specify the ABI that this libraries target.
+Specify the ABI that the libraries target.
 ```
 printf "    %s\r\n" "  abi: armeabi" >> upload/cdep-manifest.yml
 ```
-Specify the Android platform that the libraries are built for
+Specify the Android platform that the libraries are built for.
 ```
 printf "    %s\r\n" "  platform: 16" >> upload/cdep-manifest.yml
 ```
@@ -147,7 +150,7 @@ printf "      libs: [libssl.a, libcrypto.a]\r\n" >> upload/cdep-manifest.yml
 ```
 
 ## Step 12 -- Add an example to the manifest
-CDep requires the manifest contain a small example of how to use the library. This is so that tools and the end-user can prove that the library links using only information contain in the package.
+CDep requires the manifest contain a small example of how to use the library. This is so that tools and the end-user can prove that the library links using only information contained in the package.
 ```
 printf "%s\r\n" "example: |" >> upload/cdep-manifest.yml
 printf "%s\r\n" "  #include <openssl/bio.h>" >> upload/cdep-manifest.yml
@@ -212,7 +215,7 @@ cmake-3.8.1-Linux-x86_64/bin/cmake \
   -DCMAKE_SYSTEM_NAME=Android \
   -DCMAKE_SYSTEM_VERSION=16 \
   -DCMAKE_ANDROID_STL_TYPE=c++_static \
-  -DCMAKE_ANDROID_NDK=`pwd`/android-ndk-r14 \
+  -DCMAKE_ANDROID_NDK=`pwd`/android-ndk-r14b \
   -DCMAKE_ANDROID_ARCH_ABI=armeabi
 cmake-3.8.1-Linux-x86_64/bin/cmake --build build/examples
 ```
