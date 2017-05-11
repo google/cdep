@@ -30,6 +30,7 @@ This step builds BoringSSL for a armeabi. You can repeat this step for other ABI
 cmake-3.8.1-Linux-x86_64/bin/cmake \
   -H. \
   -Bbuild/armeabi \
+  -DCMAKE_BUILD_TYPE=RelWithDebInfo \
   -DCMAKE_ANDROID_NDK_TOOLCHAIN_VERSION=clang \
   -DCMAKE_SYSTEM_NAME=Android \
   -DCMAKE_SYSTEM_VERSION=16 \
@@ -44,6 +45,10 @@ build/armeabi/ssl/libssl.a
 build/armeabi/crypto/libcrypto.a
 ```
 If these files aren't there then something went wrong in the steps above.
+
+A few notes while we're here. 
+(1) CDep packages currently only support .a. It is expected that the final user that wants a .so can link it using a simple CMake script. This saves complexity in the CDep tool and reduces the size of package.
+(2) As a best practice, it is recommended that the libraries in the .a be optimized and have symbols (CMAKE_BUILD_TYPE=RelWithDebInfo). The Android gradle plugin will strip symbols so they don't end up in the APK.
 
 ## Step 5 -- Prepare a staging folder for the libraries
 The staging folder holds the library files in a convenient form for zipping 
