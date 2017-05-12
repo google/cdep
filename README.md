@@ -57,7 +57,7 @@ When you call CMake to generate the project you'll need to tell it where to find
 ```
 cmake -Dcdep-dependencies_DIR=.cdep/modules
 ```
-For more details on setting up CMake build with CDep visit [Add CDep dependencies to an existing Android Studio CMake project](https://github.com/google/cdep/blob/master/doc/android-studio-cmake.md)
+For more details on setting up CMake build with CDep visit [Add CDep dependencies to an existing Android Studio CMake project](https://github.com/google/cdep/blob/master/doc/android-studio-cmake.md).
 
 ## Getting started on Windows
 Get started with CDep on Windows.
