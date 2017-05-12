@@ -43,6 +43,19 @@ Next, run cdep command to download SQLite and build CMake modules for it.
 
     $ ./cdep
     Generating .cdep/modules/cdep-dependencies-config.cmake
+    
+Now, if you have a CMake project then open CMakeLists.txt and add the following code at the end of the file.
+```
+find_package(cdep-dependencies REQUIRED)
+add_all_cdep_dependencies(native-lib)
+```
+This tells CMake to locate the module glue file and then to add all the dependencies in that file to the native-lib target.
+
+When you call CMake to generate the project you'll need to tell it where to find the generated modules. So something like,
+```
+cmake -Dcdep-dependencies_DIR=.cdep/modules
+```
+For more details on setting up CMake build with CDep visit [Add CDep dependencies to an existing Android Studio CMake project](https://github.com/google/cdep/blob/master/doc/android-studio-cmake.md)
 
 ## Getting started on Windows
 Get started with CDep on Windows.
