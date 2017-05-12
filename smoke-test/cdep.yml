@@ -23,7 +23,6 @@ dependencies:
 - compile: com.github.jomof:protobuf:3.2.0-rev0
 
 - compile: com.github.jomof:re2:17.3.1-rev18
-- compile: com.github.jomof:openssl:1.0.1-e-rev7
 - compile: com.github.jomof:stb/c_lexer:0.0.0-rev6
 - compile: com.github.jomof:stb/divide:0.0.0-rev6
 - compile: com.github.jomof:stb/dxt:0.0.0-rev6
