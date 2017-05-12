@@ -16,6 +16,7 @@ Here are some things you can do to get started with CDep.
 * [Author a new CDep package and host it on Github](https://github.com/google/cdep/blob/master/doc/authoring.md)
 * [Learn about the structure of CDep packages](https://github.com/google/cdep/blob/master/doc/anatomy.md)
 * [Contribute to CDep](https://github.com/google/cdep/blob/master/CONTRIBUTING.md)
+* [Request a new package by opening an issue](https://github.com/google/cdep/issues/new)
 
 ## Getting started on Linux and Mac
 Get started with CDep on Linux and Mac.
