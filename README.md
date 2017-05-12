@@ -53,7 +53,7 @@ add_all_cdep_dependencies(native-lib)
 ```
 This tells CMake to locate the module glue file and then to add all the dependencies in that file to the native-lib target. You'll need to change 'native-lib' to your own target name. 
 
-When you call CMake to generate the project you'll need to tell it where to find the generated modules. So something like,
+When you call CMake to generate the project you'll need to tell it where to find the glue modules. So something like,
 ```
 cmake -Dcdep-dependencies_DIR=.cdep/modules
 ```
