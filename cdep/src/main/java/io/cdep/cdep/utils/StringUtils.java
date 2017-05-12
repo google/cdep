@@ -143,4 +143,14 @@ public class StringUtils {
     }
     return false;
   }
+
+  public static boolean isNullOrEmpty(@Nullable String value) {
+    if (value == null) {
+      return true;
+    }
+    if (value.isEmpty()) {
+      return true;
+    }
+    return false;
+  }
 }

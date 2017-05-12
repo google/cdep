@@ -45,6 +45,12 @@ public class TestPathMapping {
   }
 
   @Test
+  public void doubleRecursive() {
+    PathMapping mappings[] = PathMapping.parse(
+            "../third_party/tinydir/...|../third_party/stb/...");
+  }
+
+  @Test
   public void expandSimple() {
     PathMapping mappings[] = PathMapping.parse("../third_party/vectorial/include/...");
     assertThat(mappings).hasLength(21);

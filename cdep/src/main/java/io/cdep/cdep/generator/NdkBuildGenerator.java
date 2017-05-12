@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
 package io.cdep.cdep.generator;
 
 import static io.cdep.cdep.io.IO.infoln;
@@ -43,16 +58,20 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
   @Nullable
   Coordinate coordinate = null;
 
+  @Nullable
+  String moduleName = null;
+
   int indent = 0;
 
   public NdkBuildGenerator(@NotNull GeneratorEnvironment environment) {
     super(environment);
   }
 
-  public void generate(FunctionTableExpression expr) {
+  public String generate(FunctionTableExpression expr) {
     expr = (FunctionTableExpression)
         new JoinedFileToStringRewriter("(", ")").visitFunctionTableExpression(expr);
     visit(expr);
+    return sb.toString();
   }
 
   @Override
@@ -68,28 +87,19 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
     appendIndented("### DO NOT EDIT");
     appendIndented("###");
     appendIndented("cdep_exploded_root := %s", environment.unzippedArchivesFolder);
+
+    List<String> subModules = new ArrayList<>();
     for (Coordinate coordinate : expr.findFunctions.keySet()) {
       this.coordinate = coordinate;
       StatementExpression findFunction = expr.findFunctions.get(coordinate);
       Set<String> libs = ExpressionUtils.findReferencedLibraryNames(findFunction);
 
-      if (libs.size() == 0) {
-        // Header-only library. Use BUILD_STATIC_LIBRARY.
-        appendIndented("\n###");
-        appendIndented("### Add dependency for CDep header-only module: %s", coordinate.toString());
-        appendIndented("###");
-        appendIndented("LOCAL_PATH := $(call my-dir)");
-        appendIndented("include $(CLEAR_VARS)");
-        appendIndented("LOCAL_MODULE := %s", coordinate.artifactId);
-        visit(findFunction);
-        appendIndented("include $(BUILD_STATIC_LIBRARY)");
-        continue;
-      }
       for (String lib : libs) {
-        String moduleName = coordinate.artifactId;
+        this.moduleName = coordinate.artifactId;
         currentLib = CommandLineUtils.getLibraryNameFromLibraryFilename(new File(lib));
         if (libs.size() > 1) {
           moduleName += "-" + currentLib;
+          subModules.add(moduleName);
         }
         appendIndented("\n###");
         appendIndented("### Add dependency for CDep module: %s", coordinate.toString());
@@ -101,9 +111,28 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
         appendIndented("LOCAL_PATH := $(call my-dir)");
         appendIndented("include $(CLEAR_VARS)");
         appendIndented("LOCAL_MODULE := %s", moduleName);
+        appendIndented("%s :=", getStaticLibraryExported());;
         visit(findFunction);
-        currentLib = null;
-        appendIndented("include $(PREBUILT_STATIC_LIBRARY)");
+        this.currentLib = null;
+
+        appendIndented("ifdef %s", getStaticLibraryExported());
+        appendIndented("  include $(PREBUILT_STATIC_LIBRARY)");
+        appendIndented("else");
+        appendIndented("  include $(BUILD_STATIC_LIBRARY)");
+        appendIndented("endif");
+      }
+
+      // If there were multiple modules then expose an outer module
+      // that collects the submodules into one place.
+      if (subModules.size() > 0) {
+        appendIndented("\n###");
+        appendIndented("### Add submodule collector dependency for CDep module: %s", coordinate.toString());
+        appendIndented("###");
+        appendIndented("LOCAL_PATH := $(call my-dir)");
+        appendIndented("include $(CLEAR_VARS)");
+        appendIndented("LOCAL_MODULE := %s", coordinate.artifactId.toString());
+        appendIndented("LOCAL_STATIC_LIBRARIES := ${%s}", getAllModulesVariable());
+        appendIndented("include $(BUILD_STATIC_LIBRARY)");
       }
     }
     try {
@@ -111,6 +140,14 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private String getAllModulesVariable() {
+    return String.format("CDEP_%S_ALL_MODULES", this.coordinate.artifactId.toUpperCase());
+  }
+
+  private String getStaticLibraryExported() {
+    return "CDEP_STATIC_LIBRARY_EXPORTED";
   }
 
   @Override
@@ -155,7 +192,6 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
       visit(expr.includePath);
     }
     if (expr.libraryPaths.length > 0) {
-      boolean matched = false;
       List<String> saw = new ArrayList<>();
       for (int i = 0; i < expr.libraryPaths.length; ++i) {
         String lib = CommandLineUtils.getLibraryNameFromLibraryFilename(new File(expr.libs[i]));
@@ -163,8 +199,6 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
         if (!lib.equals(currentLib)) {
           continue;
         }
-        matched = true;
-
         if (!haveDownloaded) {
           haveDownloaded = true;
           appendIndented("ifeq (,$(wildcard ");
@@ -181,9 +215,9 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
         }
         appendIndented("LOCAL_SRC_FILES += ");
         visit(expr.libraryPaths[i]);
+        appendIndented("%s += %s", getAllModulesVariable(), this.moduleName);
+        appendIndented("%s := yes", getStaticLibraryExported());
       }
-      require(matched, "Library '%s' was not in the manifest. Expected one of %s",
-          currentLib, StringUtils.joinOn(",", saw));
     }
   }
 
@@ -332,6 +366,4 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
     sb.append(new String(new char[indent * 2]).replace('\0', ' '));
     sb.append(safeFormat(format, args));
   }
-
-
 }

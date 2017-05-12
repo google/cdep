@@ -75,6 +75,16 @@ public class TestNdkBuildGenerator {
   }
 
   @Test
+  public void testOpencv() throws Exception {
+    // OpenCV has different libraries depending on target ABI
+    BuildFindModuleFunctionTable builder = new BuildFindModuleFunctionTable();
+    builder.addManifest(ResolvedManifests.opencv().manifest);
+    FunctionTableExpression table = builder.build();
+    String script = new NdkBuildGenerator(environment).generate(table);
+    System.out.print(script);
+  }
+
+  @Test
   public void testMultiple() throws Exception {
     BuildFindModuleFunctionTable builder = new BuildFindModuleFunctionTable();
     builder.addManifest(ResolvedManifests.boost().manifest);

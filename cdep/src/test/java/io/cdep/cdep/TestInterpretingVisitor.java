@@ -121,6 +121,7 @@ public class TestInterpretingVisitor {
     expected.put("fuzz1", "Could not parse main manifest coordinate []");
     expected.put("fuzz2", "Abort: Archive file could not be converted to URL. It is likely an illegal path.");
     expected.put("openssl", "Abort: Target platform Linux is not supported by com.github.jomof:openssl:1.0.1-e-rev6. Supported: Android");
+    expected.put("opencv", "Abort: Target platform Linux is not supported by com.github.jomof:opencv:3.2.0-rev2. Supported: Android");
 
     boolean unexpectedFailures = false;
     for (ResolvedManifests.NamedManifest manifest : ResolvedManifests.all()) {
@@ -283,6 +284,7 @@ public class TestInterpretingVisitor {
     expected.put("fuzz1", "Could not parse main manifest coordinate []");
     expected.put("fuzz2", "Abort: Archive file could not be converted to URL. It is likely an illegal path.");
     expected.put("openssl", "Abort: Target platform Darwin is not supported by com.github.jomof:openssl:1.0.1-e-rev6. Supported: Android");
+    expected.put("opencv", "Abort: Target platform Darwin is not supported by com.github.jomof:opencv:3.2.0-rev2. Supported: Android");
     boolean unexpectedFailures = false;
     for (ResolvedManifests.NamedManifest manifest : ResolvedManifests.all()) {
       final BuildFindModuleFunctionTable builder = new BuildFindModuleFunctionTable();

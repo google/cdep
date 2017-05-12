@@ -1,0 +1,15 @@
+smoke-test/.cdep
+smoke-test/.cmakeify
+smoke-test/build
+cdep/build
+cdep/.test-files
+cdep/test-files
+bootstrap/.test-files
+bootstrap/build
+.package/
+build/
+cdep/.cdep/
+classes/
+integration/build/
+.idea/
+.gradle/

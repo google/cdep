@@ -326,7 +326,7 @@ public class BuildFindModuleFunctionTable {
           sha256,
           size,
           include,
-          include == null ? null : joinFileSegments(explodedArchiveFolder, file, include),
+          StringUtils.isNullOrEmpty(include) ? null : joinFileSegments(explodedArchiveFolder, file, include),
           libLibs,
           libPaths,
           requires);

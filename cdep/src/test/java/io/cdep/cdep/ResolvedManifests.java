@@ -33,6 +33,55 @@ import org.junit.Test;
 @SuppressWarnings("unused")
 public class ResolvedManifests {
   @NotNull
+  public static TestManifest opencv() throws MalformedURLException {
+    return getResolvedManifest("coordinate:\n" +
+            "  groupId: com.github.jomof\n" +
+            "  artifactId: opencv\n" +
+            "  version: 3.2.0-rev2\n" +
+            "license:\n" +
+            "interfaces:\n" +
+            "  headers:\n" +
+            "    file: opencv-headers.zip\n" +
+            "    sha256: ec57c8dd67618bc0bcbb9ed1a5f5e83fc445538553eed6a6856744a13718caeb\n" +
+            "    size: 914567\n" +
+            "    include: include\n" +
+            "android:\n" +
+            "  archives:\n" +
+            "  - file: opencv-android-12-arm64-v8a.zip\n" +
+            "    sha256: 13be0779eff4eba6613810dea630ccda72e699ca4fa61e98517a65ba2c8c3394\n" +
+            "    size: 14960069\n" +
+            "    platform: 12\n" +
+            "    abi: arm64-v8a\n" +
+            "    libs: [libopencv_shape.a, libopencv_calib3d.a, libopencv_photo.a, libopencv_videostab.a, libopencv_stitching.a, libopencv_flann.a, libopencv_videoio.a, libopencv_highgui.a, libopencv_imgcodecs.a, libopencv_superres.a, libopencv_ml.a, libopencv_imgproc.a, libopencv_features2d.a, libopencv_video.a, libopencv_objdetect.a, libopencv_core.a, liblibjpeg.a, liblibwebp.a, liblibtiff.a, liblibpng.a, libIlmImf.a, libtbb.a, libtegra_hal.a, liblibjasper.a]\n" +
+            "  - file: opencv-android-12-x86_64.zip\n" +
+            "    sha256: 981d84efd33f11157aa43ca2919fdb9b2ed3037512aa032354ebd82d390c10a9\n" +
+            "    size: 44782522\n" +
+            "    platform: 12\n" +
+            "    abi: x86_64\n" +
+            "    libs: [libopencv_imgproc.a, libopencv_features2d.a, libopencv_core.a, libopencv_calib3d.a, libopencv_objdetect.a, libopencv_video.a, libopencv_photo.a, libopencv_imgcodecs.a, libopencv_videostab.a, libopencv_stitching.a, libopencv_shape.a, libopencv_videoio.a, libopencv_highgui.a, libopencv_flann.a, libopencv_ml.a, libopencv_superres.a, liblibpng.a, liblibjasper.a, libtbb.a, libIlmImf.a, liblibtiff.a, liblibjpeg.a, libippicv.a, liblibwebp.a]\n" +
+            "  - file: opencv-android-12-x86.zip\n" +
+            "    sha256: 77c16641610929fefb3a2285c37c6c23fe6aa43e200b2d6ca8eb6f24bfb0d214\n" +
+            "    size: 38803110\n" +
+            "    platform: 12\n" +
+            "    abi: x86\n" +
+            "    libs: [libopencv_shape.a, libopencv_highgui.a, libopencv_photo.a, libopencv_core.a, libopencv_video.a, libopencv_ml.a, libopencv_calib3d.a, libopencv_videostab.a, libopencv_features2d.a, libopencv_objdetect.a, libopencv_videoio.a, libopencv_superres.a, libopencv_stitching.a, libopencv_imgcodecs.a, libopencv_imgproc.a, libopencv_flann.a, libippicv.a, libIlmImf.a, liblibtiff.a, liblibjpeg.a, liblibwebp.a, liblibjasper.a, libtbb.a, liblibpng.a]\n" +
+            "  - file: opencv-android-12-armeabi.zip\n" +
+            "    sha256: 335cb18bf7366fedc6a13f45c68165d107be686d6ebb67ad0ea208fbf2077170\n" +
+            "    size: 12101150\n" +
+            "    platform: 12\n" +
+            "    abi: armeabi\n" +
+            "    libs: [libopencv_imgcodecs.a, libopencv_videostab.a, libopencv_features2d.a, libopencv_stitching.a, libopencv_highgui.a, libopencv_core.a, libopencv_shape.a, libopencv_superres.a, libopencv_flann.a, libopencv_ml.a, libopencv_imgproc.a, libopencv_videoio.a, libopencv_calib3d.a, libopencv_video.a, libopencv_photo.a, libopencv_objdetect.a, libtegra_hal.a, liblibtiff.a, libIlmImf.a, liblibwebp.a, libtbb.a, liblibjpeg.a, liblibjasper.a, liblibpng.a]\n" +
+            "  - file: opencv-android-12-armeabi-v7a.zip\n" +
+            "    sha256: 03f64a2eacb2b277a7262a99695cc74fe9435952177f5ff7c71d17992c940bbe\n" +
+            "    size: 12597778\n" +
+            "    platform: 12\n" +
+            "    abi: armeabi-v7a\n" +
+            "    libs: [libopencv_shape.a, libopencv_videoio.a, libopencv_calib3d.a, libopencv_flann.a, libopencv_objdetect.a, libopencv_ml.a, libopencv_stitching.a, libopencv_superres.a, libopencv_highgui.a, libopencv_video.a, libopencv_imgcodecs.a, libopencv_features2d.a, libopencv_imgproc.a, libopencv_core.a, libopencv_videostab.a, libopencv_photo.a, liblibjasper.a, libIlmImf.a, liblibpng.a, liblibtiff.a, libtbb.a, liblibwebp.a, libtegra_hal.a, liblibjpeg.a]\n" +
+            "example: |\n" +
+            "  #include <opencv2/core.hpp>");
+  }
+
+  @NotNull
   public static TestManifest openssl() throws MalformedURLException {
     return getResolvedManifest("coordinate:\n"
         + "  groupId: com.github.jomof\n"
