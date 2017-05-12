@@ -47,7 +47,7 @@ Next, run cdep command to download SQLite and build CMake modules for it.
 Now, if you have a CMake project then open CMakeLists.txt and add the following code at the end of the file.
 ```
 find_package(cdep-dependencies REQUIRED)
-add_all_cdep_dependencies(native-lib)
+add_all_cdep_dependencies(native-lib) # replace native-lib with your target name
 ```
 This tells CMake to locate the module glue file and then to add all the dependencies in that file to the native-lib target.
 
