@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/jomof/cdep.svg?branch=master)](https://travis-ci.org/jomof/cdep)
-
+|gitter| image:: https://badges.gitter.im/google/cdep.svg
+  :target: https://gitter.im/google/cdep
 
 # CDep
 CDep is a decentralized native package dependency manager with a focus on Android. 
