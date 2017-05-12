@@ -89,8 +89,14 @@ printf "  %s\r\n" "groupId: com.github.*yourname*" >> upload/cdep-manifest.yml
 printf "  %s\r\n" "artifactId: boringssl-tutorial" >> upload/cdep-manifest.yml
 printf "  %s\r\n" "version: 0.0.0"  >> upload/cdep-manifest.yml
 ```
-
 BoringSSL doesn't have version numbers so we just use '0.0.0' as a starting version.
+
+As a best practice it is strongly recommended that once you publish a package with a particular version you don't change it. In this tutorial publishing happens in step 15.
+
+There are a few reasons packages should be immutable once they're published.
+1. Most importantly, if you change a package after it is published then you can break user's build that depend on it.
+2. CDep won't try to redownload the package if it already has a package with that name and version in the cache.
+3. CDep stores the sha256 hash of the manifest and will refuse to use the package if the manifest has changed.
 
 ## Step 9 -- Add BoringSSL license information to the manifest
 A CDep license section can have a 'name' or a 'url' or both. BoringSSL has a rather complicated license that is difficult to name so in this case we'll just use url to the LICENSE file in the original project.
