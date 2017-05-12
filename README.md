@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/jomof/cdep.svg?branch=master)](https://travis-ci.org/jomof/cdep)
+[![Build Status](https://travis-ci.org/google/cdep.svg?branch=master)](https://travis-ci.org/google/cdep)
 [![Gitter](https://badges.gitter.im/google/cdep.svg)](https://gitter.im/google/cdep)
 
 # CDep
