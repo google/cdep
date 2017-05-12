@@ -81,7 +81,7 @@ public class ZipFilesRewriter extends CDepManifestYmlRewriter {
     File layoutZipFile = getLayoutZipFile(prefix, "headers");
     File stagingZipFolder = getStagingZipFolder(layoutZipFile, "include");
 
-    copyFilesToStaging(mappings, stagingZipFolder);
+    copyFilesToStaging(mappings, stagingZipFolder, null);
 
     // Zip that file
     zipStagingFilesIntoArchive(stagingZipFolder.getParentFile(), layoutZipFile);
@@ -120,7 +120,7 @@ public class ZipFilesRewriter extends CDepManifestYmlRewriter {
         archive.abi.name);
     File stagingZipFolder = getStagingZipFolder(layoutZipFile, "lib/" + archive.abi);
 
-    List<String> libList = copyFilesToStaging(mappings, stagingZipFolder);
+    List<String> libList = copyFilesToStaging(mappings, stagingZipFolder, ".a");
 
     // Record the names of the libraries.
     String libs[] = new String[libList.size()];
@@ -164,7 +164,7 @@ public class ZipFilesRewriter extends CDepManifestYmlRewriter {
         "linux");
     File stagingZipFolder = getStagingZipFolder(layoutZipFile, "lib/");
 
-    copyFilesToStaging(mappings, stagingZipFolder);
+    copyFilesToStaging(mappings, stagingZipFolder, ".a");
 
     // Record the names of the libraries.
     String libs[] = new String[mappings.length];
@@ -215,7 +215,8 @@ public class ZipFilesRewriter extends CDepManifestYmlRewriter {
     return new File(file.getParentFile(), baseName);
   }
 
-  private List<String> copyFilesToStaging(@NotNull PathMapping[] mappings, File stagingZipFolder) {
+  private List<String> copyFilesToStaging(@NotNull PathMapping[] mappings, @NotNull File stagingZipFolder,
+                                          @Nullable String onlyAllowedExtension) {
     List<String> libs = new ArrayList<>();
     for (PathMapping mapping : mappings) {
       if (failIf(
@@ -224,9 +225,11 @@ public class ZipFilesRewriter extends CDepManifestYmlRewriter {
           mapping.from.getAbsoluteFile())) {
         continue;
       }
-      if (!mapping.to.getPath().endsWith(".a")) {
-        // We only want .a files. Ignore others.
-        continue;
+      if (onlyAllowedExtension != null) {
+        if (!mapping.to.getPath().endsWith(onlyAllowedExtension)) {
+          // We only want .a files. Ignore others.
+          continue;
+        }
       }
       File stagingZipFile = new File(stagingZipFolder, mapping.to.getPath());
 
