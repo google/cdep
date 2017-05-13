@@ -22,16 +22,15 @@ matrix:
     - ../cmakeify --group-id com.github.jomof --artifact-id smoke-test --target-version 0.0.0
     - ../cmakeify -wf .cdep/examples/cmake --group-id com.github.jomof --artifact-id smoke-test-examples --target-version 0.0.0
     - popd
-
 deploy:
   api_key:
-    secure: eJTLT/plD9BdFDjy16+izosm8CvpIAFGXOj+RQ9DsYsK0xMp8CMGC41aMnevcAFjtdvlJZJwLAKhFCSgjw5bKhSh+YFvHi8SCTS2oKKZQtZun39ICU75sEOaPHwGOaNmzhNkU1H3t/BPSZjJAFfsvT+tr04zeeKwNf6SETfcxB5Qb2fWrAkqjbu6uKs6kLnUIMVB/xSHFNB8X6FwH0ZD1ZOhW8RnHuC9wrwuXIh/gY5t3GSuYtujHustXRvpppcAmzRCAibIrM+RNuA3kJzi7GMNA5N1adL58YcxwX7TKgOrOw53+uCiaffCBtD2j5RZMJE5OYEUzPThizIcD5RzQvpV8gIUMIXJs+geO1oD2BSHzXUFe075OMKtSGT/1XZsl3i9W0jyx3r6EeqhUy+kZgMgqXFuPGC20y2J9maIBUhVRgYhbOZ81/Hvj3c2CeNMZ1LmqqCkWaGO2fa+Bi6hoSl6lvFyVdj7IEr4eU7+kX4ys/N+i7omAJItwPpO3oyRYEr9SpOBAj83EIjmjhjuLA5rH+B4t/R3IyeK9bvfvTPjiQqbaerV6VNsKN59b4T3zA/ARZBlUMHUduOlLYPCZ5R/G0Cm25Ibd48C0WsxhJWD4ZDNgeu2+htwT7FDdR25z5wkgnSTJ3D7BIjmoCKFvYt6Eu3gEBZWMsmn9kUaKug=
+    secure: sn6zm8ubAhImViHMUnTi+tbY10Xgk9vVRw+MP0MMZjmfZfLlbtsAD+zhrC//hfif9kSnM/ME8BezSbStwlkXveR53hUHp8R2KqN5EifVRe7OXHTOE/uzA6nKhw7oqliuOA8BM3VeugTx0mrLT/tVi5/S/MCPakcuS163W+w6kGe9xCDEwy1DeBIPLiMusw+uaaXzxJp813kLOPAPVgO3rBO29xG9+7Pttll7TARDO4TuKuJXBJ6EkYbH08W+OeD77jSRp1fN0RT/lagABh496/PrwKqo3XOj+Lx1IJmx2xuo3Hwt7O/2llisvcf/ZHFRNT53RCqVGJBo7E7+6gZ7jxgrLdQgDLvISOuzIBSQE6Zp4T193h8iKTSOb6SRZZf/gomS7Zr28zP3vXApr9vKVRCRsLJZS72hahSTVzYZkqErAt3x9VsF1E+uQvC8iWmk8Scy41I2QCkAXsZp29FuuT76RNkdkPvy5GOtIC52Rn9lKx7vGhDseHv9wrHiYB7ZDYsCIaIzowx5qQO2CZ9vuMJIMxbDSNW329O54IdcWfnlk7lTsoNIZWy0WAq5h8A/6aGhCjEAWFUXywIhsScgP2niU3joa+hkzOcrgj6lSLMUu6nEffQ945ogMHcAmL6z0wQXk9V5E12YXTVkd+OzUxgL0/PNmx8Hs7gfz32DvNM=
   file:
-    - cdep/build/libs/cdep-${TRAVIS_TAG}.jar
-    - cdep/build/libs/cdep-${TRAVIS_TAG}-sources.jar
-    - cdep/build/libs/cdep-${TRAVIS_TAG}-javadoc.jar
-    - .package/redist.zip
+  - cdep/build/libs/cdep-${TRAVIS_TAG}.jar
+  - cdep/build/libs/cdep-${TRAVIS_TAG}-sources.jar
+  - cdep/build/libs/cdep-${TRAVIS_TAG}-javadoc.jar
+  - ".package/redist.zip"
   provider: releases
   skip_cleanup: true
-  true:
+  on:
     tags: true
