@@ -41,7 +41,7 @@ Now edit cdep.yml file to add a line like this.
      
 This tells CDep that this project depends on SQLite.
 
-Next, run cdep command to download SQLite and build CMake modules for it.
+Next, run cdep command to download SQLite and generate CMake module for it:
 
     $ ./cdep
     Generating .cdep/modules/cdep-dependencies-config.cmake
