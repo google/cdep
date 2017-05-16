@@ -30,14 +30,33 @@ import static io.cdep.cdep.utils.Invariant.fail;
 import static io.cdep.cdep.utils.Invariant.require;
 
 /**
- * Resolve references and groups of references (ResolutionScope)
+ * A resolver is responsible for locating a CDep manifest given only a coordinate.
+ *
+ * For example,
+ *   - compile: com.github.jomof:sqlite:1.2.3
+ *
+ * Is decomposed into:
+ *
+ *   host = github.com
+ *   subhost = jomof
+ *   artifact = sqlite
+ *   version = 1.2.3
+ *
+ * then these fields are recomposed into:
+ *
+ *   http://[host]/[subhost]/[artifact]/releases/download/[version]/cdep-manifest.yml
+ *
+ * If this URL exists then it is used. Otherwise, it is a failure.
  */
 public class Resolver {
 
   final private static CoordinateResolver RESOLVERS[] = new CoordinateResolver[] {
       new GithubStyleUrlCoordinateResolver(),
       new GithubReleasesCoordinateResolver(),
-      new LocalFilePathCoordinateResolver() };
+      new LocalFilePathCoordinateResolver(),
+      new GithubStyleMultipackageUrlCoordinateResolver(),
+      new GithubMultipackageCoordinateResolver(),
+  };
 
   final private ManifestProvider manifestProvider;
   final private CoordinateResolver resolvers[];

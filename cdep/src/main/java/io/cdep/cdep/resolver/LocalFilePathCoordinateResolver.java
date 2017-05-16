@@ -28,6 +28,13 @@ import java.nio.file.Paths;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+/**
+ * This resolver allows you to reference a package by it's local file path:
+ *
+ * - compile: /path/to/cdep-manifest.yml
+ *
+ * The use case is testing packages and hosting private packages.
+ */
 public class LocalFilePathCoordinateResolver extends CoordinateResolver {
 
   @Nullable

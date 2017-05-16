@@ -26,10 +26,34 @@ import java.util.regex.Pattern;
 
 import static java.util.regex.Pattern.compile;
 
+/**
+ * This resolver locates a package by using a coordinate that is transformed into a github URL. For example,
+ *
+ *   - compile: com.github.jomof:sqlite:1.2.3
+ *
+ * Is decomposed into:
+ *
+ *   host = github.com
+ *   subhost = jomof
+ *   artifact = sqlite
+ *   version = 1.2.3
+ *
+ * then these fields are recomposed into:
+ *
+ *   http://[host]/[subhost]/[artifact]/releases/download/[version]/cdep-manifest.yml
+ */
 public class GithubReleasesCoordinateResolver extends CoordinateResolver {
 
-  final private Pattern pattern = compile("^com\\.github\\.(.*):(.*):(.*)$");
-  final private GithubStyleUrlCoordinateResolver urlResolver = new GithubStyleUrlCoordinateResolver();
+  final private Pattern pattern = compile("^com\\.github\\.([^\\.]+):(.*):(.*)$");
+  final private CoordinateResolver urlResolver;
+
+  GithubReleasesCoordinateResolver() {
+    this.urlResolver = new GithubStyleUrlCoordinateResolver();
+  }
+
+  GithubReleasesCoordinateResolver(CoordinateResolver urlResolver) {
+    this.urlResolver = urlResolver;
+  }
 
   @Nullable
   @Override
