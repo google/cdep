@@ -12,10 +12,10 @@ CDep comes from members of the Android Studio team and is not an official Google
    
 ## Get started with CDep
 Here are some things you can do to get started with CDep.
-* [Add CDep dependencies to an existing Android Studio CMake project](https://github.com/google/cdep/blob/master/doc/android-studio-cmake.md)
-* [Author a new CDep package and host it on Github](https://github.com/google/cdep/blob/master/doc/authoring.md)
-* [Learn about the structure of CDep packages](https://github.com/google/cdep/blob/master/doc/anatomy.md)
-* [Contribute to CDep](https://github.com/google/cdep/blob/master/CONTRIBUTING.md)
+* [Add CDep dependencies to an existing Android Studio CMake project](doc/android-studio-cmake.md)
+* [Author a new CDep package and host it on Github](doc/authoring.md)
+* [Learn about the structure of CDep packages](doc/anatomy.md)
+* [Contribute to CDep](CONTRIBUTING.md)
 * [Request a new package or submit a bug report](https://github.com/google/cdep/issues/new)
 * [See an Android Studio Freetype and SDL2 sample](https://github.com/jomof/cdep-android-studio-freetype-sample/tree/master)
 
