@@ -251,7 +251,7 @@ Get a tool that will help us upload.
 
 ```
 wget https://github.com/aktau/github-release/releases/download/v0.7.2/linux-amd64-github-release.tar.bz2
-untar xvjf linux-amd64-github-release.tar.bz2
+tar xvjf linux-amd64-github-release.tar.bz2
 ```
 
 Do the actual upload to Github.
