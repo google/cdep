@@ -17,6 +17,7 @@ Here are some things you can do to get started with CDep.
 * [Learn about the structure of CDep packages](https://github.com/google/cdep/blob/master/doc/anatomy.md)
 * [Contribute to CDep](https://github.com/google/cdep/blob/master/CONTRIBUTING.md)
 * [Request a new package by opening an issue](https://github.com/google/cdep/issues/new)
+* [See an Android Studio Freetype and SDL2 sample](https://github.com/jomof/cdep-android-studio-freetype-sample/tree/master)
 
 ## Getting started on Windows
 Get started with CDep on Windows, enter the following in the command line:
