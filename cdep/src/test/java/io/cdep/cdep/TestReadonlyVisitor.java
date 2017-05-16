@@ -31,7 +31,7 @@ public class TestReadonlyVisitor {
   @Test
   public void testNullInclude() throws Exception {
     new ReadonlyVisitor().visit(archive(new URL("https://google.com"), "sha256", 192L,
-        null, null, new String[0], new Expression[0], new CxxLanguageFeatures[0]));
+        null, null, new String[0], new Expression[0], null, new CxxLanguageFeatures[0]));
   }
 
   @Test

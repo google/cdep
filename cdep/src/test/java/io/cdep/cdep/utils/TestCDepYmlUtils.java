@@ -45,7 +45,7 @@ public class TestCDepYmlUtils {
       CDepYmlUtils.checkSanity(cdep, new File("cdep.yml"));
       fail("Expected exception");
     } catch (RuntimeException e) {
-      assertThat(e).hasMessage("cdep.yml 'builders' section is missing or empty. Valid values are: cmake cmakeExamples ndk-build.");
+      assertThat(e).hasMessage("cdep.yml 'builders' section is missing or empty. Valid values are: cmake cmakeExamples ndk-build ndk-build-examples.");
     }
   }
 

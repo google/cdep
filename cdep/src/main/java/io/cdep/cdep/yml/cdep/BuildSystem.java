@@ -22,6 +22,7 @@ public class BuildSystem {
   final static public String CMAKE = "cmake";
   final static public String CMAKE_EXAMPLES = "cmakeExamples";
   final static public String NDK_BUILD = "ndk-build";
+  final static public String NDK_BUILD_EXAMPLES = "ndk-build-examples";
 
   @NotNull
   final public String name;
@@ -34,6 +35,7 @@ public class BuildSystem {
         new BuildSystem(CMAKE),
         new BuildSystem(CMAKE_EXAMPLES),
         new BuildSystem(NDK_BUILD),
+        new BuildSystem(NDK_BUILD_EXAMPLES),
     };
   }
 

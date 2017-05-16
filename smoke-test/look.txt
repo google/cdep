@@ -1,0 +1,2 @@
+Android NDK: ERROR:/usr/local/google/home/jomof/projects/cdep/smoke-test/./.cdep/modules/ndk-build/cdep-dependencies/Android.mk:sqlite: LOCAL_SRC_FILES points to a missing file    
+Android NDK: Check that  /usr/local/google/home/jomof/.cdep/exploded/com.github.jomof/sqlite/3.16.2-rev51/sqlite-android-gnustl-platform-12-armeabi-v7a.zip/lib/armeabi-v7a/libsqlite.a exists  or that its path is correct   

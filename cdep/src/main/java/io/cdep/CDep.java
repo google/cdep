@@ -51,6 +51,7 @@ import java.util.List;
 import static io.cdep.cdep.io.IO.*;
 import static io.cdep.cdep.utils.Invariant.*;
 import static io.cdep.cdep.yml.cdepmanifest.CDepManifestBuilder.archive;
+import static org.fusesource.jansi.Ansi.ansi;
 
 @SuppressWarnings("unused")
 public class CDep {
@@ -75,11 +76,8 @@ public class CDep {
     try {
       new CDep(AnsiConsole.out, AnsiConsole.err, true).go(args, false);
     } catch (Throwable e) {
-      e.printStackTrace();
+      e.printStackTrace(System.err);
       System.exit(Integer.MIN_VALUE);
-    } finally {
-      AnsiConsole.out.close();
-      AnsiConsole.err.close();
     }
   }
 
@@ -121,12 +119,11 @@ public class CDep {
     }
 
     if (errors != null && errors.size() > 0) {
+      System.err.printf("%s errors, exiting\r\n", errors.size());
       if (showFirstExceptionStack) {
         // All errors will have been printed. Throw the first exception
         throw errors.get(0);
       }
-      infoln("%s errors, exiting with code -1.", errors.size());
-      System.exit(-1);
     }
   }
 
@@ -195,6 +192,9 @@ public class CDep {
           break;
         case BuildSystem.NDK_BUILD:
           new NdkBuildGenerator(environment).generate(table);
+          break;
+        case BuildSystem.NDK_BUILD_EXAMPLES:
+          new NdkBuildExamplesGenerator(environment).generate(table);
           break;
         default:
           errorln("Unknown CDep builder '%s'", buildSystem);
@@ -621,7 +621,7 @@ public class CDep {
             "outputmanifest.yml\n");
     info(" cdep fetch {coordinate} {coordinate2} ... : download multiple packages\n");
     info(
-        " cdep fetch-archive {coordinate} archive.zip {size}{sha256} : download a single archive from within a package\n");
+        " cdep fetch-archive {coordinate} archive.zip {size} {sha256} : download a single archive from within a package\n");
     info(" cdep wrapper: copy cdep to the current folder\n");
     info(" cdep --version: show version information\n");
     return false;

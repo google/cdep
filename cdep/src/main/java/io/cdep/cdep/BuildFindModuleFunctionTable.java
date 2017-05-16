@@ -329,6 +329,7 @@ public class BuildFindModuleFunctionTable {
           StringUtils.isNullOrEmpty(include) ? null : joinFileSegments(explodedArchiveFolder, file, include),
           libLibs,
           libPaths,
+          joinFileSegments(explodedArchiveFolder, file, "completion_sentinel"),
           requires);
     } catch (IllegalArgumentException e) {
       return abort("Archive file could not be converted to URL. It is likely an illegal path.");

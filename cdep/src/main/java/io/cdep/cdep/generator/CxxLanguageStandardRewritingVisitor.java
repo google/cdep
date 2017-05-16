@@ -51,6 +51,7 @@ public class CxxLanguageStandardRewritingVisitor extends RewritingVisitor {
         archive.includePath,
         archive.libs,
         archive.libraryPaths,
+        archive.completionSentinel,
         new CxxLanguageFeatures[0]);
 
     // Make constant expression of requires

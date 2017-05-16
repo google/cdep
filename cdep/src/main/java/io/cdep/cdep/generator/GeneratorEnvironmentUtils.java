@@ -27,6 +27,7 @@ import io.cdep.cdep.resolver.ResolutionScope;
 import io.cdep.cdep.resolver.ResolvedManifest;
 import io.cdep.cdep.resolver.Resolver;
 import io.cdep.cdep.utils.ArchiveUtils;
+import io.cdep.cdep.utils.FileUtils;
 import io.cdep.cdep.utils.HashUtils;
 import io.cdep.cdep.yml.cdep.SoftNameDependency;
 
@@ -39,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static io.cdep.cdep.io.IO.infogreen;
 import static io.cdep.cdep.utils.Invariant.require;
 
 /**
@@ -87,6 +89,8 @@ public class GeneratorEnvironmentUtils {
       @NotNull String sha256,
       boolean forceUnzip) throws IOException, NoSuchAlgorithmException {
     File local = environment.tryGetLocalDownloadedFile(coordinate, archiveURL);
+    File unzipFolder = environment.getLocalUnzipFolder(coordinate, archiveURL);
+    File completionSentinel = new File(unzipFolder, "completion_sentinel");
     require(local != null, "Resolved archive '%s' didn't exist", archiveURL);
     assert local != null;
     if (size != local.length()) {
@@ -109,11 +113,11 @@ public class GeneratorEnvironmentUtils {
     String localSha256String = HashUtils.getSHA256OfFile(local);
     require(localSha256String.equals(sha256), "SHA256 for %s did not match constant from manifest", archiveURL);
 
-    File unzipFolder = environment.getLocalUnzipFolder(coordinate, archiveURL);
-    if (!unzipFolder.exists() || forceUnzip) {
+    if (!unzipFolder.exists() || forceUnzip || !completionSentinel.isFile()) {
       //noinspection ResultOfMethodCallIgnored
       unzipFolder.mkdirs();
       ArchiveUtils.unzip(local, unzipFolder);
+      FileUtils.writeTextToFile(completionSentinel, "done");
     }
     return local;
   }

@@ -94,6 +94,8 @@ public class IO {
     if (ansi) {
       out.print(ansi().a(INTENSITY_FAINT).fg(WHITE).a(safeFormat(format, args)).reset());
     } else {
+      // Clear any formatting
+      System.out.printf("");
       out.print(safeFormat(format, args));
     }
   }
@@ -111,6 +113,8 @@ public class IO {
     String prefix = String.format("FAILURE (%s): ", code);
     if (ansi) {
       err.print(ansi().fg(RED).a(prefix).a(safeFormat(format, args)).a("\n").reset());
+      // Clear any formatting
+      System.err.printf("");
     } else {
       err.printf(prefix);
       err.print(safeFormat(format, args));

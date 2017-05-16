@@ -192,6 +192,7 @@ public class RewritingVisitor {
         visitMaybeNull(expr.includePath),
         expr.libs,
         visitExpressionArray(expr.libraryPaths),
+        visitMaybeNull(expr.completionSentinel),
         expr.requires);
   }
 

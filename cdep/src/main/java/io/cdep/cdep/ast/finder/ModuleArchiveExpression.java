@@ -31,6 +31,7 @@ public class ModuleArchiveExpression extends StatementExpression {
   @Nullable final public Expression includePath;
   @NotNull final public String libs[];
   @NotNull final public Expression libraryPaths[];
+  @Nullable final public Expression completionSentinel;
   @NotNull final public CxxLanguageFeatures requires[];
 
   public ModuleArchiveExpression(
@@ -41,6 +42,7 @@ public class ModuleArchiveExpression extends StatementExpression {
       @Nullable Expression fullIncludePath,
       @NotNull String libs[], // Like "lib/libsqlite.a"
       @NotNull Expression libraryPaths[],
+      @NotNull Expression completionSentinel,
       @NotNull CxxLanguageFeatures requires[]) {
     require(libs.length == libraryPaths.length);
     this.file = file;
@@ -50,6 +52,7 @@ public class ModuleArchiveExpression extends StatementExpression {
     this.includePath = fullIncludePath;
     this.libs = libs;
     this.libraryPaths = libraryPaths;
+    this.completionSentinel = completionSentinel;
     this.requires = requires;
   }
 }

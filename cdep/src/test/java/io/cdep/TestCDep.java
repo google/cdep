@@ -53,6 +53,12 @@ public class TestCDep {
   }
 
   @Test
+  public void deleteThisTest() throws Exception {
+    String result = main("-wf", "/usr/local/google/home/jomof/projects/cdep/smoke-test");
+    System.out.printf(result);
+  }
+
+  @Test
   public void mergeTwo() throws Exception {
     File output = new File(".test-files/mergeTwo/merged-manifest.yml");
     output.delete();

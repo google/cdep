@@ -135,6 +135,7 @@ public class ReadonlyVisitor {
   protected void visitModuleArchiveExpression(@NotNull ModuleArchiveExpression expr) {
     visit(expr.includePath);
     visitArray(expr.libraryPaths);
+    visit(expr.completionSentinel);
   }
 
   protected void visitAssignmentReferenceExpression(AssignmentReferenceExpression expr) {
