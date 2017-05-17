@@ -18,6 +18,7 @@ Here are some things you can do to get started with CDep.
 * [Contribute to CDep](CONTRIBUTING.md)
 * [Request a new package or submit a bug report](https://github.com/google/cdep/issues/new)
 * [See an Android Studio Freetype and SDL2 sample](https://github.com/jomof/cdep-android-studio-freetype-sample/tree/master)
+* [Learn how CDep resolves coordinates](doc/coordinate-resolution.md)
 
 ## Getting started on Windows
 Get started with CDep on Windows, enter the following in the command line:

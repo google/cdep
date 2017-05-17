@@ -19,6 +19,7 @@ import io.cdep.annotations.NotNull;
 import io.cdep.annotations.Nullable;
 import io.cdep.cdep.Coordinate;
 import io.cdep.cdep.Version;
+import io.cdep.cdep.utils.GithubUtils;
 import io.cdep.cdep.yml.cdep.SoftNameDependency;
 import io.cdep.cdep.yml.cdepmanifest.CDepManifestYml;
 
@@ -34,11 +35,15 @@ import static io.cdep.cdep.utils.Invariant.require;
 /**
  * This resolver allows you to reference a github release directly by it's URL. For example,
  *
- * - compile: https://github.com/ggfan/hello-libs/releases/download/0.0.0/cdep-manifest.yml
+ * - compile: https://github.com/google/cdep/releases/download/firebase-2.1.3-rev5/cdep-manifest-database.yml
+ *
+ * Where that URL corresponds to a coordinate like:
+ *
+ * com.github.google.cdep:firebase/database:2.1.3-rev5
  *
  */
-public class GithubStyleUrlCoordinateResolver extends CoordinateResolver {
-  final private Pattern pattern = Pattern.compile("^https://(.*)/(.*)/(.*)/releases/download/(.*)/cdep-manifest(.*).yml$");
+public class GithubStyleMultipackageUrlCoordinateResolver extends CoordinateResolver {
+  final private Pattern pattern = Pattern.compile("^https://(.*)/(.*)/(.*)/releases/download/(.*?)@(.*)/cdep-manifest(.*).yml$");
 
   @Nullable
   @Override
@@ -58,16 +63,21 @@ public class GithubStyleUrlCoordinateResolver extends CoordinateResolver {
       }
       String user = match.group(2);
       groupId += user;
-      String artifactId = match.group(3);
-      Version version = new Version(match.group(4));
-      String subArtifact = match.group(5);
+      String project = match.group(3);
+      groupId += ".";
+      groupId += project;
+      String artifactId = match.group(4);
+      Version version = new Version(match.group(5));
+      String subArtifact = match.group(6);
       if (subArtifact.length() > 0) {
         require(subArtifact.startsWith("-"), "Url is incorrectly formed at '%s': %s", subArtifact, coordinate);
         artifactId += "/" + subArtifact.substring(1);
       }
 
       Coordinate provisionalCoordinate = new Coordinate(groupId, artifactId, version);
-      CDepManifestYml cdepManifestYml = environment.tryGetManifest(provisionalCoordinate, new URL(coordinate));
+      CDepManifestYml cdepManifestYml = environment.tryGetManifest(
+          provisionalCoordinate,
+          GithubUtils.escapeGithubSpecialCharacters(new URL(coordinate)));
       if (cdepManifestYml == null) {
         // The URL didn't exist.
         return null;
