@@ -74,8 +74,11 @@ public class CDep {
 
   public static void main(@NotNull String[] args) {
     try {
+      AnsiConsole.systemInstall();
       new CDep(AnsiConsole.out, AnsiConsole.err, true).go(args, false);
+      AnsiConsole.systemUninstall();
     } catch (Throwable e) {
+      AnsiConsole.systemUninstall();
       e.printStackTrace(System.err);
       System.exit(Integer.MIN_VALUE);
     }
