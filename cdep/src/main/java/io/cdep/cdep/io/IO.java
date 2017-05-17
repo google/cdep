@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.security.NoSuchAlgorithmException;
 import org.fusesource.jansi.AnsiConsole;
-import org.fusesource.jansi.AnsiOutputStreaml
+import org.fusesource.jansi.AnsiOutputStream;
 
 /**
  * Methods for dealing with command-line IO, messages, errors, etc.
