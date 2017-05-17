@@ -22,12 +22,14 @@ import static org.fusesource.jansi.Ansi.Color.RED;
 import static org.fusesource.jansi.Ansi.Color.WHITE;
 import static org.fusesource.jansi.Ansi.ansi;
 
+
 import io.cdep.annotations.NotNull;
 import io.cdep.cdep.utils.HashUtils;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.security.NoSuchAlgorithmException;
 import org.fusesource.jansi.AnsiConsole;
+import org.fusesource.jansi.AnsiOutputStreaml
 
 /**
  * Methods for dealing with command-line IO, messages, errors, etc.
@@ -93,9 +95,9 @@ public class IO {
   private void infoImpl(@NotNull String format, Object... args) {
     if (ansi) {
       out.print(ansi().a(INTENSITY_FAINT).fg(WHITE).a(safeFormat(format, args)).reset());
-    } else {
       // Clear any formatting
-      System.out.printf("");
+      out.printf(AnsiOutputStream.RESET_CODE);
+    } else {
       out.print(safeFormat(format, args));
     }
   }
@@ -114,7 +116,7 @@ public class IO {
     if (ansi) {
       err.print(ansi().fg(RED).a(prefix).a(safeFormat(format, args)).a("\n").reset());
       // Clear any formatting
-      System.err.printf("");
+      err.printf(AnsiOutputStream.RESET_CODE);
     } else {
       err.printf(prefix);
       err.print(safeFormat(format, args));
