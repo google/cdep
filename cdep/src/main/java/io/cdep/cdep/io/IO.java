@@ -95,8 +95,6 @@ public class IO {
   private void infoImpl(@NotNull String format, Object... args) {
     if (ansi) {
       out.print(ansi().a(INTENSITY_FAINT).fg(WHITE).a(safeFormat(format, args)).reset());
-      // Clear any formatting
-      out.print(AnsiOutputStream.REST_CODE);
     } else {
       out.print(safeFormat(format, args));
     }
@@ -115,8 +113,6 @@ public class IO {
     String prefix = String.format("FAILURE (%s): ", code);
     if (ansi) {
       err.print(ansi().fg(RED).a(prefix).a(safeFormat(format, args)).a("\n").reset());
-      // Clear any formatting
-      err.print(AnsiOutputStream.REST_CODE);
     } else {
       err.printf(prefix);
       err.print(safeFormat(format, args));
@@ -127,8 +123,6 @@ public class IO {
   private void infogreenImpl(@NotNull String format, Object... args) {
     if (ansi) {
       out.print(ansi().a(INTENSITY_FAINT).fg(GREEN).a(safeFormat(format, args)).reset());
-      // Clear any formatting
-      out.print(AnsiOutputStream.REST_CODE);
     } else {
       out.print(safeFormat(format, args));
     }
