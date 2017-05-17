@@ -96,7 +96,7 @@ public class IO {
     if (ansi) {
       out.print(ansi().a(INTENSITY_FAINT).fg(WHITE).a(safeFormat(format, args)).reset());
       // Clear any formatting
-      out.printf(AnsiOutputStream.RESET_CODE);
+      out.write(AnsiOutputStream.RESET_CODE);
     } else {
       out.print(safeFormat(format, args));
     }
@@ -116,7 +116,7 @@ public class IO {
     if (ansi) {
       err.print(ansi().fg(RED).a(prefix).a(safeFormat(format, args)).a("\n").reset());
       // Clear any formatting
-      err.printf(AnsiOutputStream.RESET_CODE);
+      err.write(AnsiOutputStream.RESET_CODE);
     } else {
       err.printf(prefix);
       err.print(safeFormat(format, args));
@@ -127,6 +127,8 @@ public class IO {
   private void infogreenImpl(@NotNull String format, Object... args) {
     if (ansi) {
       out.print(ansi().a(INTENSITY_FAINT).fg(GREEN).a(safeFormat(format, args)).reset());
+      // Clear any formatting
+      out.write(AnsiOutputStream.RESET_CODE);
     } else {
       out.print(safeFormat(format, args));
     }
