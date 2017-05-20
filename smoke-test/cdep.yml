@@ -40,4 +40,4 @@ dependencies:
 - compile: com.github.jomof:stb/tilemap_editor:0.0.0-rev6
 - compile: com.github.jomof:stb/truetype:0.0.0-rev6
 - compile: com.github.jomof:stb/voxel_render:0.0.0-rev6
-- compile: com.github.ggfan:shaderc:0.0.1
+#- compile: com.github.ggfan:shaderc:0.0.1
