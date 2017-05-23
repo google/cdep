@@ -437,12 +437,17 @@ public class CDep {
     if (args.size() > 0 && "wrapper".equals(args.get(0))) {
       String appname = System.getProperty("io.cdep.appname");
       if (appname == null) {
-        throw new RuntimeException(
-            "Must set java system proeperty io.cdep.appname to the path of cdep.bat");
+        fail("Must set java system property io.cdep.appname to the path of cdep.bat");
+        return true;
       }
       File applicationBase = new File(appname).getParentFile();
       if (applicationBase == null || !applicationBase.isDirectory()) {
         fail("Could not find folder for io.cdep.appname='%s'", appname);
+        return true;
+      }
+      if (applicationBase.getCanonicalPath().equals(workingFolder.getCanonicalPath())) {
+        fail("Install source and destination are the same");
+        return true;
       }
       info("Installing cdep wrapper from %s\n", applicationBase);
       File cdepBatFrom = new File(applicationBase, "cdep.bat");

@@ -512,6 +512,34 @@ public class TestCDep {
   }
 
   @Test
+  public void testWrapperSelfOverwrite() throws Exception {
+    File testFolder = new File(".test-files/testWrapperSelfOverwrite");
+    File redistFolder = new File(testFolder, "redist");
+    File cdepFile = new File(redistFolder, "cdep");
+    File cdepBatFile = new File(redistFolder, "cdep.bat");
+    File cdepYmlFile = new File(redistFolder, "cdep.yml");
+    File bootstrapJar = new File(redistFolder, "bootstrap/wrapper/bootstrap.jar");
+    redistFolder.mkdirs();
+    bootstrapJar.getParentFile().mkdirs();
+    Files.write("cdepFile content", cdepFile, Charset.defaultCharset());
+    Files.write("cdepBatFile content", cdepBatFile, Charset.defaultCharset());
+    Files.write("cdepYmlFile content", cdepYmlFile, Charset.defaultCharset());
+    Files.write("bootstrapJar content", bootstrapJar, Charset.defaultCharset());
+    System.setProperty("io.cdep.appname", new File(redistFolder, "cdep.bat").getAbsolutePath());
+    String result;
+    try {
+      result = main("wrapper", "-wf", redistFolder.toString());
+    } catch(RuntimeException e) {
+      assertThat(e).hasMessage("Install source and destination are the same");
+      return;
+    } finally {
+      System.setProperty("io.cdep.appname", "rando-test-folder");
+    }
+
+   fail("Expected failure");
+  }
+
+  @Test
   public void localPathsWork() throws Exception {
     File yaml = new File(".test-files/localPathsWork/cdep.yml");
     yaml.getParentFile().mkdirs();
