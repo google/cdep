@@ -76,6 +76,8 @@
   sha256: 959d4e9c043390fae621a2d622cbae56424c48ed8ab70215e85d08176cede73d
 - coordinate: com.github.jomof:freetype:2.6.2-rev14
   sha256: 4adc3c5302d6bd2d9b0374812c7d4206295b4377bc8a49c99c69fc357aec6c01
+- coordinate: com.github.jomof.cdep:boost:1.0.63
+  sha256: 2bb8ab9389b1423b56b2ab4d3eb298e0d09cdeceb05f168a33b66f3605aaaca7
 - coordinate: com.github.jomof:stb/image_write:0.0.0-rev2
   sha256: 6cb94e14afd28e78aa55eed4c7d26cf5557c7c6bfd7dfd79e369cbb8128bfcd8
 - coordinate: com.github.jomof:stb/textedit:0.0.0-rev2
