@@ -34,6 +34,7 @@ import io.cdep.cdep.yml.cdepmanifest.CxxLanguageFeatures;
 import io.cdep.cdep.yml.cdepmanifest.Interfaces;
 import io.cdep.cdep.yml.cdepmanifest.MergeCDepManifestYmls;
 import org.fusesource.jansi.AnsiConsole;
+import org.fusesource.jansi.AnsiOutputStream;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -51,7 +52,6 @@ import java.util.List;
 import static io.cdep.cdep.io.IO.*;
 import static io.cdep.cdep.utils.Invariant.*;
 import static io.cdep.cdep.yml.cdepmanifest.CDepManifestBuilder.archive;
-import static org.fusesource.jansi.Ansi.ansi;
 
 @SuppressWarnings("unused")
 public class CDep {
