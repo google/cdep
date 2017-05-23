@@ -75,10 +75,19 @@ public class CDep {
   public static void main(@NotNull String[] args) {
     try {
       new CDep(AnsiConsole.out, AnsiConsole.err, true).go(args, false);
+      resetAnsiColors();
     } catch (Throwable e) {
+      resetAnsiColors();
       e.printStackTrace(System.err);
       System.exit(Integer.MIN_VALUE);
     }
+  }
+
+  private static void resetAnsiColors() {
+    System.out.print("\r");
+    System.err.print("\r");
+    AnsiConsole.out.print(AnsiOutputStream.REST_CODE);
+    AnsiConsole.err.print(AnsiOutputStream.REST_CODE);
   }
 
   /**
