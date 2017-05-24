@@ -118,6 +118,8 @@
   sha256: e42718fa2c52f5782e4154c560d547781e04894fea0d1b9cdacf0b2c1427a486
 - coordinate: com.github.jomof:vectorial:0.0.0-rev16
   sha256: f4808cc386bce1dfbebfc37c48e89ffa70f70768ab6311b659d81dc0819e6588
+- coordinate: com.github.jomof:lua:5.3.4-tes1
+  sha256: fd4887abd41516d9f41a32fa48a330f3fb5df5cc3104adf9256d421b0779dd57
 - coordinate: com.github.jomof:mathfu:1.1.0-rev3
   sha256: 148223fc2e8a9dc5dac225821bc77da676eac916b3537b1d373e0d53140cb8d6
 
