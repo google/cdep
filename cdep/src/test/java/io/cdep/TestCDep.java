@@ -320,9 +320,43 @@ public class TestCDep {
   }
 
   @Test
+  public void showEmptyManifest() throws Exception {
+    CDepYml config = new CDepYml();
+    System.out.printf(new Yaml().dump(config));
+    File yaml = new File(".test-files/firebase/cdep.yml");
+    yaml.getParentFile().mkdirs();
+    Files.write("builders: [cmake, cmakeExamples]\n"
+            + "dependencies:\n",
+        yaml, StandardCharsets.UTF_8);
+    String result1 = main("show", "manifest", "-wf", yaml.getParent());
+    yaml.delete();
+    Files.write(result1, yaml, StandardCharsets.UTF_8);
+    System.out.print(result1);
+    String result = main("-wf", yaml.getParent());
+    System.out.printf(result);
+  }
+  @Test
+  public void download() throws Exception {
+    CDepYml config = new CDepYml();
+    File yaml = new File(".test-files/download/cdep.yml");
+    yaml.getParentFile().mkdirs();
+    Files.write("builders: [cmake, cmakeExamples]\n" +
+            "dependencies:\n" +
+            "- compile: com.github.jomof:low-level-statistics:0.0.16\n", yaml,
+        StandardCharsets.UTF_8);
+    // Download first.
+    main("-wf", yaml.getParent());
+    // Redownload
+    String result = main("download", "-wf", yaml.getParent());
+    System.out.printf(result);
+    assertThat(result).doesNotContain("Redownload");
+    assertThat(result).contains("Generating");
+  }
+
+  @Test
   public void redownload() throws Exception {
     CDepYml config = new CDepYml();
-    File yaml = new File(".test-files/simpleDependency/cdep.yml");
+    File yaml = new File(".test-files/redownload/cdep.yml");
     yaml.getParentFile().mkdirs();
     Files.write("builders: [cmake, cmakeExamples]\n" +
             "dependencies:\n" +
