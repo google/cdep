@@ -179,7 +179,7 @@ public class CDep {
     if (handleCreate(args)) {
       return;
     }
-    if (handleRedownload(args)) {
+    if (handleDownload(args)) {
       return;
     }
 
@@ -212,23 +212,36 @@ public class CDep {
     }
   }
 
-  private boolean handleRedownload(@NotNull List<String> args)
+  private boolean handleDownload(@NotNull List<String> args)
       throws IOException, NoSuchAlgorithmException {
     if (args.size() > 0 && "redownload".equals(args.get(0))) {
-      GeneratorEnvironment environment = getGeneratorEnvironment(true, false);
-      FunctionTableExpression table = getFunctionTableExpression(environment);
-
-      // Download and unzip archives.
-      GeneratorEnvironmentUtils.downloadReferencedModules(environment,
-          ExpressionUtils.getAllFoundModuleExpressions(table));
-
-      // Check that the expected files were downloaded
-      new CheckLocalFileSystemIntegrity(environment.unzippedArchivesFolder).visit(table);
-
-      runBuilders(environment, table);
+      downloadReferencedPackages(true);
+      return true;
+    }
+    if (args.size() > 0 && "download".equals(args.get(0))) {
+      downloadReferencedPackages(false);
       return true;
     }
     return false;
+  }
+
+  /**
+   * Download packages referenced by cdep.yml. Will also regenerate cmake or ndk-build glue.
+   * If forceRedownload is true then packages will redownloaded even if they already exist locally.
+   */
+  private void downloadReferencedPackages(boolean forceRedownload)
+      throws IOException, NoSuchAlgorithmException {
+    GeneratorEnvironment environment = getGeneratorEnvironment(forceRedownload, false);
+    FunctionTableExpression table = getFunctionTableExpression(environment);
+
+    // Download and unzip archives.
+    GeneratorEnvironmentUtils.downloadReferencedModules(environment,
+        ExpressionUtils.getAllFoundModuleExpressions(table));
+
+    // Check that the expected files were downloaded
+    new CheckLocalFileSystemIntegrity(environment.unzippedArchivesFolder).visit(table);
+
+    runBuilders(environment, table);
   }
 
   private boolean handleLint(@NotNull List<String> args)
@@ -618,24 +631,23 @@ public class CDep {
     }
     info("cdep %s\n", BuildInfo.PROJECT_VERSION);
     info(" cdep: download dependencies and generate build modules for current cdep.yml\n");
-    info(
-        " cdep fullfill source-folder version manifest1.yml manifest2.yml: fill in template cdep-manifest.yml with hashes, "
-            +
-            "sizes, zips, etc\n");
+    info(" cdep fullfill source-folder version manifest1.yml manifest2.yml: fill in template cdep-manifest.yml " +
+            "with hashes, sizes, zips, etc\n");
     info(" cdep show folders: show local download and file folders\n");
     info(" cdep show manifest: show cdep interpretation of cdep.yml\n");
     info(" cdep show include {coordinate}: show local include path for the given coordinate\n");
+    info(" cdep download: download dependencies for current cdep.yml\n");
     info(" cdep redownload: redownload dependencies for current cdep.yml\n");
     info(" cdep create hashes: create or recreate cdep.sha256 file\n");
     info(
         " cdep merge {coordinate} {coordinate2} ... outputmanifest.yml: merge manifests into outputmanifest.yml\n");
     info(
-        " cdep merge headers {coordinate} {headers.zip} outputmanifest.yml: merge header and manifest into "
-            +
-            "outputmanifest.yml\n");
+        " cdep merge headers {coordinate} {headers.zip} outputmanifest.yml: merge header and manifest " +
+            "into outputmanifest.yml\n");
     info(" cdep fetch {coordinate} {coordinate2} ... : download multiple packages\n");
     info(
-        " cdep fetch-archive {coordinate} archive.zip {size} {sha256} : download a single archive from within a package\n");
+        " cdep fetch-archive {coordinate} archive.zip {size} {sha256} : download a single archive " +
+            "from within a package\n");
     info(" cdep wrapper: copy cdep to the current folder\n");
     info(" cdep --version: show version information\n");
     return false;

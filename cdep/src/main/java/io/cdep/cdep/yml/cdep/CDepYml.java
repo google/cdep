@@ -37,7 +37,7 @@ public class CDepYml {
     }
     sb.append("]\n");
 
-    if (dependencies.length > 0) {
+    if (dependencies!=null && dependencies.length > 0) {
       sb.append(String.format("%sdependencies:\n", prefix));
       for (SoftNameDependency dependency : dependencies) {
         sb.append("- ");
