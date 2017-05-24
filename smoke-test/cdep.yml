@@ -14,7 +14,7 @@ dependencies:
 #- compile: com.github.jomof:vectorial:0.0.0-rev18
 - compile: com.github.jomof:mathfu:1.1.0-rev3
 - compile: com.github.jomof:sdl2:2.0.5-rev26
-- compile: com.github.jomof:lua:5.3.4-test1
+- compile: com.github.jomof:lua:5.3.4
 
 # Yaml-cpp only currently supports a small number of ABI
 #- compile: com.github.jomof:yaml-cpp:0.5.3-rev20
