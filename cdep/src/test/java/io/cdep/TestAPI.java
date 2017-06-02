@@ -30,6 +30,8 @@ public class TestAPI {
   private final GeneratorEnvironment environment = new GeneratorEnvironment(
       new File("./test-files/TestAPI/working"),
       null,
+      null,
+      null,
       false,
       false);
 

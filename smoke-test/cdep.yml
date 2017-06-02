@@ -1,4 +1,5 @@
 builders: [cmake, cmakeExamples, ndk-build, ndk-build-examples]
+downloadedPackagesFolder: ./downloaded-packages/
 dependencies:
 - compile: com.github.jomof:sqlite:3.16.2-rev51
 - compile: com.github.jomof:firebase/admob:2.1.3-rev22

@@ -21,6 +21,8 @@ public class CDepYml {
 
   final public BuildSystem builders[] = new BuildSystem[0];
   final public SoftNameDependency dependencies[] = new SoftNameDependency[0];
+  final public String downloadedPackagesFolder = null;
+  final public String generatedModulesFolder = null;
 
   public CDepYml() {
   }

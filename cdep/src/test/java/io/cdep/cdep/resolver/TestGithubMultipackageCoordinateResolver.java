@@ -27,11 +27,12 @@ import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.Assert.*;
 
 public class TestGithubMultipackageCoordinateResolver {
   final private GeneratorEnvironment environment = new GeneratorEnvironment(
       new File("./test-files/TestGithubMultipackageCoordinateResolver/working"),
+      null,
+      null,
       null,
       false,
       false);

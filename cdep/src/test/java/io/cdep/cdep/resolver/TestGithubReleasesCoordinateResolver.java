@@ -25,7 +25,8 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class TestGithubReleasesCoordinateResolver {
   final private GeneratorEnvironment environment = new GeneratorEnvironment(new File(""  +
-      "./test-files/TestGithubReleasesCoordinateResolver/working"), null, false, false);
+      "./test-files/TestGithubReleasesCoordinateResolver/working"), null,
+      null, null, false, false);
 
   @Test
   public void testCompound() throws Exception {

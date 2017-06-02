@@ -608,11 +608,26 @@ public class CDep {
 
   @NotNull
   private GeneratorEnvironment getGeneratorEnvironment(boolean forceRedownload,
-      boolean ignoreManifestHashes) {
-    return new GeneratorEnvironment(workingFolder, downloadFolder, forceRedownload,
+      boolean ignoreManifestHashes) throws IOException {
+    tryReadCDepYml();
+    String downloadedPackagesFolder = null;
+    String generatedModulesFolder = null;
+    if (this.config != null) {
+      downloadedPackagesFolder = this.config.downloadedPackagesFolder;
+      generatedModulesFolder = this.config.generatedModulesFolder;
+    }
+    return new GeneratorEnvironment(
+        workingFolder,
+        downloadFolder,
+        downloadedPackagesFolder,
+        generatedModulesFolder,
+        forceRedownload,
         ignoreManifestHashes);
   }
 
+  /*
+  Read cdep.yml and issue an error if it doesn't exist.
+ */
   private boolean handleReadCDepYml() throws IOException {
     configFile = new File(workingFolder, "cdep.yml");
     if (!configFile.exists()) {
@@ -623,6 +638,18 @@ public class CDep {
     this.config = CDepYmlUtils.fromString(FileUtils.readAllText(configFile));
     CDepYmlUtils.checkSanity(config, configFile);
     return true;
+  }
+
+  /*
+  Read cdep.yml if it exists.
+   */
+  private void tryReadCDepYml() throws IOException {
+    configFile = new File(workingFolder, "cdep.yml");
+    if (!configFile.exists()) {
+      return;
+    }
+    this.config = CDepYmlUtils.fromString(FileUtils.readAllText(configFile));
+    CDepYmlUtils.checkSanity(config, configFile);
   }
 
   private boolean handleHelp(@NotNull List<String> args) {

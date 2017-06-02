@@ -335,6 +335,7 @@ public class TestCDep {
     String result = main("-wf", yaml.getParent());
     System.out.printf(result);
   }
+
   @Test
   public void download() throws Exception {
     CDepYml config = new CDepYml();
@@ -349,6 +350,98 @@ public class TestCDep {
     // Redownload
     String result = main("download", "-wf", yaml.getParent());
     System.out.printf(result);
+    assertThat(result).doesNotContain("Redownload");
+    assertThat(result).contains("Generating");
+  }
+
+  @Test
+  public void alternateDownloadFoldersRelativePath1() throws Exception {
+    CDepYml config = new CDepYml();
+    File yaml = new File(".test-files/alternateDownloadFolders1/cdep.yml");
+    yaml.getParentFile().mkdirs();
+    Files.write("builders: [cmake, cmakeExamples]\n" +
+            "downloadedPackagesFolder: my-downloaded-packages\n" +
+            "generatedModulesFolder: my-modules\n" +
+            "dependencies:\n" +
+            "- compile: com.github.jomof:low-level-statistics:0.0.16\n", yaml,
+        StandardCharsets.UTF_8);
+    // Download first.
+    main("-wf", yaml.getParent());
+    // Redownload
+    String result = main("download", "-wf", yaml.getParent());
+    System.out.printf(result);
+    assertThat(new File(yaml.getParent(), "my-downloaded-packages").isDirectory()).isTrue();
+    assertThat(new File(yaml.getParent(), "my-modules").isDirectory()).isTrue();
+    assertThat(result).doesNotContain("Redownload");
+    assertThat(result).contains("Generating");
+  }
+
+  @Test
+  public void alternateDownloadFoldersRelativePath2() throws Exception {
+    CDepYml config = new CDepYml();
+    File yaml = new File(".test-files/alternateDownloadFolders2/cdep.yml");
+    yaml.getParentFile().mkdirs();
+    Files.write("builders: [cmake, cmakeExamples]\n" +
+            "downloadedPackagesFolder: ./my-downloaded-packages\n" +
+            "generatedModulesFolder: ./my-modules\n" +
+            "dependencies:\n" +
+            "- compile: com.github.jomof:low-level-statistics:0.0.16\n", yaml,
+        StandardCharsets.UTF_8);
+    // Download first.
+    main("-wf", yaml.getParent());
+    // Redownload
+    String result = main("download", "-wf", yaml.getParent());
+    System.out.printf(result);
+    assertThat(new File(yaml.getParent(), "my-downloaded-packages").isDirectory()).isTrue();
+    assertThat(new File(yaml.getParent(), "my-modules").isDirectory()).isTrue();
+    assertThat(result).doesNotContain("Redownload");
+    assertThat(result).contains("Generating");
+  }
+
+  @Test
+  public void alternateDownloadFoldersRelativePath3() throws Exception {
+    CDepYml config = new CDepYml();
+    File yaml = new File(".test-files/alternateDownloadFolders3/cdep.yml");
+    yaml.getParentFile().mkdirs();
+    Files.write("builders: [cmake, cmakeExamples]\n" +
+            "downloadedPackagesFolder: ./my-downloaded-packages/nested\n" +
+            "generatedModulesFolder: ./my-modules/nested\n" +
+            "dependencies:\n" +
+            "- compile: com.github.jomof:low-level-statistics:0.0.16\n", yaml,
+        StandardCharsets.UTF_8);
+    // Download first.
+    main("-wf", yaml.getParent());
+    // Redownload
+    String result = main("download", "-wf", yaml.getParent());
+    System.out.printf(result);
+    assertThat(new File(yaml.getParent(), "my-downloaded-packages/nested").isDirectory()).isTrue();
+    assertThat(new File(yaml.getParent(), "my-modules/nested").isDirectory()).isTrue();
+    assertThat(result).doesNotContain("Redownload");
+    assertThat(result).contains("Generating");
+  }
+
+  @Test
+  public void alternateDownloadFoldersAbsolutePath() throws Exception {
+    CDepYml config = new CDepYml();
+    File yaml = new File(".test-files/alternateDownloadFolders1/cdep.yml");
+    File downloadFolder = new File(yaml.getParent(), "my-downloaded-packages");
+    File modulesFolder = new File(yaml.getParent(), "my-modules");
+    yaml.getParentFile().mkdirs();
+    String text = "builders: [cmake, cmakeExamples]\n" +
+        "downloadedPackagesFolder: {DOWNLOAD}\n" +
+        "generatedModulesFolder: {GENERATED}\n" +
+        "dependencies:\n" +
+        "- compile: com.github.jomof:low-level-statistics:0.0.16\n";
+    text = text.replace("{DOWNLOAD}", downloadFolder.getCanonicalPath());
+    text = text.replace("{GENERATED}", modulesFolder.getCanonicalPath());
+    Files.write(text, yaml, StandardCharsets.UTF_8);
+    // Download first.
+    main("-wf", yaml.getParent());
+    // Redownload
+    String result = main("download", "-wf", yaml.getParent());
+    System.out.printf(result);
+    assertThat(downloadFolder.isDirectory()).isTrue();
+    assertThat(modulesFolder.isDirectory()).isTrue();
     assertThat(result).doesNotContain("Redownload");
     assertThat(result).contains("Generating");
   }

@@ -15,8 +15,6 @@
 */
 package io.cdep.cdep.generator;
 
-import static org.junit.Assert.fail;
-
 import io.cdep.cdep.BuildFindModuleFunctionTable;
 import io.cdep.cdep.ResolvedManifests;
 import io.cdep.cdep.ast.finder.FunctionTableExpression;
@@ -25,17 +23,21 @@ import io.cdep.cdep.utils.CDepManifestYmlUtils;
 import io.cdep.cdep.utils.Invariant;
 import io.cdep.cdep.yml.CDepManifestYmlGenerator;
 import io.cdep.cdep.yml.cdepmanifest.CDepManifestYml;
-import java.io.File;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import net.java.quickcheck.QuickCheck;
 import net.java.quickcheck.characteristic.AbstractCharacteristic;
 import org.junit.Test;
 
+import java.io.File;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.fail;
+
 public class TestNdkBuildGenerator {
   final private GeneratorEnvironment environment = new GeneratorEnvironment(
-      new File("./test-files/TestCMakeGenerator/working"), null, false, false);
+      new File("./test-files/TestCMakeGenerator/working"), null, null, null,
+      false, false);
 
   @Test
   public void fuzzTest() {

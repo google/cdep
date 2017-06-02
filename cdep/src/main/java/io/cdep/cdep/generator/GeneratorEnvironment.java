@@ -15,13 +15,6 @@
 */
 package io.cdep.cdep.generator;
 
-import static io.cdep.cdep.io.IO.info;
-import static io.cdep.cdep.io.IO.infogreen;
-import static io.cdep.cdep.io.IO.infoln;
-import static io.cdep.cdep.utils.Invariant.fail;
-import static io.cdep.cdep.utils.Invariant.require;
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import io.cdep.annotations.NotNull;
 import io.cdep.annotations.Nullable;
 import io.cdep.cdep.Coordinate;
@@ -33,14 +26,8 @@ import io.cdep.cdep.utils.HashUtils;
 import io.cdep.cdep.yml.cdepmanifest.CDepManifestYml;
 import io.cdep.cdep.yml.cdepsha25.CDepSHA256;
 import io.cdep.cdep.yml.cdepsha25.HashEntry;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
+
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.NoSuchAlgorithmException;
@@ -48,6 +35,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import static io.cdep.cdep.io.IO.*;
+import static io.cdep.cdep.utils.Invariant.fail;
+import static io.cdep.cdep.utils.Invariant.require;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class GeneratorEnvironment implements ManifestProvider {
   @NotNull
@@ -65,18 +57,41 @@ public class GeneratorEnvironment implements ManifestProvider {
   private final Set<File> alreadyDownloaded = new HashSet<>();
 
   public GeneratorEnvironment(
-      File workingFolder,
-      @Nullable File userFolder,
+      @NotNull File workingFolder,
+      @NotNull File userFolder,
+      @Nullable String downloadedPackagesFolder,
+      @Nullable String generatedModulesFolder,
       boolean forceRedownload,
       boolean ignoreManifestHashes) {
     if (userFolder == null) {
       userFolder = new File(System.getProperty("user.home"));
     }
     this.workingFolder = workingFolder;
-    this.downloadFolder = new File(userFolder, ".cdep/downloads").getAbsoluteFile();
-    this.unzippedArchivesFolder = new File(userFolder, ".cdep/exploded").getAbsoluteFile();
-    this.modulesFolder = new File(workingFolder, ".cdep/modules").getAbsoluteFile();
-    this.examplesFolder = new File(workingFolder, ".cdep/examples").getAbsoluteFile();
+    if (downloadedPackagesFolder == null) {
+      this.downloadFolder = new File(userFolder, ".cdep/downloads").getAbsoluteFile();
+      this.unzippedArchivesFolder = new File(userFolder, ".cdep/exploded").getAbsoluteFile();
+    } else {
+      File downloadedPackages = new File(downloadedPackagesFolder);
+      if (!downloadedPackages.isAbsolute()) {
+        // If the folder is relative then it is relative to the working folder (location of cdep.yml)
+        downloadedPackages = new File(workingFolder, downloadedPackagesFolder);
+      }
+      this.downloadFolder = new File(downloadedPackages, "downloads").getAbsoluteFile();
+      this.unzippedArchivesFolder = new File(downloadedPackages, "exploded").getAbsoluteFile();
+    }
+    if (generatedModulesFolder == null) {
+      this.modulesFolder = new File(workingFolder, ".cdep/modules").getAbsoluteFile();
+      this.examplesFolder = new File(workingFolder, ".cdep/examples").getAbsoluteFile();
+    } else {
+      File generatedModules = new File(generatedModulesFolder);
+      if (!generatedModules.isAbsolute()) {
+        // If the folder is relative then it is relative to the working folder (location of cdep.yml)
+        generatedModules = new File(workingFolder, generatedModulesFolder);
+      }
+      this.modulesFolder = new File(generatedModules, "modules").getAbsoluteFile();
+      this.examplesFolder = new File(generatedModules, "examples").getAbsoluteFile();
+    }
+
     this.ignoreManifestHashes = ignoreManifestHashes;
     this.forceRedownload = forceRedownload;
   }

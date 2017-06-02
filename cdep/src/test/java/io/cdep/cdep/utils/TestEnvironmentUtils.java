@@ -27,7 +27,7 @@ import static org.junit.Assert.fail;
 
 public class TestEnvironmentUtils {
   private final GeneratorEnvironment environment = new GeneratorEnvironment(new File("" +
-      "./test-files/TestEnvironmentUtils/working"), null, false, false);
+      "./test-files/TestEnvironmentUtils/working"), null, null, null, false, false);
 
   @Test
   public void testAllResolvedManifests() throws Exception {

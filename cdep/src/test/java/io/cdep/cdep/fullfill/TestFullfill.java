@@ -43,6 +43,8 @@ public class TestFullfill {
   private final GeneratorEnvironment environment = new GeneratorEnvironment(
       new File("./test-files/TestFullfill/working"),
       null,
+      null,
+      null,
       false,
       false);
 

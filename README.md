@@ -20,6 +20,7 @@ Here are some things you can do to get started with CDep.
 * [See an Android Studio Freetype and SDL2 sample](https://github.com/jomof/cdep-android-studio-freetype-sample/tree/master)
 * [Learn how CDep resolves coordinates](doc/coordinate-resolution.md)
 * [Learn about CDep tool command line flags](doc/command-line-flags.md)
+* [Learn about cdep.yml file](doc/cdep-yml.md)
 
 ## Getting started on Windows
 Get started with CDep on Windows, enter the following in the command line:
@@ -52,6 +53,7 @@ Get started with CDep on Linux or Mac by following these steps:
    # This line tells CDep that your project depends on SQLite.
    - compile: com.github.jomof:sqlite:3.16.2-rev51
    ```
+   Learn more about the cdep.yml file [here](doc/cdep-yml.md).
 4. Run the `cdep` command to download SQLite and generate CMake module for it.
     ```
     $ ./cdep

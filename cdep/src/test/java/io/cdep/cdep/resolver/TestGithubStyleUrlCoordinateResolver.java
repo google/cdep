@@ -15,17 +15,19 @@
 */
 package io.cdep.cdep.resolver;
 
-import static com.google.common.truth.Truth.assertThat;
-
 import io.cdep.cdep.generator.GeneratorEnvironment;
 import io.cdep.cdep.yml.cdep.SoftNameDependency;
-import java.io.File;
 import org.junit.Test;
+
+import java.io.File;
+
+import static com.google.common.truth.Truth.assertThat;
 
 public class TestGithubStyleUrlCoordinateResolver {
 
   final private GeneratorEnvironment environment = new GeneratorEnvironment(new File(""  +
-      "./test-files/TestFindModuleFunctionTableBuilder/working"), null, false, false);
+      "./test-files/TestFindModuleFunctionTableBuilder/working"), null, null,
+      null,false, false);
 
   @Test
   public void testSimple() throws Exception {

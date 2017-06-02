@@ -37,7 +37,8 @@ import static org.junit.Assert.fail;
 
 public class TestCMakeGenerator {
   final private GeneratorEnvironment environment = new GeneratorEnvironment(
-      new File("./test-files/TestCMakeGenerator/working"), null, false, false);
+      new File("./test-files/TestCMakeGenerator/working"), null,
+      null, null, false, false);
 
   @Test
   public void fuzzTest() {
