@@ -30,6 +30,7 @@ import io.cdep.cdep.utils.ArchiveUtils;
 import io.cdep.cdep.utils.FileUtils;
 import io.cdep.cdep.utils.HashUtils;
 import io.cdep.cdep.yml.cdep.SoftNameDependency;
+import io.cdep.cdep.yml.cdeparchive.CDepArchiveYml;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,7 +41,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static io.cdep.cdep.io.IO.infogreen;
 import static io.cdep.cdep.utils.Invariant.require;
 
 /**
@@ -91,6 +91,7 @@ public class GeneratorEnvironmentUtils {
     File local = environment.tryGetLocalDownloadedFile(coordinate, archiveURL);
     File unzipFolder = environment.getLocalUnzipFolder(coordinate, archiveURL);
     File completionSentinel = new File(unzipFolder, "completion_sentinel");
+    File cdepArchive = new File(unzipFolder, "cdep-archive.yml");
     require(local != null, "Resolved archive '%s' didn't exist", archiveURL);
     assert local != null;
     if (size != local.length()) {
@@ -118,6 +119,12 @@ public class GeneratorEnvironmentUtils {
       unzipFolder.mkdirs();
       ArchiveUtils.unzip(local, unzipFolder);
       FileUtils.writeTextToFile(completionSentinel, "done");
+    }
+
+    if (!cdepArchive.isFile()) {
+      CDepArchiveYml archive = new CDepArchiveYml(coordinate.toString(), archiveURL.toString(), sha256, size);
+      String archiveText = archive.toString();
+      FileUtils.writeTextToFile(cdepArchive, archiveText);
     }
     return local;
   }

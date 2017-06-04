@@ -475,7 +475,7 @@ public class TestCDep {
 
   @Test
   public void fetchArchive() throws Exception {
-    File folder = new File(".test-files/fetch");
+    File folder = new File(".test-files/fetchArchive");
     folder.mkdirs();
     String result = main("fetch-archive",
         "com.github.jomof:low-level-statistics:0.0.22",
@@ -484,6 +484,37 @@ public class TestCDep {
         "1661c899dee3b7cf1bb3e376c1cd504a156a4658904d8554a84db4e5a71ade49",
         "-wf", folder.toString());
     System.out.printf(result);
+  }
+
+  @Test
+  public void checkArchiveSentinel() throws Exception {
+    CDepYml config = new CDepYml();
+    File yaml = new File(".test-files/checkArchiveSentinel/cdep.yml");
+    File downloadFolder = new File(yaml.getParent(), "my-downloaded-packages");
+    File modulesFolder = new File(yaml.getParent(), "my-modules");
+    yaml.getParentFile().mkdirs();
+    String text = "builders: [cmake, cmakeExamples]\n" +
+        "downloadedPackagesFolder: {DOWNLOAD}\n" +
+        "generatedModulesFolder: {GENERATED}\n" +
+        "dependencies:\n" +
+        "- compile: com.github.jomof:low-level-statistics:0.0.16\n";
+    text = text.replace("{DOWNLOAD}", downloadFolder.getCanonicalPath());
+    text = text.replace("{GENERATED}", modulesFolder.getCanonicalPath());
+    Files.write(text, yaml, StandardCharsets.UTF_8);
+    // Download first.
+    main("-wf", yaml.getParent());
+    // Redownload
+    String result = main("download", "-wf", yaml.getParent());
+    System.out.printf(result);
+    assertThat(downloadFolder.isDirectory()).isTrue();
+    assertThat(modulesFolder.isDirectory()).isTrue();
+    assertThat(result).doesNotContain("Redownload");
+    assertThat(result).contains("Generating");
+
+    // Check that the sentinel file was created
+    File sentinel = new File(downloadFolder,
+        "exploded/com.github.jomof/low-level-statistics/0.0.16/low-level-statistics-android-platform-21.zip/cdep-archive.yml");
+    assertThat(sentinel.isFile()).isTrue();
   }
 
   //  @Test

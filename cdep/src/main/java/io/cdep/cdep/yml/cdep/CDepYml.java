@@ -37,14 +37,22 @@ public class CDepYml {
       }
       sb.append(builders[j]);
     }
-    sb.append("]\n");
+    sb.append("]\r\n");
 
     if (dependencies!=null && dependencies.length > 0) {
-      sb.append(String.format("%sdependencies:\n", prefix));
+      sb.append(String.format("%sdependencies:\r\n", prefix));
       for (SoftNameDependency dependency : dependencies) {
         sb.append("- ");
         sb.append(dependency.toYaml(indent + 1));
       }
+    }
+
+    if (downloadedPackagesFolder != null && downloadedPackagesFolder.length() > 0) {
+      sb.append(String.format("%sdownloadedPackagesFolder: %s\r\n", prefix, downloadedPackagesFolder));
+    }
+
+    if (generatedModulesFolder != null && generatedModulesFolder.length() > 0) {
+      sb.append(String.format("%sgeneratedModulesFolder: %s\r\n", prefix, generatedModulesFolder));
     }
     return sb.toString();
   }
