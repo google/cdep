@@ -44,6 +44,10 @@ public class AndroidArchive {
   @NotNull
   final public String flavor;
 
+  // Here to be able to provide a better error message than a parse error
+  @NotNull
+  final public String xxx;
+
   private AndroidArchive() {
     this.file = "";
     this.sha256 = "";
@@ -57,6 +61,7 @@ public class AndroidArchive {
     this.include = "";
     this.libs = new String[0];
     this.flavor = "";
+    this.xxx = "";
   }
 
   public AndroidArchive(@NotNull String file,
@@ -83,5 +88,6 @@ public class AndroidArchive {
     this.include = include;
     this.libs = libs;
     this.flavor = flavor;
+    this.xxx = "";
   }
 }
