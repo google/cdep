@@ -62,6 +62,37 @@ public class TestCDep {
   }
 
   @Test
+  public void betterMessageForLibVsLibs() throws Exception {
+    File manifest = new File(".test-files/betterMessageForLibVsLibs/cdep-manifest.yml");
+    manifest.delete();
+    manifest.getParentFile().mkdirs();
+    Files.write("coordinate:\n" +
+        "  groupId: com.github.test\n" +
+        "  artifactId: testlib\n" +
+        "  version: 0.0.0\n" +
+        "license:\n" +
+        "  name: \"Apache 2.0\"\n" +
+        "android:\n" +
+        "  dependencies:\n" +
+        "  archives:\n" +
+        "    - file: libtestlibs.zip\n" +
+        "      size: 1625375\n" +
+        "      ndk: r13b\n" +
+        "      runtime: c++\n" +
+        "      platform: 12\n" +
+        "      abi: armeabi\n" +
+        "      lib: libtestlib.a", manifest, StandardCharsets.UTF_8);
+
+    try {
+      main("lint", manifest.getPath());
+    } catch (RuntimeException e) {
+      assertThat(e).hasMessage("Could not parse manifest. The field 'lib' could not be created. Should it be 'libs'?");
+      return;
+    }
+    fail("Expected an exception");
+  }
+
+  @Test
   public void mergeTwoWithDifferentHash() throws Exception {
     File left = new File(".test-files/mergeTwo/merged-manifest-left.yml");
     File right = new File(".test-files/mergeTwo/merged-manifest-right.yml");

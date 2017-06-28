@@ -15,39 +15,22 @@
 */
 package io.cdep.cdep.utils;
 
-import static io.cdep.cdep.Coordinate.EMPTY_COORDINATE;
-import static io.cdep.cdep.utils.Invariant.fail;
-import static io.cdep.cdep.utils.Invariant.require;
-
 import io.cdep.annotations.NotNull;
 import io.cdep.annotations.Nullable;
 import io.cdep.cdep.Coordinate;
-import io.cdep.cdep.yml.cdepmanifest.Android;
-import io.cdep.cdep.yml.cdepmanifest.AndroidABI;
-import io.cdep.cdep.yml.cdepmanifest.AndroidArchive;
-import io.cdep.cdep.yml.cdepmanifest.Archive;
-import io.cdep.cdep.yml.cdepmanifest.CDepManifestYml;
-import io.cdep.cdep.yml.cdepmanifest.CDepManifestYmlReadonlyVisitor;
-import io.cdep.cdep.yml.cdepmanifest.CDepManifestYmlVersion;
-import io.cdep.cdep.yml.cdepmanifest.CreateCDepManifestYmlString;
-import io.cdep.cdep.yml.cdepmanifest.HardNameDependency;
-import io.cdep.cdep.yml.cdepmanifest.Linux;
-import io.cdep.cdep.yml.cdepmanifest.LinuxArchive;
-import io.cdep.cdep.yml.cdepmanifest.iOS;
-import io.cdep.cdep.yml.cdepmanifest.iOSArchive;
+import io.cdep.cdep.yml.cdepmanifest.*;
 import io.cdep.cdep.yml.cdepmanifest.v3.V3Reader;
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.error.YAMLException;
+
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+
+import static io.cdep.cdep.Coordinate.EMPTY_COORDINATE;
+import static io.cdep.cdep.utils.Invariant.fail;
+import static io.cdep.cdep.utils.Invariant.require;
 
 public class CDepManifestYmlUtils {
   @NotNull
@@ -71,8 +54,10 @@ public class CDepManifestYmlUtils {
       try {
         manifest = V3Reader.convertStringToManifest(content);
       } catch (YAMLException e2) {
-        // If older readers also couldn't read it then report the original exception.
-        require(false, e.toString());
+        if (!tryCreateSensibleParseError(e, 0)) {
+          // If older readers also couldn't read it then report the original exception.
+          require(false, e.toString());
+        }
         return new CDepManifestYml(
             EMPTY_COORDINATE
         );
@@ -81,6 +66,29 @@ public class CDepManifestYmlUtils {
     require(manifest != null, "Manifest was empty");
     assert manifest != null;
     return new ConvertNullToDefaultRewriter().visitCDepManifestYml(manifest);
+  }
+
+  /**
+   * Attempt to give a better error message for common failures.
+   * YAMLException doesn't expose anything but a cause and a message so this function uses those and
+   * does the best job it can.
+   */
+  private static boolean tryCreateSensibleParseError(YAMLException e, int depth) {
+    if (depth > 20) {
+      return false;
+    }
+    if (e != null) {
+      if (e.getCause() == null) {
+        if (e.getMessage().contains("Unable to find property 'lib'")) {
+          require(false, "Could not parse manifest. " +
+              "The field 'lib' could not be created. Should it be 'libs'?");
+          return true;
+        }
+      } else {
+        return tryCreateSensibleParseError((YAMLException) e.getCause(), depth + 1);
+      }
+    }
+    return false;
   }
 
   public static void checkManifestSanity(@NotNull CDepManifestYml cdepManifestYml) {
