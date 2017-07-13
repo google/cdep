@@ -37,8 +37,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static io.cdep.cdep.io.IO.*;
-import static io.cdep.cdep.utils.Invariant.fail;
-import static io.cdep.cdep.utils.Invariant.require;
+import static io.cdep.cdep.utils.Invariant.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class GeneratorEnvironment implements ManifestProvider {
@@ -192,7 +191,12 @@ public class GeneratorEnvironment implements ManifestProvider {
     CDepManifestYml cdepManifestYml;
     cdepManifestYml = CDepManifestYmlUtils.convertStringToManifest(text);
 
-    if (!ignoreManifestHashes) {
+    // If there were any errors reading the manifest then quit before recording any SHA256 (because it may not be valid).
+    if (errorsInScope() > 0) {
+      return cdepManifestYml;
+    }
+
+    if (!ignoreManifestHashes && !cdepManifestYml.coordinate.toString().isEmpty()) {
       String sha256 = HashUtils.getSHA256OfFile(file);
       String priorSha256 = this.cdepSha256Hashes.get(cdepManifestYml.coordinate.toString());
       require(priorSha256 == null || priorSha256.equals(sha256),
@@ -226,6 +230,11 @@ public class GeneratorEnvironment implements ManifestProvider {
   }
 
   public void writeCDepSHA256File() throws FileNotFoundException {
+    if (errorsInScope() > 0) {
+      // Don't write SHA256 if there have been errors. We don't want invalid value to be written.
+      return;
+    }
+
     File file = new File(workingFolder, "cdep.sha256");
     HashEntry entries[] = new HashEntry[cdepSha256Hashes.size()];
     int i = 0;

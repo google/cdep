@@ -588,12 +588,6 @@ public class CDep {
     environment.readCDepSHA256File();
     FunctionTableExpression table = getFunctionTableExpression(environment);
 
-    // Download and unzip archives.
-    //GeneratorEnvironmentUtils.downloadReferencedModules(environment, ExpressionUtils.getAllFoundModuleExpressions(table));
-
-    // Check that the expected files were downloaded
-    //new CheckLocalFileSystemIntegrity(environment.unzippedArchivesFolder).visit(table);
-
     runBuilders(environment, table);
     environment.writeCDepSHA256File();
   }
