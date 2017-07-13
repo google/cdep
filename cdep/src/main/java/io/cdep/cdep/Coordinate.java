@@ -62,6 +62,9 @@ public class Coordinate {
   @NotNull
   @Override
   public String toString() {
+    if (groupId.isEmpty() && artifactId.isEmpty()) {
+      return "";
+    }
     if (version.value.length() > 0) {
       return groupId + ":" + artifactId + ":" + version;
     }

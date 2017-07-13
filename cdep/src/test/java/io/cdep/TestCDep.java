@@ -351,6 +351,33 @@ public class TestCDep {
   }
 
   @Test
+  public void oldBoost() throws Exception {
+    CDepYml config = new CDepYml();
+    System.out.printf(new Yaml().dump(config));
+    File yaml = new File(".test-files/oldBoost-12/cdep.yml");
+    yaml.getParentFile().delete();
+    yaml.getParentFile().mkdirs();
+    Files.write("builders: [cmake]\n"
+            + "dependencies:\n"
+            + "- compile: com.github.jomof:boost:1.0.63-rev10\n",
+        yaml, StandardCharsets.UTF_8);
+    String result1 = main("show", "manifest", "-wf", yaml.getParent());
+    yaml.delete();
+    Files.write(result1, yaml, StandardCharsets.UTF_8);
+    System.out.print(result1);
+    try {
+      String result = main("-wf", yaml.getParent());
+      System.out.printf(result);
+      fail("Expected exception");
+    } catch (RuntimeException e) {
+
+    }
+
+    File sha256 = new File(yaml.getParentFile(), "cdep.sha256");
+    assertThat(sha256.exists()).isFalse();
+  }
+
+  @Test
   public void showEmptyManifest() throws Exception {
     CDepYml config = new CDepYml();
     System.out.printf(new Yaml().dump(config));

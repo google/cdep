@@ -28,6 +28,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static io.cdep.cdep.utils.Invariant.errorsInScope;
 import static io.cdep.cdep.utils.Invariant.require;
 
 
@@ -70,6 +71,11 @@ public class GithubStyleUrlCoordinateResolver extends CoordinateResolver {
       CDepManifestYml cdepManifestYml = environment.tryGetManifest(provisionalCoordinate, new URL(coordinate));
       if (cdepManifestYml == null) {
         // The URL didn't exist.
+        return null;
+      }
+
+      if (errorsInScope() > 0) {
+        // There were errors reading the manifest. Don't try to recover.
         return null;
       }
 
