@@ -22,3 +22,4 @@ use GitHub pull requests for this purpose. Consult [GitHub Help] for more
 information on using pull requests.
 
 [GitHub Help]: https://help.github.com/articles/about-pull-requests/
+
