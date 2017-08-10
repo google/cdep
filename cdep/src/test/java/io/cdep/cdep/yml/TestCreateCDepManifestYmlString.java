@@ -43,7 +43,7 @@ public class TestCreateCDepManifestYmlString {
       result = CDepManifestYmlUtils.convertManifestToString(manifest);
 
       // Convert from constant
-      manifest2 = CDepManifestYmlUtils.convertStringToManifest(result);
+      manifest2 = CDepManifestYmlUtils.convertStringToManifest("test-file.yml", result);
 
       // Would like to compare equality here.
       CDepManifestYmlEquality.throwIfNotDeeplyIdentical(manifest, manifest2);
@@ -54,10 +54,10 @@ public class TestCreateCDepManifestYmlString {
 
   private static void checkIgnoreErrors(@NotNull CDepManifestYml manifest) {
     try {
-      Invariant.pushScope();
+      Invariant.pushErrorCollectionScope(true);
       check(manifest);
     } finally {
-      Invariant.popScope();
+      Invariant.popErrorCollectionScope();
     }
   }
 
@@ -148,9 +148,9 @@ public class TestCreateCDepManifestYmlString {
   public void testRequires() throws Exception {
     // Ensure that round-trip works
     String originalString = ResolvedManifests.simpleRequires().body;
-    CDepManifestYml originalManifest = CDepManifestYmlUtils.convertStringToManifest(originalString);
+    CDepManifestYml originalManifest = CDepManifestYmlUtils.convertStringToManifest("original.yml", originalString);
     String convertedString = CDepManifestYmlUtils.convertManifestToString(originalManifest);
-    CDepManifestYml convertedManifest = CDepManifestYmlUtils.convertStringToManifest(convertedString);
+    CDepManifestYml convertedManifest = CDepManifestYmlUtils.convertStringToManifest("converted.yml", convertedString);
     assertThat(CDepManifestYmlEquality.areDeeplyIdentical(originalManifest, convertedManifest)).isTrue();
   }
 

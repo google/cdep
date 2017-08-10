@@ -15,19 +15,20 @@
 */
 package io.cdep.cdep.utils;
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.junit.Assert.fail;
-
 import io.cdep.annotations.NotNull;
 import io.cdep.cdep.ResolvedManifests;
 import io.cdep.cdep.yml.cdepmanifest.CDepManifestYml;
 import io.cdep.cdep.yml.cdepmanifest.MergeCDepManifestYmls;
+import junit.framework.TestCase;
+import org.junit.Test;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import junit.framework.TestCase;
-import org.junit.Test;
+
+import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.fail;
 
 public class TestCDepManifestYmlUtils {
 
@@ -263,7 +264,7 @@ public class TestCDepManifestYmlUtils {
   }
 
   private void check(@NotNull String content) {
-    CDepManifestYml manifest = CDepManifestYmlUtils.convertStringToManifest(content);
+    CDepManifestYml manifest = CDepManifestYmlUtils.convertStringToManifest("test.yml", content);
     CDepManifestYmlUtils.checkManifestSanity(manifest);
   }
 
@@ -396,8 +397,8 @@ public class TestCDepManifestYmlUtils {
   @Test
   public void readPartial() throws IOException {
     // Make sure we can read an incomplete specification for 'fullfill' scenario
-    CDepManifestYml partial = CDepManifestYmlUtils.convertStringToManifest(
-        FileUtils.readAllText(new File("../third_party/stb/cdep/cdep-manifest-divide.yml")));
+    File file = new File("../third_party/stb/cdep/cdep-manifest-divide.yml");
+    CDepManifestYml partial = CDepManifestYmlUtils.convertStringToManifest(file.getAbsolutePath(), FileUtils.readAllText(file));
   }
 
   private static class CoverConstructor extends CDepManifestYmlUtils {

@@ -47,7 +47,7 @@ public class LocalFilePathCoordinateResolver extends CoordinateResolver {
       return null;
     }
     String content = new String(Files.readAllBytes(Paths.get(local.getCanonicalPath())), UTF_8);
-    CDepManifestYml cdepManifestYml = CDepManifestYmlUtils.convertStringToManifest(content);
+    CDepManifestYml cdepManifestYml = CDepManifestYmlUtils.convertStringToManifest(local.getAbsolutePath(), content);
     CDepManifestYmlUtils.checkManifestSanity(cdepManifestYml);
     return new ResolvedManifest(local.getCanonicalFile().toURI().toURL(), cdepManifestYml);
   }

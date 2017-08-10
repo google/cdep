@@ -19,10 +19,7 @@ import io.cdep.annotations.NotNull;
 import io.cdep.annotations.Nullable;
 import io.cdep.cdep.Coordinate;
 import io.cdep.cdep.resolver.ManifestProvider;
-import io.cdep.cdep.utils.CDepManifestYmlUtils;
-import io.cdep.cdep.utils.CDepSHA256Utils;
-import io.cdep.cdep.utils.FileUtils;
-import io.cdep.cdep.utils.HashUtils;
+import io.cdep.cdep.utils.*;
 import io.cdep.cdep.yml.cdepmanifest.CDepManifestYml;
 import io.cdep.cdep.yml.cdepsha25.CDepSHA256;
 import io.cdep.cdep.yml.cdepsha25.HashEntry;
@@ -187,15 +184,13 @@ public class GeneratorEnvironment implements ManifestProvider {
       // The remote didn't exist. Return null;
       return null;
     }
+    Invariant.registerYamlNodes(file.getAbsolutePath(), new HashMap<>());
     String text = FileUtils.readAllText(file);
-    CDepManifestYml cdepManifestYml;
-    cdepManifestYml = CDepManifestYmlUtils.convertStringToManifest(text);
-
+    CDepManifestYml cdepManifestYml = CDepManifestYmlUtils.convertStringToManifest(file.getAbsolutePath(), text);
     // If there were any errors reading the manifest then quit before recording any SHA256 (because it may not be valid).
     if (errorsInScope() > 0) {
       return cdepManifestYml;
     }
-
     if (!ignoreManifestHashes && !cdepManifestYml.coordinate.toString().isEmpty()) {
       String sha256 = HashUtils.getSHA256OfFile(file);
       String priorSha256 = this.cdepSha256Hashes.get(cdepManifestYml.coordinate.toString());

@@ -44,7 +44,7 @@ public class TestFillMissingFieldsBasedOnFilepath {
         + "  - file: firebase_cpp_sdk/libs/android/x86_64/c++/libapp.a\n"
         + "  - file: firebase_cpp_sdk/libs/android/x86/c++/libapp.a\n";
 
-    CDepManifestYml manifest = CDepManifestYmlUtils.convertStringToManifest(body);
+    CDepManifestYml manifest = CDepManifestYmlUtils.convertStringToManifest("test-abi.yml", body);
     manifest = new FillMissingFieldsBasedOnFilepathRewriter().visitCDepManifestYml(manifest);
     assertThat(manifest.android.archives[0].abi).isEqualTo(AndroidABI.ARM64_V8A);
     assertThat(manifest.android.archives[0].runtime).isEqualTo("stlport");
@@ -76,7 +76,7 @@ public class TestFillMissingFieldsBasedOnFilepath {
         + "  - file: firebase_cpp_sdk/libs/android-21/arm64-v8a/c++/libapp.a\n"
         + "  - file: firebase_cpp_sdk/libs/android-9/arm64-v8a/c++/libapp.a\n";
 
-    CDepManifestYml manifest = CDepManifestYmlUtils.convertStringToManifest(body);
+    CDepManifestYml manifest = CDepManifestYmlUtils.convertStringToManifest("test-platform.ym;", body);
     manifest = new FillMissingFieldsBasedOnFilepathRewriter().visitCDepManifestYml(manifest);
     assertThat(manifest.android.archives[0].platform).isEqualTo("12");
     assertThat(manifest.android.archives[1].platform).isEqualTo("21");

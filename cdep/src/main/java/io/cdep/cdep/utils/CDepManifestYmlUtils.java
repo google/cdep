@@ -23,8 +23,10 @@ import io.cdep.cdep.yml.cdepmanifest.v3.V3Reader;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.error.YAMLException;
+import org.yaml.snakeyaml.nodes.Node;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -39,14 +41,14 @@ public class CDepManifestYmlUtils {
   }
 
   @NotNull
-  public static CDepManifestYml convertStringToManifest(@NotNull String content) {
+  public static CDepManifestYml convertStringToManifest(@NotNull String url, @NotNull String content) {
+    Invariant.registerYamlNodes(url, new HashMap<>());
     Yaml yaml = new Yaml(new Constructor(CDepManifestYml.class));
     CDepManifestYml manifest;
+    byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
     try {
+      manifest = (CDepManifestYml) yaml.load(new ByteArrayInputStream(bytes));
       // Try to read current version
-      manifest = (CDepManifestYml) yaml.load(
-          new ByteArrayInputStream(content.getBytes(StandardCharsets
-              .UTF_8)));
       if (manifest != null) {
         manifest.sourceVersion = CDepManifestYmlVersion.vlatest;
       }
@@ -58,14 +60,16 @@ public class CDepManifestYmlUtils {
           // If older readers also couldn't read it then report the original exception.
           require(false, e.toString());
         }
-        return new CDepManifestYml(
-            EMPTY_COORDINATE
-        );
+        return new CDepManifestYml(EMPTY_COORDINATE);
       }
     }
     require(manifest != null, "Manifest was empty");
     assert manifest != null;
-    return new ConvertNullToDefaultRewriter().visitCDepManifestYml(manifest);
+    manifest = new ConvertNullToDefaultRewriter().visitCDepManifestYml(manifest);
+
+    Node nodes = yaml.compose(new InputStreamReader(new ByteArrayInputStream(bytes)));
+    SnakeYmlUtils.mapAndRegisterNodes(url, manifest, nodes);
+    return manifest;
   }
 
   /**

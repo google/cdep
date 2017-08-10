@@ -18,6 +18,7 @@ package io.cdep;
 import com.google.common.io.Files;
 import io.cdep.annotations.NotNull;
 import io.cdep.cdep.utils.FileUtils;
+import io.cdep.cdep.utils.CDepRuntimeException;
 import io.cdep.cdep.yml.cdep.CDepYml;
 import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
@@ -85,8 +86,11 @@ public class TestCDep {
 
     try {
       main("lint", manifest.getPath());
-    } catch (RuntimeException e) {
+    } catch (CDepRuntimeException e) {
       assertThat(e).hasMessage("Could not parse manifest. The field 'lib' could not be created. Should it be 'libs'?");
+      assertThat(e.errorInfo.file).contains("cdep-manifest.yml");
+      assertThat(e.errorInfo.code).isEqualTo("bd4fadb");
+      assertThat(e.errorInfo.line).isEqualTo(null);
       return;
     }
     fail("Expected an exception");
@@ -268,8 +272,11 @@ public class TestCDep {
       String result = main("-wf", yaml.getParent());
       System.out.printf(result);
       fail("Expected an exception");
-    } catch (RuntimeException e) {
+    } catch (CDepRuntimeException e) {
       assertThat(e).hasMessage("Could not resolve 'com.github.jomof:mathfoo:1.0.2-rev7'. It doesn't exist.");
+      assertThat(e.errorInfo.file).endsWith("cdep.yml");
+      assertThat(e.errorInfo.line).isEqualTo(2);
+      assertThat(e.errorInfo.code).endsWith("c35a5b0");
     }
   }
 
@@ -305,8 +312,11 @@ public class TestCDep {
     try {
       main("-wf", yaml.getParent());
       fail("Expected failure");
-    } catch (RuntimeException e) {
+    } catch (CDepRuntimeException e) {
       assertThat(e).hasMessage("Could not resolve '../not-a-file/cdep-manifest.yml'. It doesn't exist.");
+      assertThat(e.errorInfo.file).endsWith("cdep.yml");
+      assertThat(e.errorInfo.line).isEqualTo(2);
+      assertThat(e.errorInfo.code).isEqualTo("c35a5b0");
     }
   }
 
@@ -369,8 +379,8 @@ public class TestCDep {
       String result = main("-wf", yaml.getParent());
       System.out.printf(result);
       fail("Expected exception");
-    } catch (RuntimeException e) {
-
+    } catch (CDepRuntimeException e) {
+      assertThat(e.errorInfo.file).endsWith("cdep-manifest.yml");
     }
 
     File sha256 = new File(yaml.getParentFile(), "cdep.sha256");
@@ -593,10 +603,11 @@ public class TestCDep {
     File folder = new File(".test-files/fetch");
     folder.mkdirs();
     try {
-      main("fetch", "com.github.jomof:low-level-statistics-x:0.0.16", "-wf", folder.toString());
+      main("fetch", "com.github.jomof:low-level-statistics-y:0.0.16", "-wf", folder.toString());
       fail("Expected failure");
-    } catch (RuntimeException e) {
-      assertThat(e).hasMessage("Could not resolve 'com.github.jomof:low-level-statistics-x:0.0.16'. It doesn't exist.");
+    } catch (CDepRuntimeException e) {
+      assertThat(e).hasMessage("Could not resolve 'com.github.jomof:low-level-statistics-y:0.0.16'. It doesn't exist.");
+      assertThat(e.errorInfo.code).isEqualTo("c35a5b0");
     }
   }
 
@@ -624,9 +635,12 @@ public class TestCDep {
     try {
       main("-wf", yaml.getParent());
       fail("Expected failure");
-    } catch (RuntimeException e) {
+    } catch (CDepRuntimeException e) {
       assertThat(e).hasMessage("SHA256 of cdep-manifest.yml for package 'com.github.jomof:low-level-statistics:0.0.16' " +
           "does not agree with constant in cdep.sha256. Something changed.");
+      assertThat(e.errorInfo.file).endsWith("cdep-manifest.yml");
+      assertThat(e.errorInfo.line).isEqualTo(2);
+      assertThat(e.errorInfo.code).isEqualTo("1cb1fa8");
     }
   }
 
@@ -745,8 +759,9 @@ public class TestCDep {
     String result;
     try {
       result = main("wrapper", "-wf", redistFolder.toString());
-    } catch(RuntimeException e) {
+    } catch(CDepRuntimeException e) {
       assertThat(e).hasMessage("Install source and destination are the same");
+      assertThat(e.errorInfo.code).isEqualTo("5ffdb7c");
       return;
     } finally {
       System.setProperty("io.cdep.appname", "rando-test-folder");

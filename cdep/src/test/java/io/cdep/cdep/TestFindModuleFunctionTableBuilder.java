@@ -25,6 +25,7 @@ import io.cdep.cdep.resolver.Resolver;
 import io.cdep.cdep.utils.CDepManifestYmlUtils;
 import io.cdep.cdep.utils.ExpressionUtils;
 import io.cdep.cdep.utils.Invariant;
+import io.cdep.cdep.utils.CDepRuntimeException;
 import io.cdep.cdep.yml.CDepManifestYmlGenerator;
 import io.cdep.cdep.yml.cdep.SoftNameDependency;
 import io.cdep.cdep.yml.cdepmanifest.CDepManifestYml;
@@ -356,18 +357,18 @@ public class TestFindModuleFunctionTableBuilder {
         String capture = CDepManifestYmlUtils.convertManifestToString(any);
         CDepManifestYml readAny = any;
         try {
-          readAny = CDepManifestYmlUtils.convertStringToManifest(capture);
+          readAny = CDepManifestYmlUtils.convertStringToManifest("fuzz.yml", capture);
         } catch (RuntimeException e) {
           System.out.printf("%s", capture);
           throw e;
         }
         try {
-          Invariant.pushScope();
+          Invariant.pushErrorCollectionScope(true);
           BuildFindModuleFunctionTable builder = new BuildFindModuleFunctionTable();
           builder.addManifest(new ResolvedManifest(new URL("https://google.com"), readAny));
           builder.build();
         } finally {
-          Invariant.popScope();
+          Invariant.popErrorCollectionScope();
         }
       }
     });
@@ -426,13 +427,7 @@ public class TestFindModuleFunctionTableBuilder {
         if (expectedFailure != null) {
           fail("Expected failure");
         }
-      } catch (RuntimeException e) {
-        if (!e.getClass().equals(RuntimeException.class)) {
-          throw e;
-        }
-        if (expectedFailure == null) {
-          throw e;
-        }
+      } catch (CDepRuntimeException e) {
         assertThat(e.getMessage()).contains(expectedFailure);
       }
     }

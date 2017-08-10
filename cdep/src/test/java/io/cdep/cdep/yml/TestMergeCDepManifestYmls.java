@@ -81,7 +81,7 @@ public class TestMergeCDepManifestYmls {
               manifest1.resolved.cdepManifestYml,
               manifest2.resolved.cdepManifestYml);
           String string = CDepManifestYmlUtils.convertManifestToString(merged1);
-          CDepManifestYml merged2 = CDepManifestYmlUtils.convertStringToManifest(string);
+          CDepManifestYml merged2 = CDepManifestYmlUtils.convertStringToManifest("fuzz.yml", string);
           if (!stringsDontRoundTrip.contains(key)) {
             if (!CDepManifestYmlEquality.areDeeplyIdentical(merged1, merged2)) {
               CDepManifestYmlUtils.convertManifestToString(merged1);
