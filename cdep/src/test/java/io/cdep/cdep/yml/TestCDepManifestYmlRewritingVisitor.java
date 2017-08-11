@@ -29,8 +29,9 @@ public class TestCDepManifestYmlRewritingVisitor {
 
   @Test
   public void testBasic() throws IOException {
-    CDepManifestYml before = CDepManifestYmlUtils.convertStringToManifest(
-        FileUtils.readAllText(new File("../third_party/stb/cdep/cdep-manifest-divide.yml")));
+    File file = new File("../third_party/stb/cdep/cdep-manifest-divide.yml");
+    CDepManifestYml before = CDepManifestYmlUtils.convertStringToManifest(file.getAbsolutePath(),
+        FileUtils.readAllText(file));
     CDepManifestYml after = new CDepManifestYmlRewriter().visitCDepManifestYml(before);
   }
 

@@ -25,6 +25,7 @@ import io.cdep.cdep.ast.finder.ParameterExpression;
 import io.cdep.cdep.resolver.ResolvedManifest;
 import io.cdep.cdep.utils.CDepManifestYmlUtils;
 import io.cdep.cdep.utils.Invariant;
+import io.cdep.cdep.utils.CDepRuntimeException;
 import io.cdep.cdep.yml.CDepManifestYmlGenerator;
 import io.cdep.cdep.yml.cdepmanifest.CDepManifestYml;
 import io.cdep.cdep.yml.cdepmanifest.CxxLanguageFeatures;
@@ -50,9 +51,9 @@ public class TestInterpretingVisitor {
       @Override
       protected void doSpecify(CDepManifestYml any) throws Throwable {
         try {
-          Invariant.pushScope();
+          Invariant.pushErrorCollectionScope(true);
           String capture = CDepManifestYmlUtils.convertManifestToString(any);
-          CDepManifestYml readAny = CDepManifestYmlUtils.convertStringToManifest(capture);
+          CDepManifestYml readAny = CDepManifestYmlUtils.convertStringToManifest("fuzz.yml", capture);
           BuildFindModuleFunctionTable builder = new BuildFindModuleFunctionTable();
           builder.addManifest(new ResolvedManifest(new URL("https://google.com"), readAny));
           FunctionTableExpression function = builder.build();
@@ -60,7 +61,7 @@ public class TestInterpretingVisitor {
           visitiOS(function);
           visitLinux(function);
         } finally {
-          Invariant.popScope();
+          Invariant.popErrorCollectionScope();
         }
       }
     });
@@ -135,10 +136,7 @@ public class TestInterpretingVisitor {
         if (expectedFailure != null) {
           fail("Expected failure for " + manifest.name);
         }
-      } catch (RuntimeException e) {
-        if (!RuntimeException.class.equals(e.getClass())) {
-          throw e;
-        }
+      } catch (CDepRuntimeException e) {
         if (expectedFailure == null || !expectedFailure.equals(e.getMessage())) {
           unexpectedFailures = true;
           System.out.printf("expected.put(\"%s\", \"%s\");\n", manifest.name, e.getMessage());

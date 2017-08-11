@@ -41,7 +41,8 @@ public class TestResolver {
       ".yml";
 
   @NotNull
-  private static final CDepManifestYml ADMOB_MANIFEST = CDepManifestYmlUtils.convertStringToManifest("coordinate:\n  groupId: "
+  private static final CDepManifestYml ADMOB_MANIFEST = CDepManifestYmlUtils.convertStringToManifest("admob.yml",
+      "coordinate:\n  groupId: "
       + "com.github.jomof\n  artifactId: firebase/admob\n  version: 2.1.3-rev7\narchive:\n  file: " +
       "firebase-include.zip\n  sha256: 51827bab4c5b4f335058ab3c0a93f9fa39ba284d21bd686f27368829ee088815\n  " +
       "size: 93293\ndependencies:\n  - compile: com.github.jomof:firebase/app:2.1.3-rev7\n    sha256: " +
@@ -51,7 +52,8 @@ public class TestResolver {
   private static final Coordinate APP_COORDINATE = CoordinateUtils.tryParse("com.github.jomof:firebase/app:2.1.3-rev7");
 
   @NotNull
-  private static final CDepManifestYml APP_MANIFEST = CDepManifestYmlUtils.convertStringToManifest("coordinate:\n  groupId: com"
+  private static final CDepManifestYml APP_MANIFEST = CDepManifestYmlUtils.convertStringToManifest("app.yml",
+      "coordinate:\n  groupId: com"
       + ".github.jomof\n  artifactId: firebase/app\n  version: 2.1.3-rev7\narchive:\n  file: " +
       "firebase-include.zip\n  sha256: 51827bab4c5b4f335058ab3c0a93f9fa39ba284d21bd686f27368829ee088815\n  " +
       "size: 93293\n");
@@ -59,7 +61,8 @@ public class TestResolver {
 
   @NotNull
   private static final CDepManifestYml ADMOB_MISSING_DEPENDENCY_MANIFEST = CDepManifestYmlUtils.convertStringToManifest
-      ("coordinate:\n  groupId: com.github.jomof\n  artifactId: firebase/admob\n  version: 2.1.3-rev7\n" +
+      ("admob-missing-dependency.yml",
+          "coordinate:\n  groupId: com.github.jomof\n  artifactId: firebase/admob\n  version: 2.1.3-rev7\n" +
           "archive:\n  file: firebase-include.zip\n  sha256: " +
           "51827bab4c5b4f335058ab3c0a93f9fa39ba284d21bd686f27368829ee088815\n  size: 93293\ndependencies:\n  - "
           + "compile: com.github.jomof:firebase/app:2.1.3-rev8\n    sha256: " +
@@ -67,7 +70,8 @@ public class TestResolver {
 
   @NotNull
   private static final CDepManifestYml ADMOB_BROKEN_DEPENDENCY_MANIFEST = CDepManifestYmlUtils.convertStringToManifest
-      ("coordinate:\n  groupId: com.github.jomof\n  artifactId: firebase/admob\n  version: 2.1.3-rev7\n" +
+      ("admob-broken-dependency.yml",
+          "coordinate:\n  groupId: com.github.jomof\n  artifactId: firebase/admob\n  version: 2.1.3-rev7\n" +
           "archive:\n  file: firebase-include.zip\n  sha256: " +
           "51827bab4c5b4f335058ab3c0a93f9fa39ba284d21bd686f27368829ee088815\n  size: 93293\ndependencies:\n  - "
           + "compile: xxx\n    sha256: 8292d143db85ec40ddf4d51133571607f4df3796e0477e8678993dcae4acfd03");

@@ -23,10 +23,18 @@ import static org.fusesource.jansi.Ansi.Color.WHITE;
 import static org.fusesource.jansi.Ansi.ansi;
 
 import io.cdep.annotations.NotNull;
+import io.cdep.cdep.utils.ErrorInfo;
 import io.cdep.cdep.utils.HashUtils;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.URL;
 import java.security.NoSuchAlgorithmException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Stack;
+
 import org.fusesource.jansi.AnsiConsole;
 
 /**
@@ -86,8 +94,8 @@ public class IO {
   /**
    * Print an info message with a line-feed.
    */
-  public static void errorln(String format, Object... args) {
-    io.errorImpl(format, args);
+  public static void errorln(ErrorInfo errorInfo, String format) {
+    io.errorImpl(errorInfo, format);
   }
 
   private void infoImpl(@NotNull String format, Object... args) {
@@ -100,24 +108,24 @@ public class IO {
     }
   }
 
-  private void errorImpl(String format, Object... args) {
-    // Create a code that is fairly unique for this error message
-    String code;
-    try {
-      code = HashUtils.getSHA256OfString(format).substring(0, 7);
-    } catch (NoSuchAlgorithmException e) {
-      code = "no-algo";
-    } catch (IOException e) {
-      code = "io-failed";
+  // Format a message like
+  // filename.txt : 142 : error : some descriptive text
+  private void errorImpl(@NotNull ErrorInfo errorInfo, String text) {
+    String prefix = "";
+    if (errorInfo.file != null) {
+      prefix += String.format("%s : ", errorInfo.file);
     }
-    String prefix = String.format("FAILURE (%s): ", code);
+    if (errorInfo.line != null) {
+      prefix += String.format("%s : ", errorInfo.line);
+    }
+    prefix += String.format("error : (%s) ", errorInfo.code);
     if (ansi) {
-      err.print(ansi().fg(RED).a(prefix).a(safeFormat(format, args)).a("\n").reset());
+      err.print(ansi().fg(RED).a(prefix).a(text).a("\n").reset());
       // Clear any formatting
       System.err.printf("");
     } else {
       err.printf(prefix);
-      err.print(safeFormat(format, args));
+      err.print(text);
       err.printf("\n");
     }
   }

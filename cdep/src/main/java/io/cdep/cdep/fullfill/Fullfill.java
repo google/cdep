@@ -15,9 +15,6 @@
 */
 package io.cdep.cdep.fullfill;
 
-import static io.cdep.cdep.io.IO.infoln;
-import static io.cdep.cdep.utils.Invariant.errorsInScope;
-
 import io.cdep.annotations.NotNull;
 import io.cdep.cdep.BuildFindModuleFunctionTable;
 import io.cdep.cdep.Coordinate;
@@ -31,11 +28,15 @@ import io.cdep.cdep.utils.FileUtils;
 import io.cdep.cdep.yml.cdep.SoftNameDependency;
 import io.cdep.cdep.yml.cdepmanifest.CDepManifestYml;
 import io.cdep.cdep.yml.cdepmanifest.CDepManifestYmlEquality;
+
 import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static io.cdep.cdep.io.IO.infoln;
+import static io.cdep.cdep.utils.Invariant.errorsInScope;
 
 public class Fullfill {
 
@@ -67,7 +68,7 @@ public class Fullfill {
     // Read all manifest files
     for (int i = 0; i < manifests.length; ++i) {
       String body = FileUtils.readAllText(templates[i]);
-      manifests[i] = CDepManifestYmlUtils.convertStringToManifest(body);
+      manifests[i] = CDepManifestYmlUtils.convertStringToManifest(templates[i].getAbsolutePath(), body);
     }
 
     // Replace variables
@@ -135,8 +136,7 @@ public class Fullfill {
 
       infoln("  checking sanity of result %s", coordinate);
       // Attempt to read the manifest that was written to disk.
-      CDepManifestYml readFromDisk = CDepManifestYmlUtils.convertStringToManifest(
-          FileUtils.readAllText(output));
+      CDepManifestYml readFromDisk = CDepManifestYmlUtils.convertStringToManifest(output.getAbsolutePath(), FileUtils.readAllText(output));
       CDepManifestYmlEquality.areDeeplyIdentical(manifests[i], readFromDisk);
       if (errorsInScope() > 0) {
         // Exit early if there were problems
@@ -170,7 +170,6 @@ public class Fullfill {
       // Exit early if there were problems
       return result;
     }
-
 
 
     return result;

@@ -1018,7 +1018,7 @@ public class ResolvedManifests {
 
   @NotNull
   static TestManifest getResolvedManifest(@NotNull String manifest) throws MalformedURLException {
-    CDepManifestYml yml = CDepManifestYmlUtils.convertStringToManifest(manifest);
+    CDepManifestYml yml = CDepManifestYmlUtils.convertStringToManifest("test.yml", manifest);
     return new TestManifest(manifest, new ResolvedManifest(new URL("http://google.com/cdep-manifest.yml"), yml));
   }
 

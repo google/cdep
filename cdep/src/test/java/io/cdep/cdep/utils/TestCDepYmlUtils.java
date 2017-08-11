@@ -27,7 +27,7 @@ public class TestCDepYmlUtils {
 
   @Test
   public void testDuplicateGenerator() {
-    CDepYml cdep = CDepYmlUtils.fromString("builders: [cmake, cmake]");
+    CDepYml cdep = CDepYmlUtils.fromString("test.yml", "builders: [cmake, cmake]");
 
     try {
       CDepYmlUtils.checkSanity(cdep, new File("cdep.yml"));
@@ -39,7 +39,7 @@ public class TestCDepYmlUtils {
 
   @Test
   public void testNoBuilders() {
-    CDepYml cdep = CDepYmlUtils.fromString("builders: []");
+    CDepYml cdep = CDepYmlUtils.fromString("test.yml", "builders: []");
 
     try {
       CDepYmlUtils.checkSanity(cdep, new File("cdep.yml"));
@@ -51,7 +51,7 @@ public class TestCDepYmlUtils {
 
   @Test
   public void testWorksFine() {
-    CDepYml cdep = CDepYmlUtils.fromString("builders: [cmake]");
+    CDepYml cdep = CDepYmlUtils.fromString("test.yml", "builders: [cmake]");
     CDepYmlUtils.checkSanity(cdep, new File("cdep.yml"));
   }
 

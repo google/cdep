@@ -23,6 +23,7 @@ import io.cdep.cdep.io.IO;
 import io.cdep.cdep.utils.CDepManifestYmlUtils;
 import io.cdep.cdep.utils.FileUtils;
 import io.cdep.cdep.utils.Invariant;
+import io.cdep.cdep.utils.CDepRuntimeException;
 import io.cdep.cdep.yml.CDepManifestYmlGenerator;
 import io.cdep.cdep.yml.cdepmanifest.CDepManifestYml;
 import net.java.quickcheck.QuickCheck;
@@ -96,7 +97,7 @@ public class TestFullfill {
     assertThat(result).hasSize(2);
     File manifestFile = new File(output, "layout");
     manifestFile = new File(manifestFile, "cdep-manifest.yml");
-    CDepManifestYml manifest = CDepManifestYmlUtils.convertStringToManifest(FileUtils.readAllText(manifestFile));
+    CDepManifestYml manifest = CDepManifestYmlUtils.convertStringToManifest(manifestFile.getAbsolutePath(), FileUtils.readAllText(manifestFile));
     assertThat(manifest.dependencies[0].sha256).isNotNull();
     assertThat(manifest.dependencies[0].sha256).isNotEmpty();
   }
@@ -113,7 +114,7 @@ public class TestFullfill {
         new File("../third_party/mini-firebase/firebase_cpp_sdk"), "1.2.3");
     File manifestFile = new File(output, "layout");
     manifestFile = new File(manifestFile, "cdep-manifest-database.yml");
-    CDepManifestYml manifest = CDepManifestYmlUtils.convertStringToManifest(FileUtils.readAllText(manifestFile));
+    CDepManifestYml manifest = CDepManifestYmlUtils.convertStringToManifest(manifestFile.getAbsolutePath(), FileUtils.readAllText(manifestFile));
     assertThat(manifest.dependencies[0].sha256).isNotNull();
     assertThat(manifest.dependencies[0].sha256).isNotEmpty();
     // Don't allow + in file name to escape.
@@ -153,7 +154,7 @@ public class TestFullfill {
         new File(outputFolder, "source"),
         "1.2.3");
 
-    CDepManifestYml result = CDepManifestYmlUtils.convertStringToManifest(FileUtils.readAllText(results.get(0)));
+    CDepManifestYml result = CDepManifestYmlUtils.convertStringToManifest(results.get(0).getAbsolutePath(), FileUtils.readAllText(results.get(0)));
     assertThat(result).hasCoordinate(new Coordinate("com.github.jomof", "sqlite", new Version("0.0.0")));
     assertThat(result).hasArchiveNamed("sqlite-android-gnustl-platform-21.zip");
   }
@@ -194,10 +195,7 @@ public class TestFullfill {
         if (expectedFailure != null) {
           require(false, "Expected failure in %s: '%s'", manifest.name, expectedFailure);
         }
-      } catch (RuntimeException e) {
-        if (!(e.getClass().equals(RuntimeException.class))) {
-          throw e;
-        }
+      } catch (CDepRuntimeException e) {
         if (e.getMessage() == null) {
           throw e;
         }
@@ -235,7 +233,7 @@ public class TestFullfill {
           PrintStream originalOut = null;
           PrintStream originalErr = null;
           try {
-            Invariant.pushScope();
+            Invariant.pushErrorCollectionScope(true);
             originalOut = IO.setOut(ps);
             originalErr = IO.setErr(ps);
             Fullfill.multiple(
@@ -250,7 +248,7 @@ public class TestFullfill {
           } finally {
             IO.setOut(originalOut);
             IO.setErr(originalErr);
-            Invariant.popScope();
+            Invariant.popErrorCollectionScope();
           }
         }
       });

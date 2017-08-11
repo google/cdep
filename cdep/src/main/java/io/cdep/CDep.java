@@ -97,8 +97,8 @@ public class CDep {
 
   @NotNull
   static private List<String> eatStringArgument(@NotNull String shortArgument,
-      @NotNull String longArgument,
-      @NotNull List<String> args) {
+                                                @NotNull String longArgument,
+                                                @NotNull List<String> args) {
 
     boolean takeNext = false;
     List<String> result = new ArrayList<>();
@@ -118,13 +118,13 @@ public class CDep {
 
   void go(@NotNull String[] argArray, boolean showFirstExceptionStack)
       throws IOException, URISyntaxException, NoSuchAlgorithmException {
-    Invariant.pushScope();
-    List<RuntimeException> errors;
+    Invariant.pushErrorCollectionScope(true);
+    List<CDepRuntimeException> errors;
 
     try {
       goNoScope(argArray, showFirstExceptionStack);
     } finally {
-      errors = Invariant.popScope();
+      errors = Invariant.popErrorCollectionScope();
     }
 
     if (errors != null && errors.size() > 0) {
@@ -167,13 +167,16 @@ public class CDep {
     if (handleFetch(args)) {
       return;
     }
-    if (handleFetchArchive(args)) {
-      return;
-    }
     if (handleFullfill(args)) {
       return;
     }
     if (!handleReadCDepYml()) {
+      return;
+    }
+    if (handleFetchArchive(args)) {
+      return;
+    }
+    if (handleShowManifest(args)) {
       return;
     }
     if (handleCreate(args)) {
@@ -187,7 +190,7 @@ public class CDep {
   }
 
   private void runBuilders(@NotNull GeneratorEnvironment environment,
-      @NotNull FunctionTableExpression table) throws IOException {
+                           @NotNull FunctionTableExpression table) throws IOException {
     if (config == null || config.builders == null) {
       return;
     }
@@ -206,7 +209,7 @@ public class CDep {
           new NdkBuildExamplesGenerator(environment).generate(table);
           break;
         default:
-          errorln("Unknown CDep builder '%s'", buildSystem);
+          fail("Unknown CDep builder '%s'", buildSystem);
           break;
       }
     }
@@ -418,10 +421,8 @@ public class CDep {
         return true;
       }
       if (args.size() > 1 && "manifest".equals(args.get(1))) {
-        handleReadCDepYml();
-        assert config != null;
-        info(config.toString());
-        return true;
+        // Defer until after the manifest is read
+        return false;
       }
       if (args.size() > 1 && "include".equals(args.get(1))) {
         if (args.size() == 2) {
@@ -438,6 +439,20 @@ public class CDep {
           IO.setOut(original);
           info("%s\n", include);
         }
+        return true;
+      }
+      info("Usage: cdep show [folders|local|manifest|include]'\n");
+      return true;
+    }
+    return false;
+  }
+
+  private boolean handleShowManifest(@NotNull List<String> args)
+      throws IOException, NoSuchAlgorithmException, URISyntaxException {
+    if (args.size() > 0 && "show".equals(args.get(0))) {
+      if (args.size() > 1 && "manifest".equals(args.get(1))) {
+        assert config != null;
+        info(config.toString());
         return true;
       }
       info("Usage: cdep show [folders|local|manifest|include]'\n");
@@ -593,17 +608,14 @@ public class CDep {
   }
 
   @NotNull
-  private FunctionTableExpression getFunctionTableExpression(
-      @NotNull GeneratorEnvironment environment)
+  private FunctionTableExpression getFunctionTableExpression(@NotNull GeneratorEnvironment environment)
       throws IOException, NoSuchAlgorithmException {
     assert config != null;
     return GeneratorEnvironmentUtils.getFunctionTableExpression(environment, config.dependencies);
   }
 
   @NotNull
-  private GeneratorEnvironment getGeneratorEnvironment(boolean forceRedownload,
-      boolean ignoreManifestHashes) throws IOException {
-    tryReadCDepYml();
+  private GeneratorEnvironment getGeneratorEnvironment(boolean forceRedownload, boolean ignoreManifestHashes) throws IOException {
     String downloadedPackagesFolder = null;
     String generatedModulesFolder = null;
     if (this.config != null) {
@@ -629,21 +641,9 @@ public class CDep {
       return false;
     }
 
-    this.config = CDepYmlUtils.fromString(FileUtils.readAllText(configFile));
+    this.config = CDepYmlUtils.fromString(configFile.getAbsolutePath(), FileUtils.readAllText(configFile));
     CDepYmlUtils.checkSanity(config, configFile);
     return true;
-  }
-
-  /*
-  Read cdep.yml if it exists.
-   */
-  private void tryReadCDepYml() throws IOException {
-    configFile = new File(workingFolder, "cdep.yml");
-    if (!configFile.exists()) {
-      return;
-    }
-    this.config = CDepYmlUtils.fromString(FileUtils.readAllText(configFile));
-    CDepYmlUtils.checkSanity(config, configFile);
   }
 
   private boolean handleHelp(@NotNull List<String> args) {
@@ -653,7 +653,7 @@ public class CDep {
     info("cdep %s\n", BuildInfo.PROJECT_VERSION);
     info(" cdep: download dependencies and generate build modules for current cdep.yml\n");
     info(" cdep fullfill source-folder version manifest1.yml manifest2.yml: fill in template cdep-manifest.yml " +
-            "with hashes, sizes, zips, etc\n");
+        "with hashes, sizes, zips, etc\n");
     info(" cdep show folders: show local download and file folders\n");
     info(" cdep show manifest: show cdep interpretation of cdep.yml\n");
     info(" cdep show include {coordinate}: show local include path for the given coordinate\n");

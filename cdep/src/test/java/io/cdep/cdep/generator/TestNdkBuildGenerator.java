@@ -46,15 +46,15 @@ public class TestNdkBuildGenerator {
       @Override
       protected void doSpecify(CDepManifestYml any) throws Throwable {
         String capture = CDepManifestYmlUtils.convertManifestToString(any);
-        CDepManifestYml readAny = CDepManifestYmlUtils.convertStringToManifest(capture);
+        CDepManifestYml readAny = CDepManifestYmlUtils.convertStringToManifest("fuzz-test.yml", capture);
         try {
-          Invariant.pushScope(false);
+          Invariant.pushErrorCollectionScope(false);
           BuildFindModuleFunctionTable builder = new BuildFindModuleFunctionTable();
           builder.addManifest(new ResolvedManifest(new URL("https://google.com"), readAny));
           FunctionTableExpression table = builder.build();
           new NdkBuildGenerator(environment).generate(table);
         } finally {
-          Invariant.popScope();
+          Invariant.popErrorCollectionScope();
         }
       }
     });

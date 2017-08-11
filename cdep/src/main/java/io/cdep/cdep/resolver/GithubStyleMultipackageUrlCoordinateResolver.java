@@ -20,12 +20,14 @@ import io.cdep.annotations.Nullable;
 import io.cdep.cdep.Coordinate;
 import io.cdep.cdep.Version;
 import io.cdep.cdep.utils.GithubUtils;
+import io.cdep.cdep.utils.Invariant;
 import io.cdep.cdep.yml.cdep.SoftNameDependency;
 import io.cdep.cdep.yml.cdepmanifest.CDepManifestYml;
 
 import java.io.IOException;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -75,9 +77,9 @@ public class GithubStyleMultipackageUrlCoordinateResolver extends CoordinateReso
       }
 
       Coordinate provisionalCoordinate = new Coordinate(groupId, artifactId, version);
-      CDepManifestYml cdepManifestYml = environment.tryGetManifest(
-          provisionalCoordinate,
-          GithubUtils.escapeGithubSpecialCharacters(new URL(coordinate)));
+      URL escapedFilename = GithubUtils.escapeGithubSpecialCharacters(new URL(coordinate));
+      CDepManifestYml cdepManifestYml = environment.tryGetManifest(provisionalCoordinate, escapedFilename);
+
       if (cdepManifestYml == null) {
         // The URL didn't exist.
         return null;
@@ -100,7 +102,6 @@ public class GithubStyleMultipackageUrlCoordinateResolver extends CoordinateReso
           coordinate);
       return new ResolvedManifest(new URL(coordinate), cdepManifestYml);
     }
-
     return null;
   }
 }

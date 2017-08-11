@@ -16,6 +16,7 @@
 package io.cdep.cdep;
 
 import io.cdep.cdep.ast.finder.Expression;
+import io.cdep.cdep.utils.CDepRuntimeException;
 import io.cdep.cdep.yml.cdepmanifest.CxxLanguageFeatures;
 import org.junit.Test;
 
@@ -48,8 +49,8 @@ public class TestReadonlyVisitor {
         if (expectedFailure != null) {
           fail("Expected failure");
         }
-      } catch (RuntimeException e) {
-        if (expectedFailure == null || !e.getClass().equals(RuntimeException.class)) {
+      } catch (CDepRuntimeException e) {
+        if (expectedFailure == null) {
           throw e;
         }
         assertThat(e.getMessage()).contains(expectedFailure);

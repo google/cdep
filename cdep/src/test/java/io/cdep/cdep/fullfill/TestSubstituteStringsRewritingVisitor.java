@@ -29,8 +29,8 @@ import static com.google.common.truth.Truth.assertThat;
 public class TestSubstituteStringsRewritingVisitor {
   @Test
   public void testBasic() throws IOException {
-    CDepManifestYml before = CDepManifestYmlUtils.convertStringToManifest(
-        FileUtils.readAllText(new File("../third_party/stb/cdep/cdep-manifest-divide.yml")));
+    File file = new File("../third_party/stb/cdep/cdep-manifest-divide.yml");
+    CDepManifestYml before = CDepManifestYmlUtils.convertStringToManifest(file.getAbsolutePath(), FileUtils.readAllText(file));
     CDepManifestYml after = new SubstituteStringsRewriter()
         .replace("${version}", "0.0.0")
         .visitCDepManifestYml(before);
