@@ -109,16 +109,16 @@ public class IO {
   }
 
   // Format a message like
-  // filename.txt : 142 : error : some descriptive text
+  // cdep.yml(4): error CDEPc35a5b0: Could not resolve 'com.github.jomof:sqlite:3.16.2-rev51x'. It doesn't exist.
   private void errorImpl(@NotNull ErrorInfo errorInfo, String text) {
     String prefix = "";
-    if (errorInfo.file != null) {
-      prefix += String.format("%s : ", errorInfo.file);
+    if (errorInfo.file != null && errorInfo.line != null) {
+      prefix += String.format("%s(%s): ", errorInfo.file, errorInfo.line);
     }
-    if (errorInfo.line != null) {
-      prefix += String.format("%s : ", errorInfo.line);
+    if (errorInfo.file != null && errorInfo.line == null) {
+      prefix += String.format("%s: ", errorInfo.file);
     }
-    prefix += String.format("error : (%s) ", errorInfo.code);
+    prefix += String.format("error CDEP%s: ", errorInfo.code);
     if (ansi) {
       err.print(ansi().fg(RED).a(prefix).a(text).a("\n").reset());
       // Clear any formatting
