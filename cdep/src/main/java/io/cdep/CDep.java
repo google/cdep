@@ -167,13 +167,13 @@ public class CDep {
     if (handleFetch(args)) {
       return;
     }
-    if (handleFetchArchive(args)) {
-      return;
-    }
     if (handleFullfill(args)) {
       return;
     }
     if (!handleReadCDepYml()) {
+      return;
+    }
+    if (handleFetchArchive(args)) {
       return;
     }
     if (handleShowManifest(args)) {

@@ -17,8 +17,8 @@ package io.cdep;
 
 import com.google.common.io.Files;
 import io.cdep.annotations.NotNull;
-import io.cdep.cdep.utils.FileUtils;
 import io.cdep.cdep.utils.CDepRuntimeException;
+import io.cdep.cdep.utils.FileUtils;
 import io.cdep.cdep.yml.cdep.CDepYml;
 import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
@@ -40,6 +40,20 @@ public class TestCDep {
     PrintStream ps = new PrintStream(baos);
     new CDep(ps, ps, false).go(args, true);
     return new String(baos.toByteArray(), StandardCharsets.UTF_8);
+  }
+
+  private static void deleteDirectory(File folder) {
+    File[] files = folder.listFiles();
+    if (files != null) {
+      for (File f : files) {
+        if (f.isDirectory()) {
+          deleteDirectory(f);
+        } else {
+          f.delete();
+        }
+      }
+    }
+    folder.delete();
   }
 
   @Test
@@ -231,11 +245,6 @@ public class TestCDep {
     assertThat(main("--working-folder", "non-existing-blah")).contains("non-existing-blah");
   }
 
-  @Test
-  public void wfFlag() throws Exception {
-    assertThat(main("-wf", "non-existing-blah")).contains("non-existing-blah");
-  }
-
   //  @Test
   //  public void runVectorial() throws Exception {
   //    CDepYml config = new CDepYml();
@@ -261,23 +270,8 @@ public class TestCDep {
   //  }
 
   @Test
-  public void testMissingGithubCoordinate() throws Exception {
-    CDepYml config = new CDepYml();
-    System.out.printf(new Yaml().dump(config));
-    File yaml = new File(".test-files/runMathfu/cdep.yml");
-    yaml.getParentFile().mkdirs();
-    Files.write("builders: [cmake, cmakeExamples]\ndependencies:\n- compile: com.github.jomof:mathfoo:1.0.2-rev7\n",
-        yaml, StandardCharsets.UTF_8);
-    try {
-      String result = main("-wf", yaml.getParent());
-      System.out.printf(result);
-      fail("Expected an exception");
-    } catch (CDepRuntimeException e) {
-      assertThat(e).hasMessage("Could not resolve 'com.github.jomof:mathfoo:1.0.2-rev7'. It doesn't exist.");
-      assertThat(e.errorInfo.file).endsWith("cdep.yml");
-      assertThat(e.errorInfo.line).isEqualTo(2);
-      assertThat(e.errorInfo.code).endsWith("c35a5b0");
-    }
+  public void wfFlag() throws Exception {
+    assertThat(main("-wf", "non-existing-blah")).contains("non-existing-blah");
   }
 
   //  @Test
@@ -301,22 +295,22 @@ public class TestCDep {
   //  }
 
   @Test
-  public void unfindableLocalFile() throws Exception {
+  public void testMissingGithubCoordinate() throws Exception {
     CDepYml config = new CDepYml();
     System.out.printf(new Yaml().dump(config));
-    File yaml = new File(".test-files/unfindableLocalFile/cdep.yml");
+    File yaml = new File(".test-files/runMathfu/cdep.yml");
     yaml.getParentFile().mkdirs();
-    Files.write("builders: [cmake, cmakeExamples]\ndependencies:\n- compile: ../not-a-file/cdep-manifest.yml\n",
+    Files.write("builders: [cmake, cmakeExamples]\ndependencies:\n- compile: com.github.jomof:mathfoo:1.0.2-rev7\n",
         yaml, StandardCharsets.UTF_8);
-
     try {
-      main("-wf", yaml.getParent());
-      fail("Expected failure");
+      String result = main("-wf", yaml.getParent());
+      System.out.printf(result);
+      fail("Expected an exception");
     } catch (CDepRuntimeException e) {
-      assertThat(e).hasMessage("Could not resolve '../not-a-file/cdep-manifest.yml'. It doesn't exist.");
+      assertThat(e).hasMessage("Could not resolve 'com.github.jomof:mathfoo:1.0.2-rev7'. It doesn't exist.");
       assertThat(e.errorInfo.file).endsWith("cdep.yml");
       assertThat(e.errorInfo.line).isEqualTo(2);
-      assertThat(e.errorInfo.code).isEqualTo("c35a5b0");
+      assertThat(e.errorInfo.code).endsWith("c35a5b0");
     }
   }
 
@@ -341,6 +335,26 @@ public class TestCDep {
   //    assertThat(result2).contains("0.0.81");
   //    String result3 = main("-wf", yaml.getParent());
   //  }
+
+  @Test
+  public void unfindableLocalFile() throws Exception {
+    CDepYml config = new CDepYml();
+    System.out.printf(new Yaml().dump(config));
+    File yaml = new File(".test-files/unfindableLocalFile/cdep.yml");
+    yaml.getParentFile().mkdirs();
+    Files.write("builders: [cmake, cmakeExamples]\ndependencies:\n- compile: ../not-a-file/cdep-manifest.yml\n",
+        yaml, StandardCharsets.UTF_8);
+
+    try {
+      main("-wf", yaml.getParent());
+      fail("Expected failure");
+    } catch (CDepRuntimeException e) {
+      assertThat(e).hasMessage("Could not resolve '../not-a-file/cdep-manifest.yml'. It doesn't exist.");
+      assertThat(e.errorInfo.file).endsWith("cdep.yml");
+      assertThat(e.errorInfo.line).isEqualTo(2);
+      assertThat(e.errorInfo.code).isEqualTo("c35a5b0");
+    }
+  }
 
   @Test
   public void sqlite() throws Exception {
@@ -533,7 +547,7 @@ public class TestCDep {
 
   @Test
   public void fetch() throws Exception {
-    File folder = new File(".test-files/fetchArchive");
+    File folder = new File(".test-files/fetch");
     folder.mkdirs();
     String result = main("fetch", "com.github.jomof:low-level-statistics:0.0.16", "com.github" +
         ".jomof:low-level-statistics:0.0.16", "-wf", folder.toString());
@@ -544,7 +558,20 @@ public class TestCDep {
   @Test
   public void fetchArchive() throws Exception {
     File folder = new File(".test-files/fetchArchive");
+    deleteDirectory(folder);
     folder.mkdirs();
+    File yaml = new File(folder, "cdep.yml");
+    File downloadFolder = new File(yaml.getParent(), "my-downloaded-packages");
+    File modulesFolder = new File(yaml.getParent(), "my-modules");
+    yaml.getParentFile().mkdirs();
+    String text = "builders: [cmake, cmakeExamples]\n" +
+        "downloadedPackagesFolder: {DOWNLOAD}\n" +
+        "generatedModulesFolder: {GENERATED}\n" +
+        "dependencies:\n" +
+        "- compile: com.github.jomof:low-level-statistics:0.0.16\n";
+    text = text.replace("{DOWNLOAD}", downloadFolder.getCanonicalPath());
+    text = text.replace("{GENERATED}", modulesFolder.getCanonicalPath());
+    Files.write(text, yaml, StandardCharsets.UTF_8);
     String result = main("fetch-archive",
         "com.github.jomof:low-level-statistics:0.0.22",
         "https://github.com/jomof/low-level-statistics/releases/download/0.0.22/low-level-statistics-android-platform-21-armeabi.zip",
@@ -552,11 +579,12 @@ public class TestCDep {
         "1661c899dee3b7cf1bb3e376c1cd504a156a4658904d8554a84db4e5a71ade49",
         "-wf", folder.toString());
     System.out.printf(result);
+    assertThat(result).contains("Downloading");
+    assertThat(result).contains("low-level-statistics-android-platform-21-armeabi");
   }
 
   @Test
   public void checkArchiveSentinel() throws Exception {
-    CDepYml config = new CDepYml();
     File yaml = new File(".test-files/checkArchiveSentinel/cdep.yml");
     File downloadFolder = new File(yaml.getParent(), "my-downloaded-packages");
     File modulesFolder = new File(yaml.getParent(), "my-modules");
@@ -759,7 +787,7 @@ public class TestCDep {
     String result;
     try {
       result = main("wrapper", "-wf", redistFolder.toString());
-    } catch(CDepRuntimeException e) {
+    } catch (CDepRuntimeException e) {
       assertThat(e).hasMessage("Install source and destination are the same");
       assertThat(e.errorInfo.code).isEqualTo("5ffdb7c");
       return;
@@ -767,7 +795,7 @@ public class TestCDep {
       System.setProperty("io.cdep.appname", "rando-test-folder");
     }
 
-   fail("Expected failure");
+    fail("Expected failure");
   }
 
   @Test
