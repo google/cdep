@@ -21,10 +21,7 @@ import org.yaml.snakeyaml.nodes.Node;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static io.cdep.cdep.io.IO.errorln;
 import static io.cdep.cdep.utils.StringUtils.safeFormat;
@@ -39,6 +36,10 @@ abstract public class Invariant {
   private static final LinkedList<LinkedList<String>> yamlFiles = new LinkedList<>();
   private static final LinkedList<LinkedList<Map<Object, Node>>> yamlNodes = new LinkedList<>();
 
+  public static void registerYamlFile(String file) {
+    registerYamlNodes(file, new HashMap<Object, Node>());
+  }
+
   public static void registerYamlNodes(String file, Map<Object, Node> yamlNodes) {
     if (Invariant.yamlFiles.size() == 0) {
       return;
@@ -48,10 +49,10 @@ abstract public class Invariant {
   }
 
   public static void pushErrorCollectionScope(boolean showOutput) {
-    yamlExplictNode.push(new LinkedList<>());
-    yamlFiles.push(new LinkedList<>());
-    yamlNodes.push(new LinkedList<>());
-    requirementFailures.push(new ArrayList<>());
+    yamlExplictNode.push(new LinkedList<Node>());
+    yamlFiles.push(new LinkedList<String>());
+    yamlNodes.push(new LinkedList<Map<Object, Node>>());
+    requirementFailures.push(new ArrayList<CDepRuntimeException>());
     showOutputs.push(showOutput);
   }
 

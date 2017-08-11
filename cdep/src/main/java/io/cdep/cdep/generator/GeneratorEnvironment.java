@@ -184,7 +184,7 @@ public class GeneratorEnvironment implements ManifestProvider {
       // The remote didn't exist. Return null;
       return null;
     }
-    Invariant.registerYamlNodes(file.getAbsolutePath(), new HashMap<>());
+    Invariant.registerYamlFile(file.getAbsolutePath());
     String text = FileUtils.readAllText(file);
     CDepManifestYml cdepManifestYml = CDepManifestYmlUtils.convertStringToManifest(file.getAbsolutePath(), text);
     // If there were any errors reading the manifest then quit before recording any SHA256 (because it may not be valid).

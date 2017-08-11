@@ -42,7 +42,7 @@ public class CDepManifestYmlUtils {
 
   @NotNull
   public static CDepManifestYml convertStringToManifest(@NotNull String url, @NotNull String content) {
-    Invariant.registerYamlNodes(url, new HashMap<>());
+    Invariant.registerYamlFile(url);
     Yaml yaml = new Yaml(new Constructor(CDepManifestYml.class));
     CDepManifestYml manifest;
     byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
