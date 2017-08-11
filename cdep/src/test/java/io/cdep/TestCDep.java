@@ -309,7 +309,7 @@ public class TestCDep {
     } catch (CDepRuntimeException e) {
       assertThat(e).hasMessage("Could not resolve 'com.github.jomof:mathfoo:1.0.2-rev7'. It doesn't exist.");
       assertThat(e.errorInfo.file).endsWith("cdep.yml");
-      assertThat(e.errorInfo.line).isEqualTo(2);
+      assertThat(e.errorInfo.line).isEqualTo(3);
       assertThat(e.errorInfo.code).endsWith("c35a5b0");
     }
   }
@@ -351,7 +351,7 @@ public class TestCDep {
     } catch (CDepRuntimeException e) {
       assertThat(e).hasMessage("Could not resolve '../not-a-file/cdep-manifest.yml'. It doesn't exist.");
       assertThat(e.errorInfo.file).endsWith("cdep.yml");
-      assertThat(e.errorInfo.line).isEqualTo(2);
+      assertThat(e.errorInfo.line).isEqualTo(3);
       assertThat(e.errorInfo.code).isEqualTo("c35a5b0");
     }
   }
@@ -667,7 +667,7 @@ public class TestCDep {
       assertThat(e).hasMessage("SHA256 of cdep-manifest.yml for package 'com.github.jomof:low-level-statistics:0.0.16' " +
           "does not agree with constant in cdep.sha256. Something changed.");
       assertThat(e.errorInfo.file).endsWith("cdep-manifest.yml");
-      assertThat(e.errorInfo.line).isEqualTo(2);
+      assertThat(e.errorInfo.line).isEqualTo(3);
       assertThat(e.errorInfo.code).isEqualTo("1cb1fa8");
     }
   }

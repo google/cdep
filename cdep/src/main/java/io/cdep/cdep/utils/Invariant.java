@@ -136,7 +136,7 @@ abstract public class Invariant {
         for (int j = 0; j < parameters.length; ++j) {
           Node node = map.get(parameters[j]);
           if (node != null) {
-            return new ErrorInfo(yamlFiles.get(0).get(i), node.getStartMark().getLine(), code);
+            return new ErrorInfo(yamlFiles.get(0).get(i), node.getStartMark().getLine() + 1, code);
           }
         }
       }
