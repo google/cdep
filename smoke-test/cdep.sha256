@@ -68,6 +68,8 @@
   sha256: 8c4530ea17528f2edf69189a32938c01b40c00590b7537b93696ea1951b3f624
 - coordinate: com.github.jomof:stb/connected_components:0.0.0-rev2
   sha256: fc14f90deaf2abc3c517f588ae986929d109f9b86d1f314607cd1d0e5ed1ad88
+- coordinate: com.github.jomof:lua:5.3.4
+  sha256: 9a612a15abdce48ded3ac55f5329449383cebeb6efc2f816554ea0380eaa4064
 - coordinate: com.github.jomof:stb/rect_pack:0.0.0-rev6
   sha256: 5da011a33aac2b4a93bb2f65af91b71f2585d9f85785e6c95d5cff194b4a8262
 - coordinate: com.github.jomof:stb/rect_pack:0.0.0-rev2
@@ -118,6 +120,8 @@
   sha256: e42718fa2c52f5782e4154c560d547781e04894fea0d1b9cdacf0b2c1427a486
 - coordinate: com.github.jomof:vectorial:0.0.0-rev16
   sha256: f4808cc386bce1dfbebfc37c48e89ffa70f70768ab6311b659d81dc0819e6588
+- coordinate: com.github.jomof:vectorial:0.0.0-rev18
+  sha256: 0faca2ddc47c5327f781fe5f9dcc3e53597f30ae551b2d5778950d8216f3a33a
 - coordinate: com.github.jomof:lua:5.3.4-tes1
   sha256: fd4887abd41516d9f41a32fa48a330f3fb5df5cc3104adf9256d421b0779dd57
 - coordinate: com.github.jomof:mathfu:1.1.0-rev3

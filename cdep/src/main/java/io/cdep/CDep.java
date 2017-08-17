@@ -49,7 +49,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static io.cdep.cdep.io.IO.*;
+import static io.cdep.cdep.io.IO.info;
+import static io.cdep.cdep.io.IO.infoln;
 import static io.cdep.cdep.utils.Invariant.*;
 import static io.cdep.cdep.yml.cdepmanifest.CDepManifestBuilder.archive;
 
@@ -73,14 +74,16 @@ public class CDep {
   }
 
   public static void main(@NotNull String[] args) {
+    int result;
     try {
-      new CDep(AnsiConsole.out, AnsiConsole.err, true).go(args, false);
+      result = new CDep(AnsiConsole.out, AnsiConsole.err, true).go(args, false);
       resetAnsiColors();
     } catch (Throwable e) {
       resetAnsiColors();
       e.printStackTrace(System.err);
-      System.exit(Integer.MIN_VALUE);
+      result = 1;
     }
+    System.exit(result);
   }
 
   private static void resetAnsiColors() {
@@ -116,7 +119,7 @@ public class CDep {
     return result;
   }
 
-  void go(@NotNull String[] argArray, boolean showFirstExceptionStack)
+  int go(@NotNull String[] argArray, boolean showFirstExceptionStack)
       throws IOException, URISyntaxException, NoSuchAlgorithmException {
     Invariant.pushErrorCollectionScope(true);
     List<CDepRuntimeException> errors;
@@ -133,7 +136,9 @@ public class CDep {
         // All errors will have been printed. Throw the first exception
         throw errors.get(0);
       }
+      return 1;
     }
+    return 0;
   }
 
   private void goNoScope(@NotNull String[] argArray, boolean showFirstExceptionStack)
