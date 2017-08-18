@@ -375,6 +375,97 @@ public class TestCDep {
   }
 
   @Test
+  public void testGeneratedModulesFolder() throws Exception {
+    CDepYml config = new CDepYml();
+    System.out.printf(new Yaml().dump(config));
+    File yaml = new File(".test-files/testGeneratedModulesFolder/cdep.yml");
+    deleteDirectory(yaml.getParentFile());
+    yaml.getParentFile().mkdirs();
+    Files.write("builders: [cmake, cmakeExamples]\n"
+            + "dependencies:\n"
+            + "- compile: com.github.jomof:sqlite:3.16.2-rev45\n",
+        yaml, StandardCharsets.UTF_8);
+    File modulesFolder = new File(yaml.getParentFile(), "my-modules");
+    String result = main("-wf", yaml.getParent(),
+        "-gmf", modulesFolder.getAbsolutePath());
+    System.out.printf(result);
+    assertThat(modulesFolder.exists()).isTrue();
+    assertThat(modulesFolder.isDirectory()).isTrue();
+    File cdepOutput = new File(modulesFolder, "modules").getAbsoluteFile();
+    cdepOutput = new File(cdepOutput, "cdep-dependencies-config.cmake");
+    assertThat(cdepOutput.exists()).isTrue();
+    assertThat(cdepOutput.isFile()).isTrue();
+  }
+
+  @Test
+  public void testOverrideBuildSystem() throws Exception {
+    CDepYml config = new CDepYml();
+    System.out.printf(new Yaml().dump(config));
+    File yaml = new File(".test-files/testOverrideBuildSystem/cdep.yml");
+    deleteDirectory(yaml.getParentFile());
+    yaml.getParentFile().mkdirs();
+    Files.write("builders: [ndkBuild]\n"
+            + "dependencies:\n"
+            + "- compile: com.github.jomof:sqlite:3.16.2-rev45\n",
+        yaml, StandardCharsets.UTF_8);
+    File modulesFolder = new File(yaml.getParentFile(), "my-modules");
+    String result = main("-wf", yaml.getParent(),
+        "-gmf", modulesFolder.getAbsolutePath(),
+        "--builder", "cmake");
+    System.out.printf(result);
+    assertThat(modulesFolder.exists()).isTrue();
+    assertThat(modulesFolder.isDirectory()).isTrue();
+    File cdepOutput = new File(modulesFolder, "modules").getAbsoluteFile();
+    cdepOutput = new File(cdepOutput, "cdep-dependencies-config.cmake");
+    assertThat(cdepOutput.exists()).isTrue();
+    assertThat(cdepOutput.isFile()).isTrue();
+  }
+
+  @Test
+  public void testUnknownOverrideBuildSystem() throws Exception {
+    CDepYml config = new CDepYml();
+    System.out.printf(new Yaml().dump(config));
+    File yaml = new File(".test-files/testUnknownOverrideBuildSystem/cdep.yml");
+    deleteDirectory(yaml.getParentFile());
+    yaml.getParentFile().mkdirs();
+    Files.write("builders: [ndkBuild]\n"
+            + "dependencies:\n"
+            + "- compile: com.github.jomof:sqlite:3.16.2-rev45\n",
+        yaml, StandardCharsets.UTF_8);
+    File modulesFolder = new File(yaml.getParentFile(), "my-modules");
+    try {
+      main("-wf", yaml.getParent(),
+          "-gmf", modulesFolder.getAbsolutePath(),
+          "--builder", "unknown-build-system");
+      fail("Expected failure");
+    } catch (CDepRuntimeException e) {
+      assertThat(e).hasMessage("Builder unknown-build-system is not recognized.");
+    }
+  }
+
+  @Test
+  public void testUnknownOverrideBuildSystemNoBuilders() throws Exception {
+    CDepYml config = new CDepYml();
+    System.out.printf(new Yaml().dump(config));
+    File yaml = new File(".test-files/testUnknownOverrideBuildSystem/cdep.yml");
+    deleteDirectory(yaml.getParentFile());
+    yaml.getParentFile().mkdirs();
+    Files.write("dependencies:\n"
+            + "- compile: com.github.jomof:sqlite:3.16.2-rev45\n",
+        yaml, StandardCharsets.UTF_8);
+    File modulesFolder = new File(yaml.getParentFile(), "my-modules");
+    try {
+      main("-wf", yaml.getParent(),
+          "-gmf", modulesFolder.getAbsolutePath(),
+          "--builder", "unknown-build-system");
+      fail("Expected failure");
+    } catch (CDepRuntimeException e) {
+      assertThat(e).hasMessage("Builder unknown-build-system is not recognized.");
+    }
+  }
+
+
+  @Test
   public void oldBoost() throws Exception {
     CDepYml config = new CDepYml();
     System.out.printf(new Yaml().dump(config));
