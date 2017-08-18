@@ -15,27 +15,16 @@
 */
 package io.cdep.cdep.io;
 
-import static io.cdep.cdep.utils.StringUtils.safeFormat;
-import static org.fusesource.jansi.Ansi.Attribute.INTENSITY_FAINT;
-import static org.fusesource.jansi.Ansi.Color.GREEN;
-import static org.fusesource.jansi.Ansi.Color.RED;
-import static org.fusesource.jansi.Ansi.Color.WHITE;
-import static org.fusesource.jansi.Ansi.ansi;
-
 import io.cdep.annotations.NotNull;
 import io.cdep.cdep.utils.ErrorInfo;
-import io.cdep.cdep.utils.HashUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.net.URL;
-import java.security.NoSuchAlgorithmException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
-
 import org.fusesource.jansi.AnsiConsole;
+
+import java.io.PrintStream;
+
+import static io.cdep.cdep.utils.StringUtils.safeFormat;
+import static org.fusesource.jansi.Ansi.Attribute.INTENSITY_FAINT;
+import static org.fusesource.jansi.Ansi.Color.*;
+import static org.fusesource.jansi.Ansi.ansi;
 
 /**
  * Methods for dealing with command-line IO, messages, errors, etc.
@@ -94,8 +83,8 @@ public class IO {
   /**
    * Print an info message with a line-feed.
    */
-  public static void errorln(ErrorInfo errorInfo, String format) {
-    io.errorImpl(errorInfo, format);
+  public static void errorln(ErrorInfo errorInfo, String text) {
+    io.errorImpl(errorInfo, text);
   }
 
   private void infoImpl(@NotNull String format, Object... args) {
@@ -109,23 +98,25 @@ public class IO {
   }
 
   // Format a message like
-  // cdep.yml(4): error CDEPc35a5b0: Could not resolve 'com.github.jomof:sqlite:3.16.2-rev51x'. It doesn't exist.
+  // cdep.yml:4: error: CDEPc35a5b0 Could not resolve 'com.github.jomof:sqlite:3.16.2-rev51x'. It doesn't exist.
   private void errorImpl(@NotNull ErrorInfo errorInfo, String text) {
     String prefix = "";
+    String postfix = String.format(" [CDEP%s]", errorInfo.code);
     if (errorInfo.file != null && errorInfo.line != null) {
-      prefix += String.format("%s(%s): ", errorInfo.file, errorInfo.line);
+      prefix += String.format("%s:%s: ", errorInfo.file, errorInfo.line);
     }
     if (errorInfo.file != null && errorInfo.line == null) {
       prefix += String.format("%s: ", errorInfo.file);
     }
-    prefix += String.format("error CDEP%s: ", errorInfo.code);
+    prefix += String.format("error: ");
     if (ansi) {
-      err.print(ansi().fg(RED).a(prefix).a(text).a("\n").reset());
+      err.print(ansi().fg(RED).a(prefix).a(text).a(postfix).a("\n").reset());
       // Clear any formatting
       System.err.printf("");
     } else {
       err.printf(prefix);
       err.print(text);
+      err.print(postfix);
       err.printf("\n");
     }
   }
