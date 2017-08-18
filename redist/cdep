@@ -170,7 +170,6 @@ fi
 
 "$JAVACMD" "${JVM_OPTS[@]}" -classpath "$CLASSPATH" io.cdep.bootstrap.Bootstrap $MANIFEST $@
 if [[ $? != 0 ]]; then
-  echo "$JAVACMD" "${JVM_OPTS[@]}" -classpath "$CLASSPATH" io.cdep.bootstrap.Bootstrap $MANIFEST $@
   exit 1
 fi
 
