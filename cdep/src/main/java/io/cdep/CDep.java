@@ -62,10 +62,14 @@ public class CDep {
   private final File downloadFolder = null;
   @NotNull
   private File workingFolder = new File(".");
+  @NotNull
+  private String generatedModulesFolder = null;
   @Nullable
   private CDepYml config = null;
   @Nullable
   private File configFile = null;
+  @Nullable
+  private BuildSystem overrideBuildSystem = null;
 
   CDep(@NotNull PrintStream out, @NotNull PrintStream err, boolean ansi) {
     IO.setOut(out);
@@ -154,6 +158,8 @@ public class CDep {
     }
     handleWorkingFolder(args);
     handleDownloadFolder(args);
+    handleGeneratedModulesFolder(args);
+    handleOverrideBuildSystem(args);
     if (handleWrapper(args)) {
       return;
     }
@@ -196,10 +202,18 @@ public class CDep {
 
   private void runBuilders(@NotNull GeneratorEnvironment environment,
                            @NotNull FunctionTableExpression table) throws IOException {
-    if (config == null || config.builders == null) {
+    if (config == null) {
       return;
     }
-    for (BuildSystem buildSystem : config.builders) {
+    BuildSystem builders[] = null;
+    if (config.builders != null) {
+      builders = config.builders;
+    }
+    if (this.overrideBuildSystem != null) {
+      builders = new BuildSystem[]{this.overrideBuildSystem};
+    }
+
+    for (BuildSystem buildSystem : builders) {
       switch (buildSystem.name) {
         case BuildSystem.CMAKE:
           new CMakeGenerator(environment, table).generate();
@@ -627,6 +641,9 @@ public class CDep {
       downloadedPackagesFolder = this.config.downloadedPackagesFolder;
       generatedModulesFolder = this.config.generatedModulesFolder;
     }
+    if (this.generatedModulesFolder != null) {
+      generatedModulesFolder = this.generatedModulesFolder;
+    }
     return new GeneratorEnvironment(
         workingFolder,
         downloadFolder,
@@ -688,6 +705,25 @@ public class CDep {
   private void handleDownloadFolder(@NotNull List<String> args) {
     for (String workingFolder : eatStringArgument("-df", "--download-folder", args)) {
       this.workingFolder = new File(workingFolder);
+    }
+  }
+
+  private void handleGeneratedModulesFolder(@NotNull List<String> args) {
+    for (String generatedModulesFolder : eatStringArgument("-gmf", "--generated-modules-folder", args)) {
+      this.generatedModulesFolder = generatedModulesFolder;
+    }
+  }
+
+  private void handleOverrideBuildSystem(@NotNull List<String> args) {
+    for (String overrideBuildSystem : eatStringArgument("-b", "--builder", args)) {
+      BuildSystem result = null;
+      for (BuildSystem buildSystem : BuildSystem.values()) {
+        if (buildSystem.name.equals(overrideBuildSystem)) {
+          result = buildSystem;
+        }
+      }
+      require(result != null, "Builder %s is not recognized.", overrideBuildSystem);
+      this.overrideBuildSystem = result;
     }
   }
 
