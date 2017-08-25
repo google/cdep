@@ -184,6 +184,9 @@ public class CDep {
     if (!handleReadCDepYml()) {
       return;
     }
+    if (Invariant.errorsInScope() > 0) {
+      return;
+    }
     if (handleFetchArchive(args)) {
       return;
     }
