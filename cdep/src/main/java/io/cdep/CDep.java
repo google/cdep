@@ -70,6 +70,8 @@ public class CDep {
   private File configFile = null;
   @Nullable
   private BuildSystem overrideBuildSystem = null;
+  @Nullable
+  private String callerID = null;
 
   CDep(@NotNull PrintStream out, @NotNull PrintStream err, boolean ansi) {
     IO.setOut(out);
@@ -160,6 +162,7 @@ public class CDep {
     handleDownloadFolder(args);
     handleGeneratedModulesFolder(args);
     handleOverrideBuildSystem(args);
+    handleCallerID(args);
     if (handleWrapper(args)) {
       return;
     }
@@ -714,6 +717,12 @@ public class CDep {
   private void handleGeneratedModulesFolder(@NotNull List<String> args) {
     for (String generatedModulesFolder : eatStringArgument("-gmf", "--generated-modules-folder", args)) {
       this.generatedModulesFolder = generatedModulesFolder;
+    }
+  }
+
+  private void handleCallerID(@NotNull List<String> args) {
+    for (String generatedModulesFolder : eatStringArgument("-cid", "--caller-id", args)) {
+      this.callerID = callerID;
     }
   }
 
