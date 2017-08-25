@@ -357,6 +357,26 @@ public class TestCDep {
   }
 
   @Test
+  public void emptyCdepYml() throws Exception {
+    CDepYml config = new CDepYml();
+    System.out.printf(new Yaml().dump(config));
+    File yaml = new File(".test-files/emptyCdepYml/cdep.yml");
+    yaml.getParentFile().mkdirs();
+    Files.write("", yaml, StandardCharsets.UTF_8);
+
+    try {
+      String result = main("-wf", yaml.getParent());
+      System.out.print(result);
+      fail("Expected failure");
+    } catch (CDepRuntimeException e) {
+      assertThat(e.getMessage()).endsWith("cdep.yml was empty");
+      assertThat(e.errorInfo.file).endsWith("cdep.yml");
+      assertThat(e.errorInfo.line).isNull();
+      assertThat(e.errorInfo.code).isEqualTo("137b0ec");
+    }
+  }
+
+  @Test
   public void sqlite() throws Exception {
     CDepYml config = new CDepYml();
     System.out.printf(new Yaml().dump(config));
