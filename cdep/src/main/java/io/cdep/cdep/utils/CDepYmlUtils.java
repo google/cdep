@@ -36,13 +36,13 @@ abstract public class CDepYmlUtils {
   public static void checkSanity(@NotNull CDepYml cdepYml, File configFile) {
     Set<BuildSystem> builders = new HashSet<>();
     for (BuildSystem builder : cdepYml.builders) {
-      require(!builders.contains(builder), "%s 'builders' contains '%s' more than once", configFile, builder);
+      require(!builders.contains(builder), "'builders' contains '%s' more than once", builder);
       builders.add(builder);
     }
 
     if (cdepYml.builders.length == 0) {
       String allowed = StringUtils.joinOn(" ", BuildSystem.values());
-      fail("%s 'builders' section is " + "missing or empty. Valid values are: %s.", configFile, allowed);
+      fail("'builders' section is " + "missing or empty. Valid values are: %s.", allowed);
     }
   }
 

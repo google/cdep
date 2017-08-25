@@ -210,6 +210,15 @@ public class TestCDep {
         "com.github.jomof:boost:1.0.63-rev18"
     ));
   }
+  
+  @Test
+  public void callerID() throws Exception {
+    main(main("lint",
+        "com.github.jomof:boost:1.0.63-rev18",
+        "--caller-id",
+        "cdep-unit-tests"
+    ));
+  }
 
   @Test
   public void lintSomeKnownLibraries() throws Exception {
