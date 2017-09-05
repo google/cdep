@@ -74,12 +74,10 @@ Generating .cdep/modules/cdep-dependencies-config.cmake
 At this point, CDep has only downloaded the package manifest. The parts of the package needed to build will be downloaded on demand.
 
 ## Step 5 -- Reduce ABIs built to those that SQLite supports
-Most CDep packages, including SQLite, don't support mips and mips64. However, some versions of Android Studio still build those ABIs by default. Let's reduce the set by editing the same build.gradle file from Step 4. Add the following section under defaultConfig.
+Most CDep packages, including SQLite, don't support mips and mips64. However, some versions of Android Studio still build those ABIs by default. Let's reduce the set by editing app/build.gradle. Add the following section under `defaultConfig`.
 ```
-defaultConfig {
-    ndk {
-        abiFilters "x86", "x86_64", "armeabi-v7a", "armeabie", "arm64-v8a"
-    }
+ndk {
+    abiFilters "x86", "x86_64", "armeabi-v7a", "armeabi", "arm64-v8a"
 }
 ```
 
