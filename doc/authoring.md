@@ -7,10 +7,10 @@ This tutorial runs on Ubuntu and it will require some modifications to work on M
 
 ## Step 1 -- Fork BoringSSL on Github
 Navigate to https://github.com/google/boringssl and click the Fork button.
-After the fork is complete, go to settings and rename the repository to "boringssl-tutorial".
+After the fork is complete, go to settings and rename the repository to "boringssl-tutorial". Now clone your "boringssl-tutorial" repository onto your local machine. 
 
 ## Step 2 -- Install CMake
-This step installs CMake in a new folder. You can skip this step if you already have CMake 3.7.1 or later, but you will need to modifiy subsequent steps to reference that CMake instead.
+This step installs CMake into your "boringssl-tutorial" folder. You can skip this step if you already have CMake 3.7.1 or later, but you will need to modifiy subsequent steps to reference that CMake instead. If you are not using Linux go to the [CMake downloads page](https://cmake.org/download/) to get the zip file URL for your OS. 
 ```
 cd boringssl-tutorial
 wget https://cmake.org/files/v3.8/cmake-3.8.1-Linux-x86_64.tar.gz
@@ -67,7 +67,7 @@ The upload folder contains the files we will eventually upload to Github as a Re
 ```
 mkdir upload
 cp build/armeabi/ssl/libssl.a staging/lib/armeabi
-cp build/armeabi/crypto/crypto.a staging/lib/armeabi
+cp build/armeabi/crypto/libcrypto.a staging/lib/armeabi
 pushd staging
 zip -r ../upload/boringssl-tutorial-armeabi.zip .
 popd
@@ -247,10 +247,10 @@ export GITHUB_TOKEN=<paste your token here>
 ```
 
 ## Step 15 -- Upload local files to Github
-Get a tool that will help us upload.
+Get a tool that will help us upload. Again, if you're not using Linux go to [the releases page](https://github.com/aktau/github-release/releases) to choose the correct version for your OS.
 
 ```
-wget https://github.com/aktau/github-release/releases/download/v0.7.2/linux-amd64-github-release.tar.bz2
+wget https://github.com/aktau/github-release/releases/download/v0.7.2/linux-amd64-github-release.tar.bz2 -O linux-amd64-github-release.tar.bz2
 tar xvjf linux-amd64-github-release.tar.bz2
 ```
 
