@@ -1,5 +1,5 @@
 # CDep Package Author's Guide
-This tutorial will show how to author your own CDep package and host it on Github. We'll package BorningSSL so that it can be used by CDep. When you're done you'll have a package that any CDep user can reference in their project.
+This tutorial will show how to author your own CDep package and host it on Github. We'll package BoringSSL so that it can be used by CDep. When you're done you'll have a package that any CDep user can reference in their project.
 
 Prerequisites: Have or create a Github account and read [Anatomy of a CDep Package](https://github.com/google/cdep/blob/master/doc/anatomy.md)
 
@@ -12,7 +12,7 @@ After the fork is complete, go to settings and rename the repository to "borings
 ## Step 2 -- Install CMake
 This step installs CMake in a new folder. You can skip this step if you already have CMake 3.7.1 or later, but you will need to modifiy subsequent steps to reference that CMake instead.
 ```
-cd openssl-tutorial
+cd boringssl-tutorial
 wget https://cmake.org/files/v3.8/cmake-3.8.1-Linux-x86_64.tar.gz
 tar xvzf cmake-3.8.1-Linux-x86_64.tar.gz
 ```
