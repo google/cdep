@@ -72,12 +72,22 @@ pushd staging
 zip -r ../upload/boringssl-tutorial-armeabi.zip .
 popd
 ```
-
+NB: If your package has generated headers that are specific to the abi, then the process here needs to follow this simple modification.
+```
+mkdir upload
+cp -Rp build/gen/armeabi/include staging/include
+cp build/armeabi/ssl/libssl.a staging/lib/armeabi
+cp build/armeabi/crypto/libcrypto.a staging/lib/armeabi
+pushd staging
+zip -r ../upload/boringssl-tutorial-armeabi.zip .
+popd
+```
 ## Step 7 -- Create another zip file with include files
 ```
 zip -r upload/boringssl-tutorial-headers.zip include/
 ```
-
+NB: In the event your package contains generated headers then they will need to be added during step 6.  The include files that go here are for includes that are common across all abi types.
+```
 ## Step 8 -- Create a manifest file with coordinate for this package
 This creates a file called cdep-manifest.yml that describes the package. You can also do this step in a text editor if you like.
 
