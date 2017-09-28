@@ -82,12 +82,13 @@ pushd staging
 zip -r ../upload/boringssl-tutorial-armeabi.zip .
 popd
 ```
+
 ## Step 7 -- Create another zip file with include files
 ```
 zip -r upload/boringssl-tutorial-headers.zip include/
-```
+``` 
 NB: In the event your package contains generated headers then they will need to be added during step 6.  The include files that go here are for includes that are common across all abi types.
-```
+
 ## Step 8 -- Create a manifest file with coordinate for this package
 This creates a file called cdep-manifest.yml that describes the package. You can also do this step in a text editor if you like.
 
@@ -140,7 +141,6 @@ Last, we need add the size of the zip file to the manifest.
 printf "    size: " >> upload/cdep-manifest.yml
 ls -l upload/boringssl-tutorial-headers.zip | awk '{print $5}' >> upload/cdep-manifest.yml
 ```
-
 ## Step 11 -- Add library file archive to the manifest
 This step is similar to step 10. It adds the zipped libraries archive along with size and sha256.
 ```
@@ -163,6 +163,11 @@ printf "    %s\r\n" "  platform: 16" >> upload/cdep-manifest.yml
 Specify the libraries that the archive holds.
 ```
 printf "      libs: [libssl.a, libcrypto.a]\r\n" >> upload/cdep-manifest.yml
+```
+
+NB: If your project has generated headers that are abi specific.  Add the path to them here:
+```
+printf "      include: include\r\n"
 ```
 
 ## Step 12 -- Add an example to the manifest
@@ -234,6 +239,23 @@ cmake-3.8.1-Linux-x86_64/bin/cmake \
   -DCMAKE_ANDROID_NDK=`pwd`/android-ndk-r14b \
   -DCMAKE_ANDROID_ARCH_ABI=armeabi
 cmake-3.8.1-Linux-x86_64/bin/cmake --build build/examples
+```
+NB: To compile on OSX, use the cmake that comes with the Android SDK like this:
+
+```
+$ANDROID_HOME/cmake/3.6.3155560/bin/cmake \
+   -H.cdep/examples/cmake/ \
+   -Bbuild/examples \
+   -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+   -DCMAKE_ANDROID_NDK_TOOLCHAIN_VERSION=clang \
+   -DCMAKE_SYSTEM_NAME=Android \
+   -DCMAKE_SYSTEM_VERSION=16 \
+   -DANDROID_PLATFORM=android-21 \
+   -DANDROID_ABI=armeabi \
+   -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake \
+   -DCMAKE_ANDROID_STL_TYPE=c++_static \
+   -DCMAKE_ANDROID_ARCH_ABI=armeabi
+$ANDROID_HOME/cmake/3.6.3155560/bin/cmake --build build/examples
 ```
 
 If that builds successfully then you can be pretty confident you have a working package.
