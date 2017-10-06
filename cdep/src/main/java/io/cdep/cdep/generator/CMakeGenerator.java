@@ -48,6 +48,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.IllegalFormatException;
 import java.util.Objects;
 
@@ -62,6 +63,7 @@ public class CMakeGenerator {
   final private FunctionTableExpression table;
   @NotNull
   private StringBuilder sb;
+  private ArrayList<String> dependsList;
   private int indent = 0;
   @Nullable
   private GlobalBuildEnvironmentExpression globals = null;
@@ -75,6 +77,7 @@ public class CMakeGenerator {
     table = (FunctionTableExpression) new CxxLanguageStandardRewritingVisitor().visit(table);
     this.table = table;
     this.sb = new StringBuilder();
+    this.dependsList = new ArrayList<>();
   }
 
   public void generate() throws IOException {
@@ -264,7 +267,8 @@ public class CMakeGenerator {
     } else if (expression instanceof ModuleExpression) {
       ModuleExpression specific = (ModuleExpression) expression;
       for (Coordinate dependency : specific.dependencies) {
-        append("\n%s%s(${target})", prefix, getAddDependencyFunctionName(dependency));
+          dependsList.add(getAddDependencyFunctionName(dependency));
+//        append("\n%s%s(${target})", prefix, getAddDependencyFunctionName(dependency));
       }
       append("\n");
       visit(specific.archive);
@@ -319,16 +323,23 @@ public class CMakeGenerator {
               specific.size.toString(),
               specific.sha256));
       if (specific.includePath != null) {
-        append("%starget_include_directories(${target} PRIVATE ", prefix);
+        append("%starget_include_directories(${target} INTERFACE ", prefix); //change to interface from private so multi-level dependencies can work.
         visit(specific.includePath);
         append(")\n");
       }
 
       for(Expression libraryPath : specific.libraryPaths) {
-        append("%starget_link_libraries(${target} ", prefix);
+        String fullPath= libraryPath.toString();
+        String libName = fullPath.substring(fullPath.lastIndexOf("/")+1,fullPath.lastIndexOf("."));
+        append("%sadd_library(%s STATIC IMPORTED )\n", prefix, libName);
+        append("%sset_target_properties(%s PROPERTIES IMPORTED_LOCATION ", prefix, libName);
         visit(libraryPath);
         append(")\n");
+        for(String depends : dependsList)
+          append("%s%s(%s)\n", prefix, depends, libName);
+        append("%starget_link_libraries(${target} %s)\n", prefix, libName);
       }
+      dependsList = new ArrayList<>();
       return;
     } else if (expression instanceof ArrayExpression) {
       ArrayExpression specific = (ArrayExpression) expression;

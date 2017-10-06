@@ -1130,6 +1130,73 @@ public class ResolvedManifests {
   }
 
   @NotNull
+  public static TestManifest zlibAndroid() throws MalformedURLException {
+    return getResolvedManifest(
+            "coordinate:\n groupId: com.github.gpx1000\n artifactId: zlib\n version: 1.2.11\n" +
+                    "interfaces:\n" +
+                    " headers:\n" +
+                    "  file: zlib-headers.zip\n" +
+                    "  include: include\n" +
+                    "  sha256: 14b492a32f6edafc8ecbc372599678c306898959e6f7fe8663823b7e30883592\n" +
+                    "  size: 30917\n" +
+                    "android:\n archives:\n" +
+                    " - file: zlib-armeabi.zip\n" +
+                    "   sha256: 633ed090fce4ea51c7c7b7a00b7011145f9dc29376c16dcca133baaabac438a2\n" +
+                    "   size: 147010\n" +
+                    "   abi: armeabi\n" +
+                    "   platform: 21\n" +
+                    "   libs: [libz.a]\n" +
+                    "example: |\n #include<zlib.h>\n void test() {\n  z_stream compresser;\n  deflateInit(&compresser, Z_BEST_COMPRESSION);\n }\n"
+    );
+  }
+
+  @NotNull
+  public static TestManifest boringSSLAndroid() throws MalformedURLException {
+    return getResolvedManifest(
+            "coordinate:\n groupId: com.github.gpx1000\n artifactId: boringssl\n version: 0.0.0\n" +
+                    "interfaces:\n" +
+                    " headers:\n" +
+                    "  file: boringssl-headers.zip\n" +
+                    "  include: include\n" +
+                    "  sha256: a8a9664dd6957a975a68cfb3b8f92ba556e6e508f3460848915570683b54db44\n" +
+                    "  size: 336962\n" +
+                    "android:\n archives:\n" +
+                    " - file: boringssl-armeabi.zip\n" +
+                    "   sha256: c253fe6759117ff3fc3498fb8b8606c890a18b84862ce8e4bbb3067df4326f0a\n" +
+                    "   size: 3727582\n" +
+                    "   abi: armeabi\n" +
+                    "   platform: 21\n" +
+                    "   libs: [libssl.a, libcrypto.a]\n" +
+                    "example: |\n #include<openssl/ssl.h>\n void test() {\n  OpenSSL_add_all_algorithms();\n }\n"
+    );
+  }
+
+  @NotNull
+  public static TestManifest curlAndroid() throws MalformedURLException {
+    return getResolvedManifest(
+            "coordinate:\n groupId: com.github.gpx1000\n artifactId: curl\n version: 7.56.0\ndependencies:\n" +
+                    "- compile: \"com.github.gpx1000:zlib:1.2.11\"\n" +
+                    "  sha256: cbdb96db3b4e07f41cbbe0407863b6ae3cecfaf34821b6b252c816791d70196a\n" +
+                    "- compile: \"com.github.gpx1000:boringssl:0.0.0\"\n" +
+                    "  sha256: 315208379a3c869ad3da772bb6e6c9e5be5c7760d34da7636379c2487f68c97c\n" +
+                    "interfaces:\n" +
+                    " headers:\n" +
+                    "  file: curl-headers.zip\n" +
+                    "  include: include\n" +
+                    "  sha256: 324966ae870d74afac48e5a8f57593f484f664cc57702c3d69932dd9f55186f4\n" +
+                    "  size: 48295\n" +
+                    "android:\n archives:\n" +
+                    " - file: curl-armeabi.zip\n" +
+                    "   sha256: 05a4d51826fe7986fa51064ac85d362ff58a81e395e990981a6bc9bbf5bc9b53\n" +
+                    "   size: 262599\n" +
+                    "   abi: armeabi\n" +
+                    "   platform: 21\n" +
+                    "   libs: [libcurl.a]\n" +
+                    "example: |\n #include<curl/curl.h>\n void test() {\n  CURL *curl = curl_easy_init();\n }\n"
+    );
+  }
+
+  @NotNull
   static TestManifest emptyiOSArchive() throws MalformedURLException {
     return getResolvedManifest(
         "coordinate:\n  groupId: com.github.jomof\n  artifactId: sqlite\n  version: 0.0.0\nandroid:\n  archives:\n  - lib: " +

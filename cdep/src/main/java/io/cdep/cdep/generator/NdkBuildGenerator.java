@@ -15,9 +15,12 @@
 */
 package io.cdep.cdep.generator;
 
-import static io.cdep.cdep.io.IO.infoln;
-import static io.cdep.cdep.utils.Invariant.require;
-import static io.cdep.cdep.utils.StringUtils.safeFormat;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import io.cdep.API;
 import io.cdep.annotations.NotNull;
@@ -41,25 +44,24 @@ import io.cdep.cdep.utils.CommandLineUtils;
 import io.cdep.cdep.utils.ExpressionUtils;
 import io.cdep.cdep.utils.FileUtils;
 import io.cdep.cdep.utils.StringUtils;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.*;
+
+import static io.cdep.cdep.io.IO.infoln;
+import static io.cdep.cdep.utils.StringUtils.safeFormat;
 
 public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
 
-  GlobalBuildEnvironmentExpression globals;
+  private GlobalBuildEnvironmentExpression globals;
 
   @Nullable
-  String currentLib = null;
+  private String currentLib = null;
 
   @Nullable
-  Coordinate coordinate = null;
+  private Coordinate coordinate = null;
 
   @Nullable
-  String moduleName = null;
+  private String moduleName = null;
 
-  int indent = 0;
+  private int indent = 0;
 
   public NdkBuildGenerator(@NotNull GeneratorEnvironment environment) {
     super(environment);
@@ -77,6 +79,7 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
     globals = expr.globals;
     File moduleFolder = new File(environment.modulesFolder, "ndk-build");
     moduleFolder = new File(moduleFolder, "cdep-dependencies");
+    //noinspection ResultOfMethodCallIgnored
     moduleFolder.mkdirs();
     File androidMk = new File(moduleFolder, "Android.mk");
     infoln("Generating %s", androidMk);
@@ -207,6 +210,7 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
       visit(expr.includePath);
       String includePath = popStringBuilder();
 
+      // @TODO: this always passes the check.  I'm assuming there's missing logic determining if the download has already happened.
       if (!haveDownloaded) {
         fetchSingleArchive(expr, fetchCommand, completionSentinel);
         haveDownloaded = true;
@@ -215,9 +219,12 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
 
     }
     if (expr.libraryPaths.length > 0) {
+      // @TODO: saw will go away within this scope and is never used other than to update.  Can likely lose it unless missing functionality WIP. For now will go off assumption that "saw" means desire for creating a uniques only array and skipping if seen before.
       List<String> saw = new ArrayList<>();
       for (int i = 0; i < expr.libraryPaths.length; ++i) {
         String lib = CommandLineUtils.getLibraryNameFromLibraryFilename(new File(expr.libs[i]));
+        if(saw.contains(lib)) // @TODO: check if this is what saw was intended to do; just assumption.
+          continue;
         saw.add(lib);
         if (!lib.equals(currentLib)) {
           continue;
@@ -259,11 +266,11 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
   @Override
   protected void visitInvokeFunctionExpression(@NotNull InvokeFunctionExpression expr) {
     if (expr.function == ExternalFunctionExpression.FILE_JOIN_SEGMENTS) {
-      for (int i = 0; i < expr.parameters.length; ++i) {
-        if (i > 0) {
-          append("/");
-        }
-        visit(expr.parameters[i]);
+      String currentSeparator = "";
+      for (Expression expression : expr.parameters) {
+        append(currentSeparator);
+        visit(expression);
+        currentSeparator = "/";
       }
       return;
     }
@@ -333,7 +340,7 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
     ++indent;
     visit(expr.elseExpression);
     --indent;
-    for (int i = 0; i < expr.conditions.length; ++i) {
+    for (Expression ignored : expr.conditions) {
       appendIndented("endif");
     }
   }

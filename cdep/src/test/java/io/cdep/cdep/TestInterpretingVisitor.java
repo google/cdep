@@ -32,6 +32,8 @@ import io.cdep.cdep.yml.cdepmanifest.CxxLanguageFeatures;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+
 import net.java.quickcheck.QuickCheck;
 import net.java.quickcheck.characteristic.AbstractCharacteristic;
 import org.junit.Test;
@@ -128,7 +130,11 @@ public class TestInterpretingVisitor {
     boolean unexpectedFailures = false;
     for (ResolvedManifests.NamedManifest manifest : ResolvedManifests.all()) {
       BuildFindModuleFunctionTable builder = new BuildFindModuleFunctionTable();
-      builder.addManifest(manifest.resolved);
+      if(Objects.equals(manifest.name, "curlAndroid"))
+      {
+        builder.addManifest(ResolvedManifests.zlibAndroid().manifest);
+        builder.addManifest(ResolvedManifests.boringSSLAndroid().manifest);
+      }      builder.addManifest(manifest.resolved);
       String expectedFailure = expected.get(manifest.name);
       try {
         final FunctionTableExpression function = builder.build();
@@ -203,6 +209,11 @@ public class TestInterpretingVisitor {
     boolean unexpectedFailures = false;
     for (ResolvedManifests.NamedManifest manifest : ResolvedManifests.all()) {
       BuildFindModuleFunctionTable builder = new BuildFindModuleFunctionTable();
+      if(Objects.equals(manifest.name, "curlAndroid"))
+      {
+        builder.addManifest(ResolvedManifests.zlibAndroid().manifest);
+        builder.addManifest(ResolvedManifests.boringSSLAndroid().manifest);
+      }
       builder.addManifest(manifest.resolved);
       String expectedFailure = expected.get(manifest.name);
       try {
@@ -287,6 +298,11 @@ public class TestInterpretingVisitor {
     boolean unexpectedFailures = false;
     for (ResolvedManifests.NamedManifest manifest : ResolvedManifests.all()) {
       final BuildFindModuleFunctionTable builder = new BuildFindModuleFunctionTable();
+      if(Objects.equals(manifest.name, "curlAndroid"))
+      {
+        builder.addManifest(ResolvedManifests.zlibAndroid().manifest);
+        builder.addManifest(ResolvedManifests.boringSSLAndroid().manifest);
+      }
       builder.addManifest(manifest.resolved);
       String expectedFailure = expected.get(manifest.name);
       try {

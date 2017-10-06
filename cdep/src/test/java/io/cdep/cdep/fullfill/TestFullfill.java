@@ -15,26 +15,31 @@
 */
 package io.cdep.cdep.fullfill;
 
+import net.java.quickcheck.QuickCheck;
+import net.java.quickcheck.characteristic.AbstractCharacteristic;
+
+import org.junit.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import io.cdep.cdep.Coordinate;
 import io.cdep.cdep.ResolvedManifests;
 import io.cdep.cdep.Version;
 import io.cdep.cdep.generator.GeneratorEnvironment;
 import io.cdep.cdep.io.IO;
 import io.cdep.cdep.utils.CDepManifestYmlUtils;
+import io.cdep.cdep.utils.CDepRuntimeException;
 import io.cdep.cdep.utils.FileUtils;
 import io.cdep.cdep.utils.Invariant;
-import io.cdep.cdep.utils.CDepRuntimeException;
 import io.cdep.cdep.yml.CDepManifestYmlGenerator;
 import io.cdep.cdep.yml.cdepmanifest.CDepManifestYml;
-import net.java.quickcheck.QuickCheck;
-import net.java.quickcheck.characteristic.AbstractCharacteristic;
-import org.junit.Test;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.PrintStream;
-import java.util.*;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.cdep.cdep.utils.Invariant.require;
@@ -52,12 +57,9 @@ public class TestFullfill {
   private File[] templates(File... folders) {
     List<File> templates = new ArrayList<>();
     for (File folder : folders) {
-      Collections.addAll(templates, folder.listFiles(new FileFilter() {
-        @Override
-        public boolean accept(File pathname) {
-          return pathname.getName().startsWith("cdep-manifest");
-        }
-      }));
+      File [] cdepsFound = folder.listFiles(pathname -> pathname.getName().startsWith("cdep-manifest"));
+      if(cdepsFound != null && cdepsFound.length != 0)
+        Collections.addAll(templates, cdepsFound);
     }
     return templates.toArray(new File[templates.size()]);
   }
@@ -118,7 +120,8 @@ public class TestFullfill {
     assertThat(manifest.dependencies[0].sha256).isNotNull();
     assertThat(manifest.dependencies[0].sha256).isNotEmpty();
     // Don't allow + in file name to escape.
-    assertThat(manifest.android.archives[0].file.contains("+")).isFalse();
+    if(manifest.android != null)
+      assertThat(manifest.android.archives[0].file.contains("+")).isFalse();
   }
 
   @Test

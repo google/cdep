@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
@@ -363,6 +364,8 @@ public class TestCDepManifestYmlUtils {
     boolean somethingUnexpected = false;
     for (ResolvedManifests.NamedManifest manifest1 : ResolvedManifests.all()) {
       for (ResolvedManifests.NamedManifest manifest2 : ResolvedManifests.all()) {
+        if(Objects.equals(manifest1.name, "curlAndroid") || Objects.equals(manifest2.name, "curlAndroid"))
+          continue;
         String key = manifest1.name + "-" + manifest2.name;
         String expectedFailure = expected.get(key);
         CDepManifestYml manifest;
