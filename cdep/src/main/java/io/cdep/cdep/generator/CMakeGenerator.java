@@ -51,6 +51,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.IllegalFormatException;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class CMakeGenerator {
 
@@ -88,7 +89,7 @@ public class CMakeGenerator {
   }
 
   @NotNull
-  public String create() {
+  String create() {
     append("# GENERATED FILE. DO NOT EDIT.\n");
     append(readCmakeLibraryFunctions());
     for (StatementExpression findFunction : table.findFunctions.values()) {
@@ -266,10 +267,9 @@ public class CMakeGenerator {
       return;
     } else if (expression instanceof ModuleExpression) {
       ModuleExpression specific = (ModuleExpression) expression;
-      for (Coordinate dependency : specific.dependencies) {
-          dependsList.add(getAddDependencyFunctionName(dependency));
-//        append("\n%s%s(${target})", prefix, getAddDependencyFunctionName(dependency));
-      }
+      dependsList.addAll(
+              specific.dependencies.stream().map(this::getAddDependencyFunctionName)
+                      .collect(Collectors.toList()));
       append("\n");
       visit(specific.archive);
       return;
@@ -330,7 +330,13 @@ public class CMakeGenerator {
 
       for(Expression libraryPath : specific.libraryPaths) {
         String fullPath= libraryPath.toString();
-        String libName = fullPath.substring(fullPath.lastIndexOf("/")+1,fullPath.lastIndexOf("."));
+        String libName;
+        if(fullPath.contains(".") && fullPath.contains("/") && fullPath.lastIndexOf(".") - fullPath.lastIndexOf("/") > 0)
+          libName = fullPath.substring(fullPath.lastIndexOf("/")+1,fullPath.lastIndexOf("."));
+        else if(fullPath.contains("//"))
+          libName = fullPath.substring(fullPath.lastIndexOf("/")+1);
+        else
+          libName = fullPath;
         append("%sadd_library(%s STATIC IMPORTED )\n", prefix, libName);
         append("%sset_target_properties(%s PROPERTIES IMPORTED_LOCATION ", prefix, libName);
         visit(libraryPath);

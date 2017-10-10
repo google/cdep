@@ -360,6 +360,8 @@ public class TestCDepManifestYmlUtils {
     expected.put("fuzz2-fuzz2", "Manifest was missing coordinate");
     expected.put("openssl-openssl", "Android archive com.github.jomof:openssl:1.0.1-e-rev6 file openssl-android-stlport-21-armeabi.zip is indistinguishable at build time from openssl-android-stlport-21-armeabi.zip given the information in the manifest");
     expected.put("opencv-opencv", "Android archive com.github.jomof:opencv:3.2.0-rev2 file opencv-android-12-arm64-v8a.zip is indistinguishable at build time from opencv-android-12-arm64-v8a.zip given the information in the manifest");
+    expected.put("boringSSLAndroid-boringSSLAndroid", "Android archive com.github.gpx1000:boringssl:0.0.0 file boringssl-armeabi.zip is indistinguishable at build time from boringssl-armeabi.zip given the information in the manifest");
+    expected.put("zlibAndroid-zlibAndroid", "Android archive com.github.gpx1000:zlib:1.2.11 file zlib-armeabi.zip is indistinguishable at build time from zlib-armeabi.zip given the information in the manifest");
 
     boolean somethingUnexpected = false;
     for (ResolvedManifests.NamedManifest manifest1 : ResolvedManifests.all()) {

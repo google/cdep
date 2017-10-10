@@ -126,15 +126,14 @@ public class TestInterpretingVisitor {
     expected.put("fuzz2", "Abort: Archive file could not be converted to URL. It is likely an illegal path.");
     expected.put("openssl", "Abort: Target platform Linux is not supported by com.github.jomof:openssl:1.0.1-e-rev6. Supported: Android");
     expected.put("opencv", "Abort: Target platform Linux is not supported by com.github.jomof:opencv:3.2.0-rev2. Supported: Android");
+    expected.put("curlAndroid", "Reference com.github.gpx1000:boringssl:0.0.0 was not found, needed by com.github.gpx1000:curl:7.56.0");
+    expected.put("zlibAndroid", "Abort: Target platform Linux is not supported by com.github.gpx1000:zlib:1.2.11. Supported: Android");
+    expected.put("boringSSLAndroid", "Abort: Target platform Linux is not supported by com.github.gpx1000:boringssl:0.0.0. Supported: Android");
 
     boolean unexpectedFailures = false;
     for (ResolvedManifests.NamedManifest manifest : ResolvedManifests.all()) {
       BuildFindModuleFunctionTable builder = new BuildFindModuleFunctionTable();
-      if(Objects.equals(manifest.name, "curlAndroid"))
-      {
-        builder.addManifest(ResolvedManifests.zlibAndroid().manifest);
-        builder.addManifest(ResolvedManifests.boringSSLAndroid().manifest);
-      }      builder.addManifest(manifest.resolved);
+      builder.addManifest(manifest.resolved);
       String expectedFailure = expected.get(manifest.name);
       try {
         final FunctionTableExpression function = builder.build();
@@ -206,6 +205,10 @@ public class TestInterpretingVisitor {
         + "com.github.jomof:firebase/app:0.0.0 for platform 21. Supported: arm64-v8a ");
     expected.put("fuzz1", "Could not parse main manifest coordinate []");
     expected.put("fuzz2", "Abort: Archive file could not be converted to URL. It is likely an illegal path.");
+    expected.put("zlibAndroid", "Abort: Android ABI x86 is not supported by com.github.gpx1000:zlib:1.2.11 for platform 21. Supported: armeabi ");
+    expected.put("boringSSLAndroid", "Abort: Android ABI x86 is not supported by com.github.gpx1000:boringssl:0.0.0 for platform 21. Supported: armeabi ");
+    expected.put("curlAndroid", "Abort: Android ABI x86 is not supported by com.github.gpx1000:boringssl:0.0.0 for platform 21. Supported: armeabi ");
+
     boolean unexpectedFailures = false;
     for (ResolvedManifests.NamedManifest manifest : ResolvedManifests.all()) {
       BuildFindModuleFunctionTable builder = new BuildFindModuleFunctionTable();
@@ -295,6 +298,10 @@ public class TestInterpretingVisitor {
     expected.put("fuzz2", "Abort: Archive file could not be converted to URL. It is likely an illegal path.");
     expected.put("openssl", "Abort: Target platform Darwin is not supported by com.github.jomof:openssl:1.0.1-e-rev6. Supported: Android");
     expected.put("opencv", "Abort: Target platform Darwin is not supported by com.github.jomof:opencv:3.2.0-rev2. Supported: Android");
+    expected.put("zlibAndroid", "Abort: Target platform Darwin is not supported by com.github.gpx1000:zlib:1.2.11. Supported: Android");
+    expected.put("boringSSLAndroid", "Abort: Target platform Darwin is not supported by com.github.gpx1000:boringssl:0.0.0. Supported: Android");
+    expected.put("curlAndroid", "Abort: Target platform Darwin is not supported by com.github.gpx1000:boringssl:0.0.0. Supported: Android");
+
     boolean unexpectedFailures = false;
     for (ResolvedManifests.NamedManifest manifest : ResolvedManifests.all()) {
       final BuildFindModuleFunctionTable builder = new BuildFindModuleFunctionTable();

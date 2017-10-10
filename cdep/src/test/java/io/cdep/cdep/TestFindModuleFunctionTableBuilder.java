@@ -418,6 +418,7 @@ public class TestFindModuleFunctionTableBuilder {
     Map<String, String> expected = new HashMap<>();
     expected.put("admob", "Reference com.github.jomof:firebase/app:2.1.3-rev8 was not found");
     expected.put("fuzz1", "Could not parse main manifest coordinate []");
+    expected.put("curlAndroid", "Reference com.github.gpx1000:boringssl:0.0.0 was not found");
     for (ResolvedManifests.NamedManifest manifest : ResolvedManifests.all()) {
       BuildFindModuleFunctionTable builder = new BuildFindModuleFunctionTable();
       builder.addManifest(manifest.resolved);
