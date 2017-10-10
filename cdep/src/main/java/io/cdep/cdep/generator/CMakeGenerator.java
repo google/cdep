@@ -267,9 +267,10 @@ public class CMakeGenerator {
       return;
     } else if (expression instanceof ModuleExpression) {
       ModuleExpression specific = (ModuleExpression) expression;
-      dependsList.addAll(
-              specific.dependencies.stream().map(this::getAddDependencyFunctionName)
-                      .collect(Collectors.toList()));
+      for (Coordinate dependency : specific.dependencies) {
+        dependsList.add(getAddDependencyFunctionName(dependency));
+//        append("\n%s%s(${target})", prefix, getAddDependencyFunctionName(dependency));
+      }
       append("\n");
       visit(specific.archive);
       return;
