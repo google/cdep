@@ -34,7 +34,7 @@ After this, the instructions are the same as Linux and Mac.
 
 ## Getting started on Linux and Mac
 Get started with CDep on Linux or Mac by following these steps:
-1. Open a terminal window and navigate to the direcotry where your project is located.
+1. Open a terminal window and navigate to the directory where your project is located.
 2. Enter the following commands: 
      ```
      $ git clone https://github.com/jomof/cdep-redist.git  
