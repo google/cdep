@@ -15,8 +15,13 @@
 */
 package io.cdep.cdep.generator;
 
-import static io.cdep.cdep.io.IO.info;
-import static io.cdep.cdep.utils.Invariant.require;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.IllegalFormatException;
+import java.util.Objects;
 
 import io.cdep.API;
 import io.cdep.annotations.NotNull;
@@ -44,14 +49,9 @@ import io.cdep.cdep.ast.finder.ParameterExpression;
 import io.cdep.cdep.ast.finder.StatementExpression;
 import io.cdep.cdep.utils.FileUtils;
 import io.cdep.cdep.utils.StringUtils;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.IllegalFormatException;
-import java.util.Objects;
-import java.util.stream.Collectors;
+
+import static io.cdep.cdep.io.IO.info;
+import static io.cdep.cdep.utils.Invariant.require;
 
 public class CMakeGenerator {
 
