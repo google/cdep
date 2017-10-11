@@ -22,6 +22,7 @@ import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,9 +58,12 @@ public class TestFullfill {
   private File[] templates(File... folders) {
     List<File> templates = new ArrayList<>();
     for (File folder : folders) {
-      File [] cdepsFound = folder.listFiles(pathname -> pathname.getName().startsWith("cdep-manifest"));
-      if(cdepsFound != null && cdepsFound.length != 0)
-        Collections.addAll(templates, cdepsFound);
+      Collections.addAll(templates, folder.listFiles(new FileFilter() {
+         @Override
+         public boolean accept(File pathname) {
+           return pathname.getName().startsWith("cdep-manifest");
+         }
+       }));
     }
     return templates.toArray(new File[templates.size()]);
   }
