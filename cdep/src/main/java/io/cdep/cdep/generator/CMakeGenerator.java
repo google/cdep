@@ -65,6 +65,7 @@ public class CMakeGenerator {
   @NotNull
   private StringBuilder sb;
   private ArrayList<String> dependsList;
+  private Expression commonIncludes;
   private int indent = 0;
   @Nullable
   private GlobalBuildEnvironmentExpression globals = null;
@@ -269,7 +270,6 @@ public class CMakeGenerator {
       ModuleExpression specific = (ModuleExpression) expression;
       for (Coordinate dependency : specific.dependencies) {
         dependsList.add(getAddDependencyFunctionName(dependency));
-//        append("\n%s%s(${target})", prefix, getAddDependencyFunctionName(dependency));
       }
       append("\n");
       visit(specific.archive);
@@ -323,10 +323,11 @@ public class CMakeGenerator {
               specific.file.toString(),
               specific.size.toString(),
               specific.sha256));
-      if (specific.includePath != null) {
-        append("%starget_include_directories(${target} INTERFACE ", prefix); //change to interface from private so multi-level dependencies can work.
-        visit(specific.includePath);
-        append(")\n");
+      if (specific.includePath != null && commonIncludes == null) {
+        commonIncludes = specific.includePath;
+//        append("%starget_include_directories(${target} INTERFACE ", prefix); //change to interface from private so multi-level dependencies can work.
+//        visit(specific.includePath);
+//        append(")\n");
       }
 
       for(Expression libraryPath : specific.libraryPaths) {
@@ -341,10 +342,31 @@ public class CMakeGenerator {
         append("%sadd_library(%s STATIC IMPORTED )\n", prefix, libName);
         append("%sset_target_properties(%s PROPERTIES IMPORTED_LOCATION ", prefix, libName);
         visit(libraryPath);
+        if(specific.includePath != null || commonIncludes != null)
+        {
+          append(" INTERFACE_INCLUDE_DIRECTORIES ");
+          if(specific.includePath != null)
+            visit(specific.includePath);
+          append(" ");
+          if(commonIncludes != null)
+            visit(commonIncludes);
+          commonIncludes = null;
+        }
         append(")\n");
         for(String depends : dependsList)
-          append("%s%s(%s)\n", prefix, depends, libName);
-        append("%starget_link_libraries(${target} %s)\n", prefix, libName);
+          append("%s%s(%s, \"NoAutoTargetLink\")\n", prefix, depends, libName);
+
+        // @TODO: Add in some CMake logic to *only* provide auto target_link_libraries iff this is the highest library in dependency graph.
+        // NB: This is due to the CMake requirement that one cannot use target_link_libraries with a target that is imported.
+        // It is also an end-user convenienence, the standard practice seems to be set targets and let developer call link against a target.
+        // This works by assuming users wont add in extra args to our macro and only dependencies will do that.
+        // for now I'm leaving this commented out as someone needs to make a decision on if it's needed.
+//        append("%sset (extra_macro_args ${ARGN})\n", prefix);
+//
+//        append("%slist(LENGTH extra_macro_args num_extra_args)\n", prefix);
+//        append("%sif (${num_extra_args} EQUAL 0)\n", prefix);
+//        append("%s   target_link_libraries(${target} %s)\n", prefix, libName);
+//        append("%sendif()\n", prefix);
       }
       dependsList = new ArrayList<>();
       return;

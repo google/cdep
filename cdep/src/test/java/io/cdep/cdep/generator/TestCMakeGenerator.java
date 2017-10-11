@@ -84,7 +84,6 @@ public class TestCMakeGenerator {
 
   @Test
   public void testCurl() throws Exception {
-    // OpenCV has different libraries depending on target ABI
     BuildFindModuleFunctionTable builder = new BuildFindModuleFunctionTable();
     builder.addManifest(ResolvedManifests.zlibAndroid().manifest);
     builder.addManifest(ResolvedManifests.boringSSLAndroid().manifest);
