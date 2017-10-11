@@ -36,7 +36,7 @@ import java.util.List;
  *     - file: a.lib | b.lib
  *
  *   Remap:
- *     - file: a.lib -> somepath/a.lib
+ *     - file: a.lib -- to -- somepath/a.lib
  *
  */
 public class PathMapping {

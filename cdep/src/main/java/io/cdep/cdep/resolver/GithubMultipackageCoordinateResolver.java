@@ -29,7 +29,7 @@ import static java.util.regex.Pattern.compile;
  *
  *   http://[host]/[domain]/releases/download/[artifact]-[version]/cdep-manifest.yml
  *
- *      -->
+ *      -- to --
  *
  *   http://github.com/google/releases/download/sqlite-1.2.3/cdep-manifest.yml
  */
