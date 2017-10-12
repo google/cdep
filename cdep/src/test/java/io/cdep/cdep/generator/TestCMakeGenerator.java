@@ -78,8 +78,9 @@ public class TestCMakeGenerator {
     FunctionTableExpression table = builder.build();
     String result = new CMakeGenerator(environment, table).create();
     System.out.printf(result);
-    assertThat(result).contains("target_compile_features(${target} PRIVATE " +
-        "cxx_auto_type cxx_decltype)");
+    boolean headerOnly = result.contains("target_compile_features(${target} INTERFACE cxx_auto_type cxx_decltype)");
+    boolean archive = result.contains("INTERFACE_COMPILE_FEATURES cxx_auto_type cxx_decltype");
+    assert(headerOnly || archive);
   }
 
   @Test

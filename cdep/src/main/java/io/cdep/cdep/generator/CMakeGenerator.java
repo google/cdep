@@ -66,6 +66,8 @@ public class CMakeGenerator {
   private StringBuilder sb;
   private ArrayList<String> dependsList;
   private Expression commonIncludes;
+  private String compilerFeatures;
+  private int insertingIndex = 0;
   private int indent = 0;
   @Nullable
   private GlobalBuildEnvironmentExpression globals = null;
@@ -106,6 +108,14 @@ public class CMakeGenerator {
       append("  %s(${target})\n", function);
     }
     append("endfunction(add_all_cdep_dependencies)\n");
+    if(insertingIndex > 0) {
+      if(commonIncludes != null)
+        sb.insert(insertingIndex, "\ntarget_include_directories(${target} " + commonIncludes.toString() + ")\n");
+      commonIncludes = null;
+      if(compilerFeatures != null)
+        sb.insert(insertingIndex, "\ntarget_compile_features(${target} INTERFACE " + compilerFeatures + ")\n");
+      compilerFeatures = null;
+    }
     return sb.toString();
   }
 
@@ -237,7 +247,7 @@ public class CMakeGenerator {
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.ARRAY_HAS_ONLY_ELEMENT)) {
         append("%s STREQUAL %s", parms[0], parms[1]);
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.REQUIRES_COMPILER_FEATURES)) {
-        append("\r\n%starget_compile_features(${target} PRIVATE %s)\r\n", prefix, parms[0]);
+        compilerFeatures = parms[0];
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.SUPPORTS_COMPILER_FEATURES)) {
         append("cdep_supports_compiler_features");
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.NOT)) {
@@ -325,6 +335,7 @@ public class CMakeGenerator {
               specific.sha256));
       if (specific.includePath != null && commonIncludes == null) {
         commonIncludes = specific.includePath;
+        insertingIndex = sb.length();
 //        append("%starget_include_directories(${target} INTERFACE ", prefix); //change to interface from private so multi-level dependencies can work.
 //        visit(specific.includePath);
 //        append(")\n");
@@ -352,6 +363,12 @@ public class CMakeGenerator {
             visit(commonIncludes);
           commonIncludes = null;
         }
+        if(compilerFeatures != null)
+        {
+          append(" INTERFACE_COMPILE_FEATURES %s", compilerFeatures);
+          compilerFeatures = null;
+        }
+        insertingIndex = 0;
         append(")\n");
         for(String depends : dependsList)
           append("%s%s(%s, \"NoAutoTargetLink\")\n", prefix, depends, libName);
