@@ -68,6 +68,7 @@ public class CMakeGenerator {
   private Expression commonIncludes;
   private String compilerFeatures;
   private int insertingIndex = 0;
+  private String insertingPrefix;
   private int indent = 0;
   @Nullable
   private GlobalBuildEnvironmentExpression globals = null;
@@ -110,10 +111,10 @@ public class CMakeGenerator {
     append("endfunction(add_all_cdep_dependencies)\n");
     if(insertingIndex > 0) {
       if(commonIncludes != null)
-        sb.insert(insertingIndex, "\ntarget_include_directories(${target} " + commonIncludes.toString() + ")\n");
+        sb.insert(insertingIndex, "\n" + insertingPrefix + "target_include_directories(${target} INTERFACE " + commonIncludes.toString() + ")\n");
       commonIncludes = null;
       if(compilerFeatures != null)
-        sb.insert(insertingIndex, "\ntarget_compile_features(${target} INTERFACE " + compilerFeatures + ")\n");
+        sb.insert(insertingIndex, "\n" + insertingPrefix + "target_compile_features(${target} INTERFACE " + compilerFeatures + ")\n");
       compilerFeatures = null;
     }
     return sb.toString();
@@ -153,6 +154,8 @@ public class CMakeGenerator {
     String prefix = new String(new char[indent * 2]).replace('\0', ' ');
 
     if (expression instanceof FindModuleExpression) {
+      commonIncludes = null;
+      compilerFeatures = null;
       FindModuleExpression specific = (FindModuleExpression) expression;
       this.coordinate = specific.coordinate;
       append("\n###\n");
@@ -248,6 +251,7 @@ public class CMakeGenerator {
         append("%s STREQUAL %s", parms[0], parms[1]);
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.REQUIRES_COMPILER_FEATURES)) {
         compilerFeatures = parms[0];
+        append("\n");
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.SUPPORTS_COMPILER_FEATURES)) {
         append("cdep_supports_compiler_features");
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.NOT)) {
@@ -336,6 +340,7 @@ public class CMakeGenerator {
       if (specific.includePath != null && commonIncludes == null) {
         commonIncludes = specific.includePath;
         insertingIndex = sb.length();
+        insertingPrefix = prefix;
 //        append("%starget_include_directories(${target} INTERFACE ", prefix); //change to interface from private so multi-level dependencies can work.
 //        visit(specific.includePath);
 //        append(")\n");
@@ -355,35 +360,37 @@ public class CMakeGenerator {
         visit(libraryPath);
         if(specific.includePath != null || commonIncludes != null)
         {
-          append(" INTERFACE_INCLUDE_DIRECTORIES ");
-          if(specific.includePath != null)
+          if(specific.includePath != null) {
+            append(" INTERFACE_INCLUDE_DIRECTORIES ");
             visit(specific.includePath);
+          }
           append(" ");
-          if(commonIncludes != null)
+          if(commonIncludes != null) {
+            append("INTERFACE_INCLUDE_DIRECTORIES ");
             visit(commonIncludes);
-          commonIncludes = null;
+          }
         }
         if(compilerFeatures != null)
         {
+          compilerFeatures = compilerFeatures.replaceAll("\\s", " INTERFACE_COMPILE_FEATURES ");
           append(" INTERFACE_COMPILE_FEATURES %s", compilerFeatures);
           compilerFeatures = null;
         }
         insertingIndex = 0;
         append(")\n");
         for(String depends : dependsList)
-          append("%s%s(%s, \"NoAutoTargetLink\")\n", prefix, depends, libName);
+          append("%s%s(%s \"NoAutoTargetLink\")\n", prefix, depends, libName);
 
-        // @TODO: Add in some CMake logic to *only* provide auto target_link_libraries iff this is the highest library in dependency graph.
-        // NB: This is due to the CMake requirement that one cannot use target_link_libraries with a target that is imported.
-        // It is also an end-user convenienence, the standard practice seems to be set targets and let developer call link against a target.
-        // This works by assuming users wont add in extra args to our macro and only dependencies will do that.
-        // for now I'm leaving this commented out as someone needs to make a decision on if it's needed.
-//        append("%sset (extra_macro_args ${ARGN})\n", prefix);
-//
-//        append("%slist(LENGTH extra_macro_args num_extra_args)\n", prefix);
-//        append("%sif (${num_extra_args} EQUAL 0)\n", prefix);
-//        append("%s   target_link_libraries(${target} %s)\n", prefix, libName);
-//        append("%sendif()\n", prefix);
+        append("%sset (extra_macro_args ${ARGN})\n", prefix);
+
+        append("%slist(LENGTH extra_macro_args num_extra_args)\n", prefix);
+        append("%sif (${num_extra_args} EQUAL 0)\n", prefix);
+        append("%s   target_link_libraries(${target} %s)\n", prefix, libName);
+        append("%selse ()\n", prefix);
+        append("%s   set_property(TARGET ${target} APPEND PROPERTY INTERFACE_LINK_LIBRARIES ", prefix);
+        visit(libraryPath);
+        append(" )\n");
+        append("%sendif()\n", prefix);
       }
       dependsList = new ArrayList<>();
       return;
