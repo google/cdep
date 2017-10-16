@@ -109,14 +109,6 @@ public class CMakeGenerator {
       append("  %s(${target})\n", function);
     }
     append("endfunction(add_all_cdep_dependencies)\n");
-    if(insertingIndex > 0) {
-      if(commonIncludes != null)
-        sb.insert(insertingIndex, "\n" + insertingPrefix + "target_include_directories(${target} INTERFACE " + commonIncludes.toString() + ")\n");
-      commonIncludes = null;
-      if(compilerFeatures != null)
-        sb.insert(insertingIndex, "\n" + insertingPrefix + "target_compile_features(${target} INTERFACE " + compilerFeatures + ")\n");
-      compilerFeatures = null;
-    }
     return sb.toString();
   }
 
@@ -154,6 +146,14 @@ public class CMakeGenerator {
     String prefix = new String(new char[indent * 2]).replace('\0', ' ');
 
     if (expression instanceof FindModuleExpression) {
+      if(insertingIndex > 0) {
+        if(commonIncludes != null)
+          sb.insert(insertingIndex, "\n" + insertingPrefix + "target_include_directories(${target} PUBLIC " + commonIncludes.toString() + ")\n");
+        commonIncludes = null;
+        if(compilerFeatures != null)
+          sb.insert(insertingIndex, "\n" + insertingPrefix + "target_compile_features(${target} PUBLIC " + compilerFeatures + ")\n");
+        compilerFeatures = null;
+      }
       commonIncludes = null;
       compilerFeatures = null;
       FindModuleExpression specific = (FindModuleExpression) expression;
@@ -190,8 +190,10 @@ public class CMakeGenerator {
           + "    set(cdep_determined_android_abi ${ANDROID_ABI})\n"
           + "    set(cdep_supports_compiler_features FALSE)\n"
           + "  endif()\n\n");
-      append("  set(cdep_exploded_root \"%s\")", getCMakePath(environment.unzippedArchivesFolder));
+      append("  set(cdep_exploded_root \"%s\")\n", getCMakePath(environment.unzippedArchivesFolder));
       ++indent;
+      append("  set (extra_macro_args ${ARGN})\n");
+      append("  list(LENGTH extra_macro_args num_extra_args)\n");
       visit(specific.body);
       --indent;
       append("endfunction({appenderFunctionName})\n".replace("{appenderFunctionName}", appenderFunctionName));
@@ -250,8 +252,11 @@ public class CMakeGenerator {
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.ARRAY_HAS_ONLY_ELEMENT)) {
         append("%s STREQUAL %s", parms[0], parms[1]);
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.REQUIRES_COMPILER_FEATURES)) {
+        append("\n%sif (${num_extra_args} EQUAL 0)\n", prefix);
+        append("%s   target_compile_features(${target} PUBLIC %s )\n", prefix, parms[0]);
+        append("%sendif()\n", prefix);
         compilerFeatures = parms[0];
-        append("\n");
+//        append("\n");
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.SUPPORTS_COMPILER_FEATURES)) {
         append("cdep_supports_compiler_features");
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.NOT)) {
@@ -341,9 +346,6 @@ public class CMakeGenerator {
         commonIncludes = specific.includePath;
         insertingIndex = sb.length();
         insertingPrefix = prefix;
-//        append("%starget_include_directories(${target} INTERFACE ", prefix); //change to interface from private so multi-level dependencies can work.
-//        visit(specific.includePath);
-//        append(")\n");
       }
 
       for(Expression libraryPath : specific.libraryPaths) {
@@ -381,16 +383,30 @@ public class CMakeGenerator {
         for(String depends : dependsList)
           append("%s%s(%s \"NoAutoTargetLink\")\n", prefix, depends, libName);
 
-        append("%sset (extra_macro_args ${ARGN})\n", prefix);
-
-        append("%slist(LENGTH extra_macro_args num_extra_args)\n", prefix);
         append("%sif (${num_extra_args} EQUAL 0)\n", prefix);
         append("%s   target_link_libraries(${target} %s)\n", prefix, libName);
         append("%selse ()\n", prefix);
+        if(compilerFeatures != null)
+        {
+          append("%s   set_property(TARGET ${target} APPEND PROPERTY INTERFACE_COMPILE_FEATURES %s)\n", prefix, compilerFeatures.replaceAll("\\s", " INTERFACE_COMPILE_FEATURES "));
+        }
         append("%s   set_property(TARGET ${target} APPEND PROPERTY INTERFACE_LINK_LIBRARIES ", prefix);
         visit(libraryPath);
         append(" )\n");
         append("%sendif()\n", prefix);
+        if(specific.includePath != null || commonIncludes != null)
+        {
+          if(specific.includePath != null) {
+            append("%sset_property(TARGET ${target} APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES ", prefix);
+            visit(specific.includePath);
+            append(" )\n");
+          }
+          if(commonIncludes != null) {
+            append("%sset_property(TARGET ${target} APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES ", prefix);
+            visit(commonIncludes);
+            append(" )\n");
+          }
+        }
       }
       dependsList = new ArrayList<>();
       return;
