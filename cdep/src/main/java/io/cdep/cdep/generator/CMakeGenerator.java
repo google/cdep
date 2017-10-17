@@ -357,7 +357,9 @@ public class CMakeGenerator {
           libName = fullPath.substring(fullPath.lastIndexOf("/")+1);
         else
           libName = fullPath;
-        append("%sadd_library(%s STATIC IMPORTED )\n", prefix, libName);
+        append("%sif(NOT (TARGET %s))\n", prefix, libName);
+        append("%s  add_library(%s STATIC IMPORTED )\n", prefix, libName);
+        append("%sendif()\n", prefix);
         append("%sset_target_properties(%s PROPERTIES IMPORTED_LOCATION ", prefix, libName);
         visit(libraryPath);
         if(specific.includePath != null || commonIncludes != null)
@@ -374,9 +376,7 @@ public class CMakeGenerator {
         }
         if(compilerFeatures != null)
         {
-          compilerFeatures = compilerFeatures.replaceAll("\\s", " INTERFACE_COMPILE_FEATURES ");
-          append(" INTERFACE_COMPILE_FEATURES %s", compilerFeatures);
-          compilerFeatures = null;
+          append(" INTERFACE_COMPILE_FEATURES %s", compilerFeatures.replaceAll("\\s", " INTERFACE_COMPILE_FEATURES "));
         }
         insertingIndex = 0;
         append(")\n");
@@ -385,6 +385,10 @@ public class CMakeGenerator {
 
         append("%sif (${num_extra_args} EQUAL 0)\n", prefix);
         append("%s   target_link_libraries(${target} %s)\n", prefix, libName);
+        if(compilerFeatures != null)
+        {
+          append("%s  target_compile_features(${target} PUBLIC %s)\n", prefix, compilerFeatures);
+        }
         append("%selse ()\n", prefix);
         if(compilerFeatures != null)
         {
@@ -401,7 +405,7 @@ public class CMakeGenerator {
             visit(specific.includePath);
             append(" )\n");
           }
-          if(commonIncludes != null) {
+          if(commonIncludes != null && commonIncludes != specific.includePath) {
             append("%sset_property(TARGET ${target} APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES ", prefix);
             visit(commonIncludes);
             append(" )\n");

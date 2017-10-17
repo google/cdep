@@ -55,7 +55,9 @@ public class CMakeExamplesGenerator {
           + "project({ARTIFACTID}_example_project)\n"
           + "include(\"{MODULE}\")\n"
           + "add_library({ARTIFACTID}_target SHARED {SOURCE})\n"
-          + "{ADDFUNCTION}({ARTIFACTID}_target)\n";
+          + "find_library(log-lib log)\n"
+          + "{ADDFUNCTION}({ARTIFACTID}_target)\n"
+          + "target_link_libraries({ARTIFACTID}_target ${log-lib})\n";
       cmakeLists = cmakeLists.replace("{MODULE}", cmake.getCMakeConfigurationFile().getAbsolutePath()).replace("{ARTIFACTID}",
           artifact).replace("{SOURCE}", sourceName).replace("{ADDFUNCTION}", cmake.getAddDependencyFunctionName(coordinate));
       info("Generating %s\n", exampleCMakeListsFile);
