@@ -223,8 +223,6 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
       List<String> saw = new ArrayList<>();
       for (int i = 0; i < expr.libraryPaths.length; ++i) {
         String lib = CommandLineUtils.getLibraryNameFromLibraryFilename(new File(expr.libs[i]));
-        if(saw.contains(lib)) // @TODO: check if this is what saw was intended to do; just assumption.
-          continue;
         saw.add(lib);
         if (!lib.equals(currentLib)) {
           continue;
@@ -266,11 +264,11 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
   @Override
   protected void visitInvokeFunctionExpression(@NotNull InvokeFunctionExpression expr) {
     if (expr.function == ExternalFunctionExpression.FILE_JOIN_SEGMENTS) {
-      String currentSeparator = "";
-      for (Expression expression : expr.parameters) {
-        append(currentSeparator);
-        visit(expression);
-        currentSeparator = "/";
+      for (int i = 0; i < expr.parameters.length; ++i) {
+        if (i > 0) {
+          append("/");
+        }
+        visit(expr.parameters[i]);
       }
       return;
     }
@@ -340,7 +338,7 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
     ++indent;
     visit(expr.elseExpression);
     --indent;
-    for (Expression ignored : expr.conditions) {
+    for (int i = 0; i < expr.conditions.length; ++i) {
       appendIndented("endif");
     }
   }
