@@ -99,6 +99,15 @@ public class CMakeGenerator {
     for (StatementExpression findFunction : table.findFunctions.values()) {
       indent = 0;
       visit(findFunction);
+      if(insertingIndex > 0) {
+        if(commonIncludes != null)
+          sb.insert(insertingIndex, "\n" + insertingPrefix + "target_include_directories(${target} PUBLIC " + commonIncludes.toString() + ")\n");
+        commonIncludes = null;
+        if(compilerFeatures != null)
+          sb.insert(insertingIndex, "\n" + insertingPrefix + "target_compile_features(${target} PUBLIC " + compilerFeatures + ")\n");
+        compilerFeatures = null;
+        insertingIndex = 0;
+      }
       require(indent == 0);
     }
 
@@ -146,14 +155,6 @@ public class CMakeGenerator {
     String prefix = new String(new char[indent * 2]).replace('\0', ' ');
 
     if (expression instanceof FindModuleExpression) {
-      if(insertingIndex > 0) {
-        if(commonIncludes != null)
-          sb.insert(insertingIndex, "\n" + insertingPrefix + "target_include_directories(${target} PUBLIC " + commonIncludes.toString() + ")\n");
-        commonIncludes = null;
-        if(compilerFeatures != null)
-          sb.insert(insertingIndex, "\n" + insertingPrefix + "target_compile_features(${target} PUBLIC " + compilerFeatures + ")\n");
-        compilerFeatures = null;
-      }
       commonIncludes = null;
       compilerFeatures = null;
       FindModuleExpression specific = (FindModuleExpression) expression;
@@ -378,7 +379,6 @@ public class CMakeGenerator {
         {
           append(" INTERFACE_COMPILE_FEATURES %s", compilerFeatures.replaceAll("\\s", " INTERFACE_COMPILE_FEATURES "));
         }
-        insertingIndex = 0;
         append(")\n");
         for(String depends : dependsList)
           append("%s%s(%s \"NoAutoTargetLink\")\n", prefix, depends, libName);
@@ -410,6 +410,7 @@ public class CMakeGenerator {
             visit(commonIncludes);
             append(" )\n");
           }
+          insertingIndex = 0;
         }
       }
       dependsList = new ArrayList<>();
