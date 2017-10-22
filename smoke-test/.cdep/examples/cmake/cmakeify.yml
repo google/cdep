@@ -1,5 +1,0 @@
-targets: [android]
-includes: [include]
-android:
-  ndk:
-    platforms: [21]
