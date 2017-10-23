@@ -71,13 +71,13 @@ public class CMakeGenerator {
   private Coordinate coordinate = null;
 
   private class ModuleDependsItem {
-    ArrayList<String> dependsList;
-    ArrayList<Expression> commonIncludes;
-    String compilerFeatures;
-    int insertingIndex = 0;
-    int dependsInsert = 0;
-    String insertingPrefix;
-    String dependsInsertPrefix;
+    private ArrayList<String> dependsList;
+    private ArrayList<Expression> commonIncludes;
+    private String compilerFeatures;
+    private int insertingIndex = 0;
+    private int dependsInsert = 0;
+    private String insertingPrefix;
+    private String dependsInsertPrefix;
 
     ModuleDependsItem() {
       dependsList = new ArrayList<>();
