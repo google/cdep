@@ -37,7 +37,7 @@ dependencies:
 - compile: com.github.jomof:stb/truetype:0.0.0-rev6
 - compile: com.github.jomof:stb/voxel_render:0.0.0-rev6
 #- compile: com.github.gpx1000:curl:7.56.0 # this has a problem specific to boringssl linking in the right order in ndk-build.  It otherwise works.
-#- compile: com.github.gpx1000:zlib:1.2.11 # this is a dependency of curl
+- compile: com.github.gpx1000:zlib:1.2.11 # this is a dependency of curl
 #- compile: com.github.gpx1000:boringssl:0.0.0 # this is a dependency of curl
 #- compile: com.github.gpx1000:v8:6.3.2163
 #- compile: com.github.ggfan:shaderc:0.0.1

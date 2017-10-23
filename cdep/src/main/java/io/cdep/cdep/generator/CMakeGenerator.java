@@ -64,18 +64,101 @@ public class CMakeGenerator {
   final private FunctionTableExpression table;
   @NotNull
   private StringBuilder sb;
-  private ArrayList<String> dependsList;
-  private ArrayList<Expression> commonIncludes;
-  private String compilerFeatures;
-  private int insertingIndex = 0;
-  private int dependsInsert = 0;
-  private String insertingPrefix;
-  private String dependsInsertPrefix;
   private int indent = 0;
   @Nullable
   private GlobalBuildEnvironmentExpression globals = null;
   @Nullable
   private Coordinate coordinate = null;
+
+  private class ModuleDependsItem {
+    ArrayList<String> dependsList;
+    ArrayList<Expression> commonIncludes;
+    String compilerFeatures;
+    int insertingIndex = 0;
+    int dependsInsert = 0;
+    String insertingPrefix;
+    String dependsInsertPrefix;
+
+    ModuleDependsItem() {
+      dependsList = new ArrayList<>();
+      commonIncludes = new ArrayList<>();
+      insertingIndex = 0;
+      dependsInsert = 0;
+    }
+
+    void InsertAndFlush() {
+      // The following cover the case that there's a header only dependency with header only dependency along with maintaining old behavior.
+      // A better solution would be to create a dependency type so we'd know in the in the visit function if the librarypath will never get called in subsequent visits.
+      if(insertingIndex > 0) {
+        if(!commonIncludes.isEmpty()) {
+          for(Expression includer : commonIncludes) {
+            sb.insert(insertingIndex, "\n" + insertingPrefix + "target_include_directories(${target} PUBLIC " + includer.toString() + ")\n");
+          }
+        }
+        commonIncludes = new ArrayList<>();
+        if(compilerFeatures != null) {
+          sb.insert(insertingIndex, "\n" + insertingPrefix + "target_compile_features(${target} PUBLIC " + compilerFeatures + ")\n");
+        }
+        compilerFeatures = null;
+        insertingIndex = 0;
+      }
+      if(!dependsList.isEmpty() && dependsInsert > 0) {
+        for(String depends : dependsList) {
+          sb.insert(dependsInsert, "\n" + dependsInsertPrefix + depends + "(${target} \"NoAutoTargetLink\")\n");
+        }
+        dependsInsert = 0;
+      }
+      dependsList = new ArrayList<>();
+    }
+
+    void initalizeNewModule() {
+      commonIncludes = new ArrayList<>();
+      compilerFeatures = null;
+    }
+
+    void setCompilerFeatures(String parms) {
+      compilerFeatures = (compilerFeatures == null)? parms : compilerFeatures + " " + parms;
+    }
+
+    void insertDependency(String DependencyFunctionName) {
+      dependsList.add(DependencyFunctionName);
+    }
+
+    void setDependsInsertMark(int _length, String _prefix) {
+      dependsInsert = _length;
+      dependsInsertPrefix = _prefix;
+    }
+
+    void insertIncludeData(Expression includePath, int _length, String _prefix) {
+      if (commonIncludes != null) {
+        commonIncludes.add(includePath);
+      }
+      insertingIndex = _length;
+      insertingPrefix = _prefix;
+    }
+
+    void setHasLibs() {
+      dependsInsert = 0;
+    }
+
+    ArrayList<Expression> getCommonIncludes() {
+      return commonIncludes;
+    }
+
+    String getCompilerFeatures() {
+      return compilerFeatures;
+    }
+
+    ArrayList<String> getDependsList() {
+      return dependsList;
+    }
+
+    void setHasInclude() {
+      insertingIndex = 0;
+    }
+  }
+
+  private ModuleDependsItem dependsItem;
 
   public CMakeGenerator(@NotNull GeneratorEnvironment environment, @NotNull FunctionTableExpression table) {
     this.environment = environment;
@@ -84,8 +167,7 @@ public class CMakeGenerator {
     table = (FunctionTableExpression) new CxxLanguageStandardRewritingVisitor().visit(table);
     this.table = table;
     this.sb = new StringBuilder();
-    this.dependsList = new ArrayList<>();
-    this.commonIncludes = new ArrayList<>();
+    this.dependsItem = new ModuleDependsItem();
   }
 
   public void generate() throws IOException {
@@ -102,25 +184,7 @@ public class CMakeGenerator {
     for (StatementExpression findFunction : table.findFunctions.values()) {
       indent = 0;
       visit(findFunction);
-      // The following cover the case that there's a header only dependency with header only dependency along with maintaining old behavior.
-      // A better solution would be to create a dependency type so we'd know in the in the visit function if the librarypath will never get called in subsequent visits.
-      if(insertingIndex > 0) {
-        if(!commonIncludes.isEmpty()) {
-          for(Expression includer : commonIncludes)
-            sb.insert(insertingIndex, "\n" + insertingPrefix + "target_include_directories(${target} PUBLIC " + includer.toString() + ")\n");
-        }
-        commonIncludes = new ArrayList<>();
-        if(compilerFeatures != null)
-          sb.insert(insertingIndex, "\n" + insertingPrefix + "target_compile_features(${target} PUBLIC " + compilerFeatures + ")\n");
-        compilerFeatures = null;
-        insertingIndex = 0;
-      }
-      if(!dependsList.isEmpty() && dependsInsert > 0) {
-        for(String depends : dependsList)
-          sb.insert( dependsInsert, "\n" + dependsInsertPrefix + depends + "(${target} \"NoAutoTargetLink\")\n");
-        dependsInsert = 0;
-      }
-      dependsList = new ArrayList<>();
+      dependsItem.InsertAndFlush();
       require(indent == 0);
     }
 
@@ -163,13 +227,28 @@ public class CMakeGenerator {
     return FileUtils.readAllText(stream);
   }
 
+  // We need to get a reasonable target name.  This approach chooses one based around what the path is to the dependency library target.
+  private String getLibNameFromFullPath(String fullPath) {
+    String libName;
+    if(fullPath.contains(".") && fullPath.contains("/") && fullPath.lastIndexOf(".") - fullPath.lastIndexOf("/") > 0) {
+      // This is a file system path; libname is the name from the last folder separator to the beginning of the extension.
+      libName = fullPath.substring(fullPath.lastIndexOf("/") + 1, fullPath.lastIndexOf("."));
+    } else if(fullPath.contains("//")) {
+      // This is where no extension was found (headers only or multiple libs and container extension).
+      libName = fullPath.substring(fullPath.lastIndexOf("/") + 1);
+    } else {
+      // All else fails then we got a reasonable libName to start with.
+      libName = fullPath;
+    }
+    return libName;
+  }
+
   private void visit(@NotNull Expression expression) {
 
     String prefix = new String(new char[indent * 2]).replace('\0', ' ');
 
     if (expression instanceof FindModuleExpression) {
-      commonIncludes = new ArrayList<>();
-      compilerFeatures = null;
+      dependsItem.initalizeNewModule();
       FindModuleExpression specific = (FindModuleExpression) expression;
       this.coordinate = specific.coordinate;
       append("\n###\n");
@@ -269,8 +348,7 @@ public class CMakeGenerator {
         append("\n%sif (${num_extra_args} EQUAL 0)\n", prefix);
         append("%s   target_compile_features(${target} PUBLIC %s )\n", prefix, parms[0]);
         append("%sendif()\n", prefix);
-        compilerFeatures = (compilerFeatures == null)? parms[0] : compilerFeatures + " " + parms[0];
-//        append("\n");
+        dependsItem.setCompilerFeatures(parms[0]);
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.SUPPORTS_COMPILER_FEATURES)) {
         append("cdep_supports_compiler_features");
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.NOT)) {
@@ -302,10 +380,9 @@ public class CMakeGenerator {
     } else if (expression instanceof ModuleExpression) {
       ModuleExpression specific = (ModuleExpression) expression;
       for (Coordinate dependency : specific.dependencies) {
-        dependsList.add(getAddDependencyFunctionName(dependency));
+        dependsItem.insertDependency(getAddDependencyFunctionName(dependency));
       }
-      dependsInsert = sb.length();
-      dependsInsertPrefix = prefix;
+      dependsItem.setDependsInsertMark(sb.length(), prefix);
       append("\n");
       visit(specific.archive);
       return;
@@ -359,28 +436,18 @@ public class CMakeGenerator {
               specific.size.toString(),
               specific.sha256));
       if (specific.includePath != null) {
-        if (commonIncludes != null) {
-          commonIncludes.add(specific.includePath);
-        }
-        insertingIndex = sb.length();
-        insertingPrefix = prefix;
+        dependsItem.insertIncludeData(specific.includePath, sb.length(), prefix);
       }
 
       for(Expression libraryPath : specific.libraryPaths) {
-        dependsInsert = 0;
-        String fullPath= libraryPath.toString();
-        String libName;
-        if(fullPath.contains(".") && fullPath.contains("/") && fullPath.lastIndexOf(".") - fullPath.lastIndexOf("/") > 0)
-          libName = fullPath.substring(fullPath.lastIndexOf("/")+1,fullPath.lastIndexOf("."));
-        else if(fullPath.contains("//"))
-          libName = fullPath.substring(fullPath.lastIndexOf("/")+1);
-        else
-          libName = fullPath;
+        dependsItem.setHasLibs();
+        String libName = getLibNameFromFullPath(libraryPath.toString());
         append("%sif(NOT (TARGET %s))\n", prefix, libName);
         append("%s  add_library(%s STATIC IMPORTED )\n", prefix, libName);
         append("%sendif()\n", prefix);
         append("%sset_target_properties(%s PROPERTIES IMPORTED_LOCATION ", prefix, libName);
         visit(libraryPath);
+        ArrayList<Expression> commonIncludes = dependsItem.getCommonIncludes();
         if(specific.includePath != null || !commonIncludes.isEmpty())
         {
           if(specific.includePath != null) {
@@ -394,31 +461,30 @@ public class CMakeGenerator {
             }
           }
         }
+        String compilerFeatures = dependsItem.getCompilerFeatures();
         if(compilerFeatures != null)
         {
           append(" INTERFACE_COMPILE_FEATURES %s", compilerFeatures.replaceAll("\\s", " INTERFACE_COMPILE_FEATURES "));
         }
         append(")\n");
-        for(String depends : dependsList)
+        for(String depends : dependsItem.getDependsList()) {
           append("%s%s(%s \"NoAutoTargetLink\")\n", prefix, depends, libName);
+        }
 
         append("%sif (${num_extra_args} EQUAL 0)\n", prefix);
         append("%s   target_link_libraries(${target} %s)\n", prefix, libName);
-        if(compilerFeatures != null)
-        {
+        if(compilerFeatures != null) {
           append("%s  target_compile_features(${target} PUBLIC %s)\n", prefix, compilerFeatures);
         }
         append("%selse ()\n", prefix);
-        if(compilerFeatures != null)
-        {
+        if(compilerFeatures != null) {
           append("%s   set_property(TARGET ${target} APPEND PROPERTY INTERFACE_COMPILE_FEATURES %s)\n", prefix, compilerFeatures.replaceAll("\\s", " INTERFACE_COMPILE_FEATURES "));
         }
         append("%s   set_property(TARGET ${target} APPEND PROPERTY INTERFACE_LINK_LIBRARIES ", prefix);
         visit(libraryPath);
         append(" )\n");
         append("%sendif()\n", prefix);
-        if(specific.includePath != null || !commonIncludes.isEmpty())
-        {
+        if(specific.includePath != null || !commonIncludes.isEmpty()) {
           if(specific.includePath != null) {
             append("%sset_property(TARGET ${target} APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES ", prefix);
             visit(specific.includePath);
@@ -431,7 +497,7 @@ public class CMakeGenerator {
               append(" )\n");
             }
           }
-          insertingIndex = 0;
+          dependsItem.setHasInclude();
         }
       }
       return;
