@@ -182,12 +182,6 @@ printf "%s\r\n" "  }" >> upload/cdep-manifest.yml
 ```
 
 ## Step 13 -- Test package integrity
-Add the `upload` folder to your github repository. 
-
-    git add -- upload
-    git commit -m "Adding CDep package"
-    git push
-
 At this point, there should be a valid CDep package in the upload folder. Use CDep to validate this.
 
 First, install CDep in the current folder.
