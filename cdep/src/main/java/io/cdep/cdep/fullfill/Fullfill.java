@@ -40,7 +40,7 @@ import static io.cdep.cdep.utils.Invariant.errorsInScope;
 
 public class Fullfill {
 
-  /**
+  /*
    * Returns a list of manifest files and zip files,
    */
   @NotNull

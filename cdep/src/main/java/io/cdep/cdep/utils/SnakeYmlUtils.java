@@ -26,7 +26,7 @@ import java.util.Map;
 import static io.cdep.cdep.utils.Invariant.fail;
 
 public final class SnakeYmlUtils {
-  /**
+  /*
    * Given a deserialized object and the corresponding SnakeYML node. Construct a map of object field value to node.
    * The purpose is to map data to line number for error message purposes.
    */

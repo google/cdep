@@ -29,7 +29,7 @@ import java.util.List;
 import static io.cdep.cdep.utils.Invariant.fail;
 import static io.cdep.cdep.utils.Invariant.require;
 
-/**
+/*
  * A resolver is responsible for locating a CDep manifest given only a coordinate.
  *
  * For example,
@@ -70,7 +70,7 @@ public class Resolver {
     this.resolvers = resolvers;
   }
 
-  /**
+  /*
    * Resolve all of the references contained in the given ResolutionScope roots
    */
   @NotNull
@@ -81,7 +81,7 @@ public class Resolver {
     return scope;
   }
 
-  /**
+  /*
    * Resolve all of the references contained in the given ResolutionScope
    */
   public void resolveAll(@NotNull ResolutionScope scope)
@@ -117,7 +117,7 @@ public class Resolver {
     }
   }
 
-  /**
+  /*
    * Resolve a single reference. Don't look at transitive references.
    */
   @Nullable

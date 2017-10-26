@@ -33,7 +33,7 @@ import static io.cdep.cdep.utils.Invariant.fail;
 import static io.cdep.cdep.utils.Invariant.require;
 import static io.cdep.cdep.yml.cdepmanifest.HardNameDependency.EMPTY_HARDNAME_DEPENDENCY;
 
-/**
+/*
  * Fill in hash values for hard name dependencies.
  */
 public class DependencyHashRewriter extends CDepManifestYmlRewriter {

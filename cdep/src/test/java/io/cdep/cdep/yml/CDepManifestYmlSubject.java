@@ -29,7 +29,7 @@ import java.util.Set;
 
 import static com.google.common.truth.Truth.assertAbout;
 
-/**
+/*
  * A Truth subject for dealing with CDepManifestYm
  */
 public class CDepManifestYmlSubject extends Subject<CDepManifestYmlSubject, CDepManifestYml> {

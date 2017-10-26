@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
+/*
  * Records the current state of resolving top-level and transitive dependencies.
  */
 @SuppressWarnings({"Convert2Diamond", "unused"})
@@ -65,7 +65,7 @@ public class ResolutionScope {
   @NotNull
   final private Map<String, ResolvedManifest> versionlessKeyedManifests = new HashMap<>();
 
-  /**
+  /*
    * Construct a fresh resolution scope.
    *
    * @param roots are the top level dependencies from cdep.yml.
@@ -76,13 +76,13 @@ public class ResolutionScope {
     }
   }
 
-  /**
+  /*
    * Construct a fresh resolution scope.
    */
   public ResolutionScope() {
   }
 
-  /**
+  /*
    * Utility function to add a new edge to an edge map.
    */
   private static <T> void addEdge(@NotNull Map<T, List<T>> edges, T from, T to) {
@@ -95,7 +95,7 @@ public class ResolutionScope {
     tos.add(to);
   }
 
-  /**
+  /*
    * Add an unresolved dependency to be resolved later.
    *
    * @param softname the name of the unresolved dependency.
@@ -106,14 +106,14 @@ public class ResolutionScope {
     }
   }
 
-  /**
+  /*
    * Return true if there are no more references to resolve.
    */
   public boolean isResolutionComplete() {
     return unresolved.isEmpty();
   }
 
-  /**
+  /*
    * Return all remaining unresolved references.
    */
   @NotNull
@@ -121,7 +121,7 @@ public class ResolutionScope {
     return new ArrayList<>(unresolved.values());
   }
 
-  /**
+  /*
    * Return all remaining unresolved references.
    */
   @NotNull
@@ -129,7 +129,7 @@ public class ResolutionScope {
     return new ArrayList<>(unresolveable.keySet());
   }
 
-  /**
+  /*
    * Return all remaining unresolved references.
    */
   @NotNull
@@ -137,7 +137,7 @@ public class ResolutionScope {
     return unresolveable.get(softname);
   }
 
-  /**
+  /*
    * Whether the given dependency is resolved or not regardless of whether the resolution was
    * successful.
    *
@@ -148,7 +148,7 @@ public class ResolutionScope {
     return resolved.contains(name);
   }
 
-  /**
+  /*
    * Record the fact that the given dependency has been resolved.
    *
    * @param softname the name that started the resolution.
@@ -181,7 +181,7 @@ public class ResolutionScope {
     }
   }
 
-  /**
+  /*
    * Unifies manifest version to most recent. Returns a versionless coordinate that is the
    * key to the manifest even if it changes later during resolution.
    */
@@ -216,7 +216,7 @@ public class ResolutionScope {
     return versionless;
   }
 
-  /**
+  /*
    * Record fact that a given dependency could not be resolved.
    *
    * @param softname the name of the unresolvable dependency.
@@ -227,7 +227,7 @@ public class ResolutionScope {
     this.unresolveable.put(softname.compile, DIDNT_EXIST);
   }
 
-  /**
+  /*
    * Return the set of resolved names (coordinates or soft names).
    */
   @NotNull
@@ -235,7 +235,7 @@ public class ResolutionScope {
     return versionlessKeyedManifests.get(name);
   }
 
-  /**
+  /*
    * Return the set of resolved names (coordinates or soft names).
    */
   @NotNull
@@ -243,7 +243,7 @@ public class ResolutionScope {
     return versionlessKeyedManifests.keySet();
   }
 
-  /**
+  /*
    * Return the set of unification winners.
    */
   @NotNull
@@ -251,7 +251,7 @@ public class ResolutionScope {
     return unificationWinnersToLosers.keySet();
   }
 
-  /**
+  /*
    * Return the set of unification losers.
    */
   @NotNull

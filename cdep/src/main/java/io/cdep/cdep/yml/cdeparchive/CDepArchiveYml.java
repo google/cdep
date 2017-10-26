@@ -2,7 +2,7 @@ package io.cdep.cdep.yml.cdeparchive;
 
 import io.cdep.annotations.NotNull;
 
-/**
+/*
  * Record information about a single archive (.zip) in the local file system.
  */
 public class CDepArchiveYml {
