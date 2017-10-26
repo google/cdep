@@ -22,7 +22,7 @@ import io.cdep.cdep.ast.finder.Expression;
 import static io.cdep.cdep.ast.finder.ExpressionBuilder.assign;
 import static io.cdep.cdep.ast.finder.ExpressionBuilder.reference;
 
-/**
+/*
  * Replace AssignmentExpression with AssignmentReferenceExpression and lift assignments to the
  * nearest block.
  */
