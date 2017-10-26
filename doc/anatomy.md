@@ -68,7 +68,7 @@ interfaces:
 * 'sha256' is the the hash of re2-headers.zip. CDep will not consume the package if this hash doesn't match the download file.
 * 'size' is the expected size of re2-headers.zip.
 * The field 'include' is the name of the relative folder within the .zip that holds the header files.
-* The field 'requires' indicates which C++ language features the header files require.
+* The field 'requires' indicates which C++ language features the header files require. A list of possible values can be found here: https://cmake.org/cmake/help/v3.9/prop_gbl/CMAKE_CXX_KNOWN_FEATURES.html#prop_gbl:CMAKE_CXX_KNOWN_FEATURES.
 
 
 ### android section
