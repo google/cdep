@@ -210,6 +210,7 @@ public class TestInterpretingVisitor {
     expected.put("curlAndroid", "Abort: Android ABI x86 is not supported by com.github.gpx1000:boringssl:0.0.0 for platform 21. Supported: armeabi ");
     expected.put("curlAndroid", "Abort: Android ABI x86 is not supported by com.github.gpx1000:zlib:1.2.11 for platform 21. Supported: armeabi ");
 
+
     boolean unexpectedFailures = false;
     for (ResolvedManifests.NamedManifest manifest : ResolvedManifests.all()) {
       BuildFindModuleFunctionTable builder = new BuildFindModuleFunctionTable();
