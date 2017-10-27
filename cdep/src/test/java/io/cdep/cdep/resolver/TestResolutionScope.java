@@ -93,7 +93,7 @@ public class TestResolutionScope {
     CDepManifestYml appManifest = new CDepManifestYml(CoordinateUtils.tryParse("com.github.jomof:firebase/app:2.1.3-rev7"));
     SoftNameDependency appUnresolved = scope.getUnresolvedReferences().iterator().next();
     ResolvedManifest appResolved = new ResolvedManifest(new URL("http://www.google.com"), appManifest);
-    scope.recordResolved(appUnresolved, appResolved, new ArrayList<>());
+    scope.recordResolved(appUnresolved, appResolved, new ArrayList<HardNameDependency>());
     assertThat(scope.isResolutionComplete()).isTrue();
     List<String> resolutions = Lists.newArrayList(scope.getResolutions());
     assertThat(resolutions).hasSize(2);
