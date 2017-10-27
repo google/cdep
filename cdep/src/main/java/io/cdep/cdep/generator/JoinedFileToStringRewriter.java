@@ -30,7 +30,7 @@ import io.cdep.cdep.ast.finder.ModuleExpression;
 import io.cdep.cdep.ast.finder.ParameterExpression;
 import java.util.Objects;
 
-/*
+/**
  * Locate File.join statements and join them into strings.
  */
 public class JoinedFileToStringRewriter extends RewritingVisitor {
@@ -60,7 +60,7 @@ public class JoinedFileToStringRewriter extends RewritingVisitor {
     return super.visitModuleExpression(expr);
   }
 
-  /*
+  /**
    * If a constant the return xyz without quotes.
    * If an assignment reference then return ${xyz}.
    */

@@ -27,7 +27,7 @@ public class VersionUtils {
   final public static Comparator<Version> ASCENDING_COMPARATOR = new VersionComparator(true);
   final public static Comparator<Version> DESCENDING_COMPARATOR = new VersionComparator(false);
 
-  /*
+  /**
    * Check the validity of a version
    * @param version the version to check
    * @return null if valid, otherwise a message.
@@ -67,7 +67,7 @@ public class VersionUtils {
     return null;
   }
 
-  /*
+  /**
    * Compare versions which are islands of strings and integers separated by . or - (or nothign).
    */
   private static class VersionComparator implements Comparator<Version> {
@@ -76,7 +76,7 @@ public class VersionUtils {
       order = forward ? 1 : -1;
     }
 
-    /*
+    /**
      * Break the given version into separate islands of String or Integer. Separators like . and -
      * are discorded.
      */

@@ -72,7 +72,7 @@ public class CDepManifestYmlUtils {
     return manifest;
   }
 
-  /*
+  /**
    * Attempt to give a better error message for common failures.
    * YAMLException doesn't expose anything but a cause and a message so this function uses those and
    * does the best job it can.
@@ -110,7 +110,7 @@ public class CDepManifestYmlUtils {
     @NotNull
     private final Set<String> filesSeen = new HashSet<>();
     @NotNull
-    private final LinkedHashMap<String, AndroidArchive> distinguishableAndroidArchives = new LinkedHashMap<>();
+    private final Map<String, AndroidArchive> distinguishableAndroidArchives = new HashMap<>();
     @Nullable
     private Coordinate coordinate = null;
     @Nullable

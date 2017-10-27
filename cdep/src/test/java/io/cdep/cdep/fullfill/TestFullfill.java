@@ -26,8 +26,9 @@ import java.io.FileFilter;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.cdep.cdep.Coordinate;
 import io.cdep.cdep.ResolvedManifests;
@@ -167,7 +168,7 @@ public class TestFullfill {
 
   @Test
   public void testAllResolvedManifests() throws Exception {
-    LinkedHashMap<String, String> expected = new LinkedHashMap<>();
+    Map<String, String> expected = new HashMap<>();
     expected.put("sqliteLinuxMultiple",
         "Package 'com.github.jomof:sqlite:0.0.0' has multiple linux archives. Only one is allowed.");
     expected.put("archiveMissingSize", "Archive com.github.jomof:vectorial:0.0.0 is missing size or it is zero");

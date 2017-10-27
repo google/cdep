@@ -66,8 +66,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -76,7 +76,7 @@ import java.util.Set;
 public class BuildFindModuleFunctionTable {
 
   @NotNull
-  private final Map<Coordinate, ResolvedManifest> manifests = new LinkedHashMap<>();
+  private final Map<Coordinate, ResolvedManifest> manifests = new HashMap<>();
 
   public void addManifest(@NotNull ResolvedManifest resolved) {
     manifests.put(resolved.cdepManifestYml.coordinate, resolved);
@@ -115,7 +115,7 @@ public class BuildFindModuleFunctionTable {
       @NotNull GlobalBuildEnvironmentExpression globals,
       @NotNull ResolvedManifest resolved) {
 
-    LinkedHashMap<Expression, Expression> cases = new LinkedHashMap<>();
+    Map<Expression, Expression> cases = new HashMap<>();
     Set<Coordinate> dependencies = new HashSet<>();
     CDepManifestYml manifest = resolved.cdepManifestYml;
     for (HardNameDependency dependency : manifest.dependencies) {
@@ -466,7 +466,7 @@ public class BuildFindModuleFunctionTable {
 
   @NotNull
   private Map<iOSArchitecture, List<iOSArchive>> groupByArchitecture(@NotNull iOSArchive archives[]) {
-    LinkedHashMap<iOSArchitecture, List<iOSArchive>> result = new LinkedHashMap<>();
+    Map<iOSArchitecture, List<iOSArchive>> result = new HashMap<>();
     for (iOSArchive archive : archives) {
       List<iOSArchive> list = result.get(archive.architecture);
       if (list == null) {
@@ -486,7 +486,7 @@ public class BuildFindModuleFunctionTable {
       @NotNull Set<Coordinate> dependencies) {
 
     // Gather up the runtime names
-    LinkedHashMap<String, List<AndroidArchive>> stlTypes = new LinkedHashMap<>();
+    Map<String, List<AndroidArchive>> stlTypes = new HashMap<>();
     assert resolved.cdepManifestYml.android != null;
     assert resolved.cdepManifestYml.android.archives != null;
     for (AndroidArchive android : resolved.cdepManifestYml.android.archives) {
@@ -508,7 +508,7 @@ public class BuildFindModuleFunctionTable {
       return buildAndroidPlatformExpression(globals, resolved, noRuntimeAndroids, explodedArchiveFolder, dependencies);
     }
 
-    LinkedHashMap<Expression, Expression> cases = new LinkedHashMap<>();
+    Map<Expression, Expression> cases = new HashMap<>();
     String runtimes = "";
     for (String stlType : stlTypes.keySet()) {
       runtimes += stlType + " ";
@@ -565,7 +565,7 @@ public class BuildFindModuleFunctionTable {
       return buildAndroidAbiExpression(globals, resolved, androids, explodedArchiveFolder, dependencies);
     }
 
-    Map<Integer, List<AndroidArchive>> grouped = new LinkedHashMap<>();
+    Map<Integer, List<AndroidArchive>> grouped = new HashMap<>();
     for (AndroidArchive android : androids) {
       Integer platform;
       try {
@@ -616,11 +616,11 @@ public class BuildFindModuleFunctionTable {
       @NotNull AssignmentExpression explodedArchiveFolder,
       @NotNull Set<Coordinate> dependencies) {
     CDepManifestYml manifest = resolved.cdepManifestYml;
-    LinkedHashMap<Expression, Expression> cases = new LinkedHashMap<>();
+    Map<Expression, Expression> cases = new HashMap<>();
     String supported = "";
 
     // Group ABI (ABI may be empty for header-only)
-    LinkedHashMap<AndroidABI, List<AndroidArchive>> grouped = new LinkedHashMap<>();
+    Map<AndroidABI, List<AndroidArchive>> grouped = new HashMap<>();
     for (AndroidArchive android : androids) {
       AndroidABI abi = android.abi;
       List<AndroidArchive> group = grouped.get(abi);

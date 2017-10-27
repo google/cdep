@@ -20,19 +20,21 @@ import io.cdep.annotations.Nullable;
 import io.cdep.cdep.Coordinate;
 import io.cdep.cdep.Version;
 import io.cdep.cdep.utils.GithubUtils;
+import io.cdep.cdep.utils.Invariant;
 import io.cdep.cdep.yml.cdep.SoftNameDependency;
 import io.cdep.cdep.yml.cdepmanifest.CDepManifestYml;
 
 import java.io.IOException;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static io.cdep.cdep.utils.Invariant.require;
 
 
-/*
+/**
  * This resolver allows you to reference a github release directly by it's URL. For example,
  *
  * - compile: https://github.com/google/cdep/releases/download/firebase-2.1.3-rev5/cdep-manifest-database.yml
@@ -42,7 +44,7 @@ import static io.cdep.cdep.utils.Invariant.require;
  * com.github.google.cdep:firebase/database:2.1.3-rev5
  *
  */
-class GithubStyleMultipackageUrlCoordinateResolver extends CoordinateResolver {
+public class GithubStyleMultipackageUrlCoordinateResolver extends CoordinateResolver {
   final private Pattern pattern = Pattern.compile("^https://(.*)/(.*)/(.*)/releases/download/(.*?)@(.*)/cdep-manifest(.*).yml$");
 
   @Nullable

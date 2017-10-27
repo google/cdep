@@ -23,20 +23,20 @@ import java.util.*;
 import static io.cdep.cdep.ast.finder.ExpressionBuilder.assignmentBlock;
 import static io.cdep.cdep.utils.Invariant.require;
 
-class LiftAssignmentToCommonAncestor extends RewritingVisitor {
+public class LiftAssignmentToCommonAncestor extends RewritingVisitor {
   @NotNull
   private final Set<AssignmentExpression> captured = new HashSet<>();
   @NotNull
-  private LinkedHashMap<AssignmentExpression, Integer> functionCounts = new LinkedHashMap<>();
+  private Map<AssignmentExpression, Integer> functionCounts = new HashMap<>();
 
-  LiftAssignmentToCommonAncestor() {
+  public LiftAssignmentToCommonAncestor() {
   }
 
   @NotNull
   @Override
   protected Expression visitFindModuleExpression(@NotNull FindModuleExpression expr) {
     List<AssignmentExpression> order = new ArrayList<>();
-    LinkedHashMap<AssignmentExpression, Integer> counts = new LinkedHashMap<>();
+    Map<AssignmentExpression, Integer> counts = new HashMap<>();
     assignments(expr, order, counts);
     this.functionCounts = counts;
     StatementExpression body = (StatementExpression) visit(expr.body);
@@ -84,7 +84,7 @@ class LiftAssignmentToCommonAncestor extends RewritingVisitor {
   @NotNull
   private List<AssignmentExpression> extractBlocks(Expression result) {
     List<AssignmentExpression> order = new ArrayList<>();
-    LinkedHashMap<AssignmentExpression, Integer> count = new LinkedHashMap<>();
+    Map<AssignmentExpression, Integer> count = new HashMap<>();
     assignments(result, order, count);
     List<AssignmentExpression> block = new ArrayList<>();
 

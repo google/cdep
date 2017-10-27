@@ -25,11 +25,11 @@ import io.cdep.cdep.ast.finder.ModuleArchiveExpression;
 import io.cdep.cdep.ast.finder.ModuleExpression;
 import io.cdep.cdep.utils.StringUtils;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/*
+/**
  * This checker looks at the SHA256 of files along each dependency chain and ensures that each file
  * is only present at a single level.
  * <p>
@@ -39,15 +39,15 @@ import java.util.Map;
 public class CheckReferenceAndDependencyConsistency extends ReadonlyVisitor {
 
   // Map of dependency edges. Key is dependant and constant is dependees.
-  private final LinkedHashMap<Coordinate, List<Coordinate>> forwardEdges = new LinkedHashMap<>();
+  private final Map<Coordinate, List<Coordinate>> forwardEdges = new HashMap<>();
   // Map of dependency edges. Key is dependee and constant is dependants.
-  private final LinkedHashMap<Coordinate, List<Coordinate>> backwardEdges = new LinkedHashMap<>();
+  private final Map<Coordinate, List<Coordinate>> backwardEdges = new HashMap<>();
   // Map from module coordinate to the archives that it references
-  private final LinkedHashMap<Coordinate, List<ModuleArchiveExpression>> moduleArchives = new LinkedHashMap<>();
+  private final Map<Coordinate, List<ModuleArchiveExpression>> moduleArchives = new HashMap<>();
   @Nullable
   private Coordinate currentFindModule = null;
 
-  /*
+  /**
    * Utility function to add a new edge to an edge map.
    */
   private static void addEdge(
@@ -63,7 +63,7 @@ public class CheckReferenceAndDependencyConsistency extends ReadonlyVisitor {
     tos.add(to);
   }
 
-  /*
+  /**
    * Utility function to add a new edge to an edge map.
    */
   private void addModuleArchive(ModuleArchiveExpression archive) {
@@ -110,13 +110,13 @@ public class CheckReferenceAndDependencyConsistency extends ReadonlyVisitor {
     }
   }
 
-  /*
+  /**
    * Produce a map from SHA256 of each archive to the coordinate that references that archive
    * as a dependency.
    */
   @NotNull
-  private LinkedHashMap<String, Coordinate> copyArchivesInto(Coordinate coordinate) {
-    LinkedHashMap<String, Coordinate> copy = new LinkedHashMap<>();
+  private Map<String, Coordinate> copyArchivesInto(Coordinate coordinate) {
+    Map<String, Coordinate> copy = new HashMap<>();
     for (ModuleArchiveExpression archive : moduleArchives.get(coordinate)) {
       copy.put(archive.sha256, coordinate);
     }

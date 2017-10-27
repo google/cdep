@@ -6,7 +6,7 @@ import io.cdep.annotations.NotNull;
 import java.io.File;
 
 public class CommandLineUtils {
-  /*
+  /**
    * Given a file like path/to/file/libmylib.a return mylib
    */
   @NotNull

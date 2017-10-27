@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 import static java.util.regex.Pattern.compile;
 
-/*
+/**
  * This resolver locates a package by using a coordinate that is transformed into a github URL. It allows a single
  * Github repo to host multple packages. For example,
  *

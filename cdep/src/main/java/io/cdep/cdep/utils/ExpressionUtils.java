@@ -25,17 +25,17 @@ import io.cdep.cdep.ast.finder.ModuleArchiveExpression;
 import io.cdep.cdep.ast.finder.ModuleExpression;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/*
+/**
  * Methods for dealing with FinderExpressions.
  */
 abstract public class ExpressionUtils {
-  /*
+  /**
    * Traverse the given expression and locate all of the FoundModuleExpressions.
    * These expressions contain the local module location as well as the resolved coordinate
    * and other information
@@ -45,7 +45,7 @@ abstract public class ExpressionUtils {
     return new Finder(expression).foundModules;
   }
 
-  /*
+  /**
    * Traverse the given expression and locate all of the FoundModuleExpressions.
    * These expressions contain the local module location as well as the resolved coordinate
    * and other information
@@ -57,7 +57,7 @@ abstract public class ExpressionUtils {
 
   private static class Finder extends ReadonlyVisitor {
     @NotNull
-    final private LinkedHashMap<Coordinate, List<Expression>> foundModules = new LinkedHashMap<>();
+    final private Map<Coordinate, List<Expression>> foundModules = new HashMap<>();
     @NotNull
     final private Set<String> foundLibraryNames = new HashSet<>();
     @Nullable

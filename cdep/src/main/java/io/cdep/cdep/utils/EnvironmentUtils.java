@@ -33,7 +33,7 @@ import static io.cdep.cdep.utils.Invariant.require;
 
 public class EnvironmentUtils {
 
-  /*
+  /**
    * Returns the package level archive's include folder. Will throw an exception if there was no package level
    * archive.
    */
@@ -44,7 +44,7 @@ public class EnvironmentUtils {
     return getPackageLevelIncludeFolder(environment, coordinate, resolved);
   }
 
-  /*
+  /**
    * Returns the package level archive's include folder. Will throw an exception if there was no package level
    * archive.
    */
@@ -65,7 +65,7 @@ public class EnvironmentUtils {
         resolved.remote.toURI().resolve(".").resolve(archive.file).toURL()), archive.include);
   }
 
-  /*
+  /**
    * Return the resolved manifest or throw an exception.
    */
   @NotNull

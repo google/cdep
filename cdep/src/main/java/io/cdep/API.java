@@ -30,12 +30,12 @@ import java.util.List;
 
 import static io.cdep.cdep.utils.Invariant.require;
 
-/*
+/**
  * Methods meant to be used for calling back from CMake or ndk-build into CDep.
  */
 public class API {
 
-  /*
+  /**
    * Get the location of java.exe that started this process.
    */
   static String getJvmLocation() {
@@ -50,7 +50,7 @@ public class API {
     return java;
   }
 
-  /*
+  /**
    * Get a java command-line to call back into CDep.
    */
   @NotNull
@@ -89,7 +89,7 @@ public class API {
     return file;
   }
 
-  /*
+  /**
    * Generate a call back to CDep.
    */
   @NotNull

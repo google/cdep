@@ -50,12 +50,13 @@ import io.cdep.cdep.ast.finder.NopExpression;
 import io.cdep.cdep.ast.finder.ParameterExpression;
 import io.cdep.cdep.ast.finder.StatementExpression;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("unused")
 public class RewritingVisitor {
-  private final LinkedHashMap<Expression, Expression> identity = new LinkedHashMap<>();
+  private final Map<Expression, Expression> identity = new HashMap<>();
 
   @NotNull
   public Expression visit(@NotNull Expression expr) {

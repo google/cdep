@@ -30,7 +30,7 @@ import io.cdep.cdep.yml.CDepManifestYmlGenerator;
 import io.cdep.cdep.yml.cdepmanifest.CDepManifestYml;
 import io.cdep.cdep.yml.cdepmanifest.CxxLanguageFeatures;
 import java.net.URL;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -101,7 +101,7 @@ public class TestInterpretingVisitor {
 
   @Test
   public void testAllResolvedManifestsLinux() throws Exception {
-    LinkedHashMap<String, String> expected = new LinkedHashMap<>();
+    Map<String, String> expected = new HashMap<>();
     expected.put("archiveMissingSize", "Abort: Archive in http://google.com/cdep-manifest.yml was malformed");
     expected.put("archiveMissingSha256", "Abort: Archive in http://google.com/cdep-manifest.yml was malformed");
     expected.put("archiveMissingFile", "Abort: Archive in http://google.com/cdep-manifest.yml was malformed");
@@ -186,7 +186,7 @@ public class TestInterpretingVisitor {
 
   @Test
   public void testAllResolvedManifestsAndroid() throws Exception {
-    LinkedHashMap<String, String> expected = new LinkedHashMap<>();
+    Map<String, String> expected = new HashMap<>();
     expected.put("sqliteLinux",
         "Abort: Target platform Android is not supported by com.github.jomof:sqlite:0.0.0. Supported: Linux");
     expected.put("sqliteLinuxMultiple",
@@ -208,8 +208,6 @@ public class TestInterpretingVisitor {
     expected.put("zlibAndroid", "Abort: Android ABI x86 is not supported by com.github.gpx1000:zlib:1.2.11 for platform 21. Supported: armeabi ");
     expected.put("boringSSLAndroid", "Abort: Android ABI x86 is not supported by com.github.gpx1000:boringssl:0.0.0 for platform 21. Supported: armeabi ");
     expected.put("curlAndroid", "Abort: Android ABI x86 is not supported by com.github.gpx1000:boringssl:0.0.0 for platform 21. Supported: armeabi ");
-    expected.put("curlAndroid", "Abort: Android ABI x86 is not supported by com.github.gpx1000:zlib:1.2.11 for platform 21. Supported: armeabi ");
-
 
     boolean unexpectedFailures = false;
     for (ResolvedManifests.NamedManifest manifest : ResolvedManifests.all()) {
@@ -275,7 +273,7 @@ public class TestInterpretingVisitor {
 
   @Test
   public void testAllResolvedManifestsiOS() throws Exception {
-    LinkedHashMap<String, String> expected = new LinkedHashMap<>();
+    Map<String, String> expected = new HashMap<>();
     expected.put("sqliteLinuxMultiple",
         "Abort: Target platform Darwin is not supported by com.github.jomof:sqlite:0.0.0. Supported: Linux");
     expected.put("archiveMissingSha256", "Abort: Archive in http://google.com/cdep-manifest.yml was malformed");
@@ -303,7 +301,6 @@ public class TestInterpretingVisitor {
     expected.put("zlibAndroid", "Abort: Target platform Darwin is not supported by com.github.gpx1000:zlib:1.2.11. Supported: Android");
     expected.put("boringSSLAndroid", "Abort: Target platform Darwin is not supported by com.github.gpx1000:boringssl:0.0.0. Supported: Android");
     expected.put("curlAndroid", "Abort: Target platform Darwin is not supported by com.github.gpx1000:boringssl:0.0.0. Supported: Android");
-    expected.put("curlAndroid", "Abort: Target platform Darwin is not supported by com.github.gpx1000:zlib:1.2.11. Supported: Android");
 
     boolean unexpectedFailures = false;
     for (ResolvedManifests.NamedManifest manifest : ResolvedManifests.all()) {

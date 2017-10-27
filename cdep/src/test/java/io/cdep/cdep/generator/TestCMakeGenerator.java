@@ -29,7 +29,8 @@ import org.junit.Test;
 
 import java.io.File;
 import java.net.URL;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -95,7 +96,7 @@ public class TestCMakeGenerator {
 
   @Test
   public void testAllResolvedManifests() throws Exception {
-    LinkedHashMap<String, String> expected = new LinkedHashMap<>();
+    Map<String, String> expected = new HashMap<>();
     expected.put("admob", "Reference com.github.jomof:firebase/app:2.1.3-rev8 was not found, "
         + "needed by com.github.jomof:firebase/admob:2.1.3-rev8");
     expected.put("fuzz1", "Could not parse main manifest coordinate []");

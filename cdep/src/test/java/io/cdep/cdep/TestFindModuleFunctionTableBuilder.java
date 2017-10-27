@@ -35,7 +35,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.net.URL;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -415,7 +415,7 @@ public class TestFindModuleFunctionTableBuilder {
 
   @Test
   public void testAllResolvedManifests() throws Exception {
-    LinkedHashMap<String, String> expected = new LinkedHashMap<>();
+    Map<String, String> expected = new HashMap<>();
     expected.put("admob", "Reference com.github.jomof:firebase/app:2.1.3-rev8 was not found");
     expected.put("fuzz1", "Could not parse main manifest coordinate []");
     expected.put("curlAndroid", "Reference com.github.gpx1000:boringssl:0.0.0 was not found");

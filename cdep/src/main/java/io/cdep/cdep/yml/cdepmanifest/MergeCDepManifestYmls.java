@@ -22,7 +22,7 @@ import io.cdep.cdep.Coordinate;
 import static io.cdep.cdep.yml.cdepmanifest.CDepManifestBuilder.*;
 import static io.cdep.cdep.yml.cdepmanifest.CDepManifestBuilder.iOS;
 
-/*
+/**
  * Semantic merge of two manifests
  */
 public class MergeCDepManifestYmls extends CDepManifestYmlEquality {

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ArrayUtils {
-  /*
+  /**
    * Return an empty array if the array is null.
    */
   @NotNull

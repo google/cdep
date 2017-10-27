@@ -47,10 +47,10 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
-/*
+/**
  * Walks the expression tree and interprets the constant for the supplied state.
  */
 @SuppressWarnings("unused")
@@ -362,7 +362,7 @@ public class InterpretingVisitor {
 
     Frame(Frame prior) {
       this.prior = prior;
-      this.assignments = new LinkedHashMap<>();
+      this.assignments = new HashMap<>();
     }
 
     AssignmentFuture lookup(@NotNull AssignmentExpression assignment) {

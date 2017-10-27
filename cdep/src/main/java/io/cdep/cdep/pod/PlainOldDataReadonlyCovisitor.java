@@ -27,7 +27,7 @@ import java.util.List;
 import static io.cdep.cdep.utils.Invariant.require;
 import static io.cdep.cdep.utils.ReflectionUtils.*;
 
-/*
+/**
  * Visit two instances at the same time. Allows comparison and merging.
  */
 @SuppressWarnings("unused")

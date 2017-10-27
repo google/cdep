@@ -17,7 +17,7 @@ package io.cdep.cdep.ast.finder;
 
 import io.cdep.annotations.NotNull;
 
-/*
+/**
  * A reference to the result of an assignment
  */
 public class AssignmentReferenceExpression extends Expression {

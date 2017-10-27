@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/*
+/**
  * Zip up file entries into layout folder. Doesn't record SHA or size since that is done
  * in a subsequent pass.
  */

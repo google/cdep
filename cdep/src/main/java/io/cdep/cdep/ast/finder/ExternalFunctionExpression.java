@@ -137,7 +137,7 @@ public class ExternalFunctionExpression extends Expression {
     return array.length == 1 && value.equals(array[0]);
   }
 
-  /*
+  /**
    * Declares that the current module requires certain language features. It is up
    * to the build system to supply a compiler that can meet those features.
    */
@@ -145,7 +145,7 @@ public class ExternalFunctionExpression extends Expression {
     return features;
   }
 
-  /*
+  /**
    * Returns true if this build system supports compiler features.
    */
   @SuppressWarnings("SameReturnValue")
@@ -153,7 +153,7 @@ public class ExternalFunctionExpression extends Expression {
     return true;
   }
 
-  /*
+  /**
    * Sets the global compiler standard for all targets. Prefer requiresCompilerFeatures
    * if available.
    */
@@ -161,7 +161,7 @@ public class ExternalFunctionExpression extends Expression {
   static public void setCxxCompilerStandardForAllTargets(int standard) {
   }
 
-  /*
+  /**
    * Require at least the given Cxx compiler standard.
    */
   @NotNull

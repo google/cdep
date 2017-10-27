@@ -19,23 +19,24 @@ import io.cdep.annotations.NotNull;
 import org.yaml.snakeyaml.nodes.*;
 
 import java.lang.reflect.Field;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static io.cdep.cdep.utils.Invariant.fail;
 
-final class SnakeYmlUtils {
-  /*
+public final class SnakeYmlUtils {
+  /**
    * Given a deserialized object and the corresponding SnakeYML node. Construct a map of object field value to node.
    * The purpose is to map data to line number for error message purposes.
    */
-  static <T> void mapAndRegisterNodes(@NotNull String url, @NotNull T object, @NotNull Node node) {
-    LinkedHashMap<Object, Node> nodeMap = new LinkedHashMap<>();
+  public static <T> void mapAndRegisterNodes(@NotNull String url, @NotNull T object, @NotNull Node node) {
+    Map<Object, Node> nodeMap = new HashMap<>();
     mapAndRegisterNodes(object, node, nodeMap);
     Invariant.registerYamlNodes(url, nodeMap);
   }
 
-  private static void mapAndRegisterNodes(@NotNull Object object, @NotNull Node node, @NotNull LinkedHashMap<Object, Node> nodes) {
+  private static void mapAndRegisterNodes(@NotNull Object object, @NotNull Node node, @NotNull Map<Object, Node> nodes) {
     nodes.put(object, node);
     if (node.getClass().isAssignableFrom(MappingNode.class)) {
       MappingNode concrete = (MappingNode) node;

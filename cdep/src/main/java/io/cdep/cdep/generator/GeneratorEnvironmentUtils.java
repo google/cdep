@@ -43,12 +43,12 @@ import java.util.Set;
 
 import static io.cdep.cdep.utils.Invariant.require;
 
-/*
+/**
  * Methods for dealing with GeneratorEnvironment.
  */
 public class GeneratorEnvironmentUtils {
 
-  /*
+  /**
    * Given a function table and generator environment, download all of the files referenced.
    */
   public static void downloadReferencedModules(
@@ -129,7 +129,7 @@ public class GeneratorEnvironmentUtils {
     return local;
   }
 
-  /*
+  /**
    * Resolve whatever unresolved references remain and add them to the table.
    */
   public static void addAllResolvedToTable(
@@ -141,7 +141,7 @@ public class GeneratorEnvironmentUtils {
     }
   }
 
-  /*
+  /**
    * Given a set of dependencies, build the corresponding compile function table. Will look up
    * transitive references if necessary.
    */

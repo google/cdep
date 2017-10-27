@@ -26,7 +26,7 @@ import java.util.*;
 import static io.cdep.cdep.io.IO.errorln;
 import static io.cdep.cdep.utils.StringUtils.safeFormat;
 
-/*
+/**
  * Methods for ensuring state at runtime
  */
 abstract public class Invariant {
@@ -37,10 +37,10 @@ abstract public class Invariant {
   private static final LinkedList<LinkedList<Map<Object, Node>>> yamlNodes = new LinkedList<>();
 
   public static void registerYamlFile(String file) {
-    registerYamlNodes(file, new LinkedHashMap<Object, Node>());
+    registerYamlNodes(file, new HashMap<Object, Node>());
   }
 
-  static void registerYamlNodes(String file, Map<Object, Node> yamlNodes) {
+  public static void registerYamlNodes(String file, Map<Object, Node> yamlNodes) {
     if (Invariant.yamlFiles.size() == 0) {
       return;
     }

@@ -17,7 +17,7 @@ package io.cdep.cdep.yml.cdepmanifest;
 
 import io.cdep.annotations.NotNull;
 
-/*
+/**
  * This is a name like com.github.jomof:firebase/admob:2.1.3-rev7
  * It is expected to be a parseable coordinate.
  */

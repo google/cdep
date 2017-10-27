@@ -33,7 +33,7 @@ import java.util.zip.ZipOutputStream;
 
 public class ArchiveUtils {
 
-  /*
+  /**
    * Unzip the given file.
    */
   public static void unzip(@NotNull File localArchive, @NotNull File localUnzipFolder) throws IOException {
