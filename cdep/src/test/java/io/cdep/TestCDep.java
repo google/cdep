@@ -266,6 +266,18 @@ public class TestCDep {
     System.out.printf(result);
   }
 
+  @Test
+  public void runBoringSSL() throws Exception {
+    CDepYml config = new CDepYml();
+    System.out.printf(new Yaml().dump(config));
+    File yaml = new File(".test-files/runVectorial/cdep.yml");
+    yaml.getParentFile().mkdirs();
+    Files.write("builders: [cmake, cmakeExamples, ndk-build]\ndependencies:" +
+        "\n- compile: com.github.gpx1000:boringssl:0.0.0\n", yaml, StandardCharsets.UTF_8);
+    String result = main("-wf", yaml.getParent());
+    System.out.printf(result);
+  }
+
   //  @Test
   //  public void runMathfu() throws Exception {
   //    CDepYml config = new CDepYml();

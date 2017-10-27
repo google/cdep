@@ -142,6 +142,7 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
         appendIndented("LOCAL_MODULE:=%s", getNdkBuildModuleName(coordinate.artifactId));
         appendIndented("LOCAL_STATIC_LIBRARIES:=${%s}", getAllModulesVariable());
         appendIndented("include $(BUILD_STATIC_LIBRARY)");
+        appendIndented("%s:=", getAllModulesVariable());
       }
       subModules = new ArrayList<>();
     }

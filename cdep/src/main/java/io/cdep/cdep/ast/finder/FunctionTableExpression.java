@@ -31,15 +31,6 @@ public class FunctionTableExpression extends Expression {
   @NotNull
   final private Map<Coordinate, ExampleExpression> examples;
 
-//  public FunctionTableExpression(@NotNull List<Coordinate> orderOfReferences,
-//                                 @NotNull Map<Coordinate, StatementExpression> findFunctions,
-//                                 @NotNull Map<Coordinate, ExampleExpression> examples) {
-//    this.orderOfReferences = orderOfReferences;
-//    this.globals = new GlobalBuildEnvironmentExpression();
-//    this.findFunctions = findFunctions;
-//    this.examples = examples;
-//  }
-
   public FunctionTableExpression(@NotNull GlobalBuildEnvironmentExpression globals,
                                  @NotNull List<Coordinate> orderOfReferences,
                                  @NotNull Map<Coordinate, StatementExpression> findFunctions,
@@ -53,14 +44,6 @@ public class FunctionTableExpression extends Expression {
     this.examples = examples;
 
   }
-//
-//  public void addReference(Coordinate coordinate, StatementExpression statement) {
-//    this.findFunctions.put(coordinate, statement);
-//  }
-//
-//  public void addExample(Coordinate coordinate, ExampleExpression example) {
-//    this.examples.put(coordinate, example);
-//  }
 
   @NotNull
   public StatementExpression getFindFunction(@NotNull Coordinate coordinate) {
