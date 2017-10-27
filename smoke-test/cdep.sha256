@@ -26,8 +26,6 @@
   sha256: 8b2733ac36ccc459c8502679d3fad6a4ccaa2a6402945f952f482b3dc0ec12b8
 - coordinate: com.github.jomof:stb/image:0.0.0-rev6
   sha256: cd71abf7ff6d12bb2d4bf6fba4a9dcf432a7dd6336a9df2932207b8bb3feabb0
-- coordinate: com.github.gpx1000:boringssl:0.0.0
-  sha256: 315208379a3c869ad3da772bb6e6c9e5be5c7760d34da7636379c2487f68c97c
 - coordinate: com.github.jomof:stb/voxel_render:0.0.0-rev6
   sha256: 1b4603fac381af5c6b29fbcbcf05734845c21fbdfea72285a4102d39acc6daa3
 - coordinate: com.github.jomof:stb/divide:0.0.0-rev2
