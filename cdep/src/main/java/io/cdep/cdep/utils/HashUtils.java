@@ -25,7 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-/**
+/*
  * Cryptographic hashing utility findFunctions.
  */
 public class HashUtils {

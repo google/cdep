@@ -31,11 +31,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
+/*
  * Methods for dealing with FinderExpressions.
  */
 abstract public class ExpressionUtils {
-  /**
+  /*
    * Traverse the given expression and locate all of the FoundModuleExpressions.
    * These expressions contain the local module location as well as the resolved coordinate
    * and other information
@@ -45,7 +45,7 @@ abstract public class ExpressionUtils {
     return new Finder(expression).foundModules;
   }
 
-  /**
+  /*
    * Traverse the given expression and locate all of the FoundModuleExpressions.
    * These expressions contain the local module location as well as the resolved coordinate
    * and other information

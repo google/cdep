@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
+/*
  * This checker looks at the SHA256 of files along each dependency chain and ensures that each file
  * is only present at a single level.
  * <p>
@@ -47,7 +47,7 @@ public class CheckReferenceAndDependencyConsistency extends ReadonlyVisitor {
   @Nullable
   private Coordinate currentFindModule = null;
 
-  /**
+  /*
    * Utility function to add a new edge to an edge map.
    */
   private static void addEdge(
@@ -63,7 +63,7 @@ public class CheckReferenceAndDependencyConsistency extends ReadonlyVisitor {
     tos.add(to);
   }
 
-  /**
+  /*
    * Utility function to add a new edge to an edge map.
    */
   private void addModuleArchive(ModuleArchiveExpression archive) {
@@ -110,7 +110,7 @@ public class CheckReferenceAndDependencyConsistency extends ReadonlyVisitor {
     }
   }
 
-  /**
+  /*
    * Produce a map from SHA256 of each archive to the coordinate that references that archive
    * as a dependency.
    */

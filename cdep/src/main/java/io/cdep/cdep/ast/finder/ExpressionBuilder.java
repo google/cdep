@@ -27,7 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
+/*
  * Methods for creating expression trees
  */
 @SuppressWarnings("unused")
@@ -111,7 +111,7 @@ public class ExpressionBuilder {
     return new InvokeFunctionExpression(function, parameters);
   }
 
-  /**
+  /*
    * Returns true if expression left is greater than or equal to integer right.
    */
   @NotNull
@@ -119,7 +119,7 @@ public class ExpressionBuilder {
     return invoke(ExternalFunctionExpression.INTEGER_GTE, left, constant(right));
   }
 
-  /**
+  /*
    * Logical not
    */
   @NotNull
@@ -127,7 +127,7 @@ public class ExpressionBuilder {
     return invoke(ExternalFunctionExpression.NOT, value);
   }
 
-  /**
+  /*
    * Logical or
    */
   @NotNull
@@ -135,7 +135,7 @@ public class ExpressionBuilder {
     return invoke(ExternalFunctionExpression.OR, left, right);
   }
 
-  /**
+  /*
    * Returns true if the given parameter is defined.
    */
   @NotNull
@@ -143,7 +143,7 @@ public class ExpressionBuilder {
     return invoke(ExternalFunctionExpression.REQUIRE_MINIMUM_CXX_COMPILER_STANDARD, expr);
   }
 
-  /**
+  /*
    * Returns true if the current build system supports compiler features.
    */
   @NotNull
@@ -151,7 +151,7 @@ public class ExpressionBuilder {
     return invoke(ExternalFunctionExpression.SUPPORTS_COMPILER_FEATURES);
   }
 
-  /**
+  /*
    * Require the given Cxx compiler features.
    */
   @NotNull
@@ -159,7 +159,7 @@ public class ExpressionBuilder {
     return invoke(ExternalFunctionExpression.REQUIRES_COMPILER_FEATURES, array);
   }
 
-  /**
+  /*
    * Return true if constant starts with find.
    */
   @NotNull
@@ -167,7 +167,7 @@ public class ExpressionBuilder {
     return invoke(ExternalFunctionExpression.STRING_STARTSWITH, string, find);
   }
 
-  /**
+  /*
    * Return true if the given array has just one element and it is the given value.
    */
   @NotNull
@@ -175,7 +175,7 @@ public class ExpressionBuilder {
     return invoke(ExternalFunctionExpression.ARRAY_HAS_ONLY_ELEMENT, array, value);
   }
 
-  /**
+  /*
    * Extract a substring.
    */
   @NotNull
@@ -185,7 +185,7 @@ public class ExpressionBuilder {
     return invoke(ExternalFunctionExpression.STRING_SUBSTRING_BEGIN_END, string, start, end);
   }
 
-  /**
+  /*
    * Return the last index of constant inside of constant.
    */
   @SuppressWarnings("SameParameterValue")
@@ -194,7 +194,7 @@ public class ExpressionBuilder {
     return invoke(ExternalFunctionExpression.STRING_LASTINDEXOF, string, constant(value));
   }
 
-  /**
+  /*
    * Given a file with path, return just the filename with extension.
    */
   @NotNull

@@ -23,7 +23,7 @@ import java.io.File;
 
 import static io.cdep.cdep.utils.Invariant.fail;
 
-/**
+/*
  * Locates every referenced local file and ensures that those files are present in the right
  * place on the local file system.
  */

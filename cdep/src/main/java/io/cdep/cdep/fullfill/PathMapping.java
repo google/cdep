@@ -21,7 +21,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
+/*
  * Converts path patterns in cdep-manifest.yml skeleton to a collection of files.
  *
  * Grammar:
@@ -48,7 +48,7 @@ public class PathMapping {
     this.to = to;
   }
 
-  /**
+  /*
    * Returns a collection of from-to path mappings.
    */
   public static PathMapping[] parse(@NotNull String text) {

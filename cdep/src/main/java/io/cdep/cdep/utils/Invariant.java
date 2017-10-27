@@ -26,7 +26,7 @@ import java.util.*;
 import static io.cdep.cdep.io.IO.errorln;
 import static io.cdep.cdep.utils.StringUtils.safeFormat;
 
-/**
+/*
  * Methods for ensuring state at runtime
  */
 abstract public class Invariant {

@@ -29,7 +29,7 @@ import static io.cdep.cdep.utils.Invariant.require;
 
 public class ReflectionUtils {
 
-  /**
+  /*
    * Invoke but convert atypical exceptions to RuntimeException. If the invoked method threw a RuntimeException then unwrap and
    * throw.
    */
@@ -47,7 +47,7 @@ public class ReflectionUtils {
     }
   }
 
-  /**
+  /*
    * Get method but convert atypical exceptions into RuntimeException. Should be used
    * when it is a bug if the method doesn't exist.
    */
@@ -59,7 +59,7 @@ public class ReflectionUtils {
     }
   }
 
-  /**
+  /*
    * Get field constant but convert atypical exceptions into RuntimeException. Should be used
    * when it is a bug if the method doesn't exist.
    */
