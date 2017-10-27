@@ -37,10 +37,10 @@ abstract public class Invariant {
   private static final LinkedList<LinkedList<Map<Object, Node>>> yamlNodes = new LinkedList<>();
 
   public static void registerYamlFile(String file) {
-    registerYamlNodes(file, new HashMap<Object, Node>());
+    registerYamlNodes(file, new LinkedHashMap<Object, Node>());
   }
 
-  public static void registerYamlNodes(String file, Map<Object, Node> yamlNodes) {
+  static void registerYamlNodes(String file, Map<Object, Node> yamlNodes) {
     if (Invariant.yamlFiles.size() == 0) {
       return;
     }

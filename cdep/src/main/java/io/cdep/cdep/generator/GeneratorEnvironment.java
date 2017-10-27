@@ -28,9 +28,8 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.Set;
 
 import static io.cdep.cdep.io.IO.*;
@@ -45,10 +44,10 @@ public class GeneratorEnvironment implements ManifestProvider {
   @NotNull
   final public File modulesFolder;
   @NotNull
-  final public File examplesFolder;
-  final public boolean forceRedownload;
+  final File examplesFolder;
+  final boolean forceRedownload;
   public final File workingFolder;
-  private final Map<String, String> cdepSha256Hashes = new HashMap<>();
+  private final LinkedHashMap<String, String> cdepSha256Hashes = new LinkedHashMap<>();
   private final boolean ignoreManifestHashes;
   private final Set<File> alreadyDownloaded = new HashSet<>();
 

@@ -17,13 +17,13 @@ package io.cdep.cdep.ast.finder;
 
 import io.cdep.annotations.NotNull;
 import io.cdep.cdep.Coordinate;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.LinkedHashMap;
 
 public class FunctionTableExpression extends Expression {
   @NotNull final public GlobalBuildEnvironmentExpression globals;
-  @NotNull final public Map<Coordinate, StatementExpression> findFunctions = new HashMap<>();
-  @NotNull final public Map<Coordinate, ExampleExpression> examples = new HashMap<>();
+  @NotNull final public LinkedHashMap<Coordinate, StatementExpression> findFunctions = new LinkedHashMap<>();
+  @NotNull final public LinkedHashMap<Coordinate, ExampleExpression> examples = new LinkedHashMap<>();
 
   public FunctionTableExpression() {
     this.globals = new GlobalBuildEnvironmentExpression();

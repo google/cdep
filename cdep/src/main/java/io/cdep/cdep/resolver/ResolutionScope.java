@@ -30,8 +30,8 @@ import io.cdep.cdep.yml.cdepmanifest.HardNameDependency;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,33 +44,33 @@ public class ResolutionScope {
 
   // Map of dependency edges. Key is dependant and value is dependees.
   @NotNull
-  final public Map<Coordinate, List<Coordinate>> forwardEdges = new HashMap<>();
+  final LinkedHashMap<Coordinate, List<Coordinate>> forwardEdges = new LinkedHashMap<>();
   // Map of dependency edges. Key is dependee and value is dependants.
   @NotNull
-  final public Map<Coordinate, List<Coordinate>> backwardEdges = new HashMap<>();
+  final LinkedHashMap<Coordinate, List<Coordinate>> backwardEdges = new LinkedHashMap<>();
   // Map of dependency edges. Key is dependant and value is dependees.
   @NotNull
-  private final Map<Coordinate, List<Coordinate>> unificationWinnersToLosers = new HashMap<>();
+  private final LinkedHashMap<Coordinate, List<Coordinate>> unificationWinnersToLosers = new LinkedHashMap<>();
   // Map of dependency edges. Key is dependee and value is dependants.
   @NotNull
-  private final Map<Coordinate, List<Coordinate>> unificationLosersToWinners = new HashMap<>();
+  private final LinkedHashMap<Coordinate, List<Coordinate>> unificationLosersToWinners = new LinkedHashMap<>();
   // Dependencies that are not yet resolved but where resolution is possible
   @NotNull
-  final private Map<String, SoftNameDependency> unresolved = new HashMap<>();
+  final private LinkedHashMap<String, SoftNameDependency> unresolved = new LinkedHashMap<>();
   // Dependencies that have been resolved (successfully or unsuccessfully)
   @NotNull
   final private Set<String> resolved = new HashSet<>();
   @NotNull
-  final private Map<String, Unresolvable> unresolveable = new HashMap<>();
+  final private LinkedHashMap<String, Unresolvable> unresolveable = new LinkedHashMap<>();
   @NotNull
-  final private Map<String, ResolvedManifest> versionlessKeyedManifests = new HashMap<>();
+  final private LinkedHashMap<String, ResolvedManifest> versionlessKeyedManifests = new LinkedHashMap<>();
 
   /**
    * Construct a fresh resolution scope.
    *
    * @param roots are the top level dependencies from cdep.yml.
    */
-  public ResolutionScope(@NotNull SoftNameDependency[] roots) {
+  ResolutionScope(@NotNull SoftNameDependency[] roots) {
     for (SoftNameDependency root : roots) {
       addUnresolved(root);
     }
@@ -109,7 +109,7 @@ public class ResolutionScope {
   /**
    * Return true if there are no more references to resolve.
    */
-  public boolean isResolutionComplete() {
+  boolean isResolutionComplete() {
     return unresolved.isEmpty();
   }
 
@@ -117,7 +117,7 @@ public class ResolutionScope {
    * Return all remaining unresolved references.
    */
   @NotNull
-  public Collection<SoftNameDependency> getUnresolvedReferences() {
+  Collection<SoftNameDependency> getUnresolvedReferences() {
     return new ArrayList<>(unresolved.values());
   }
 
@@ -125,7 +125,7 @@ public class ResolutionScope {
    * Return all remaining unresolved references.
    */
   @NotNull
-  public Collection<String> getUnresolvableReferences() {
+  Collection<String> getUnresolvableReferences() {
     return new ArrayList<>(unresolveable.keySet());
   }
 
@@ -133,7 +133,7 @@ public class ResolutionScope {
    * Return all remaining unresolved references.
    */
   @NotNull
-  public Unresolvable getUnresolveableReason(@NotNull String softname) {
+  Unresolvable getUnresolveableReason(@NotNull String softname) {
     return unresolveable.get(softname);
   }
 
@@ -194,7 +194,7 @@ public class ResolutionScope {
 
     ResolvedManifest preexisting = versionlessKeyedManifests.get(versionless.toString());
     if (preexisting != null) {
-      Map<Version, ResolvedManifest> manifests = new HashMap<>();
+      LinkedHashMap<Version, ResolvedManifest> manifests = new LinkedHashMap<>();
       manifests.put(resolved.cdepManifestYml.coordinate.version, resolved);
       manifests.put(preexisting.cdepManifestYml.coordinate.version, preexisting);
       List<Version> versions = new ArrayList<>();
@@ -221,7 +221,7 @@ public class ResolutionScope {
    *
    * @param softname the name of the unresolvable dependency.
    */
-  public void recordUnresolvable(@NotNull SoftNameDependency softname) {
+  void recordUnresolvable(@NotNull SoftNameDependency softname) {
     this.unresolved.remove(softname.compile);
     this.resolved.add(softname.compile);
     this.unresolveable.put(softname.compile, DIDNT_EXIST);
@@ -247,7 +247,7 @@ public class ResolutionScope {
    * Return the set of unification winners.
    */
   @NotNull
-  public Collection<Coordinate> getUnificationWinners() {
+  Collection<Coordinate> getUnificationWinners() {
     return unificationWinnersToLosers.keySet();
   }
 
@@ -255,11 +255,11 @@ public class ResolutionScope {
    * Return the set of unification losers.
    */
   @NotNull
-  public Collection<Coordinate> getUnificationLosers() {
+  Collection<Coordinate> getUnificationLosers() {
     return unificationLosersToWinners.keySet();
   }
 
-  public enum Unresolvable {
+  enum Unresolvable {
     UNPARSEABLE,
     DIDNT_EXIST
   }

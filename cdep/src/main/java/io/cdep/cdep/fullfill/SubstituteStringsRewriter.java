@@ -19,11 +19,10 @@ import io.cdep.annotations.NotNull;
 import io.cdep.annotations.Nullable;
 import io.cdep.cdep.yml.cdepmanifest.CDepManifestYmlRewriter;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
-public class SubstituteStringsRewriter extends CDepManifestYmlRewriter {
-  final private Map<String, String> variables = new HashMap<>();
+class SubstituteStringsRewriter extends CDepManifestYmlRewriter {
+  final private LinkedHashMap<String, String> variables = new LinkedHashMap<>();
 
   @NotNull
   SubstituteStringsRewriter replace(String key, String value) {

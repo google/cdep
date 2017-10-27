@@ -47,7 +47,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -362,7 +362,7 @@ public class InterpretingVisitor {
 
     Frame(Frame prior) {
       this.prior = prior;
-      this.assignments = new HashMap<>();
+      this.assignments = new LinkedHashMap<>();
     }
 
     AssignmentFuture lookup(@NotNull AssignmentExpression assignment) {

@@ -20,14 +20,12 @@ import io.cdep.annotations.Nullable;
 import io.cdep.cdep.Coordinate;
 import io.cdep.cdep.Version;
 import io.cdep.cdep.utils.GithubUtils;
-import io.cdep.cdep.utils.Invariant;
 import io.cdep.cdep.yml.cdep.SoftNameDependency;
 import io.cdep.cdep.yml.cdepmanifest.CDepManifestYml;
 
 import java.io.IOException;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,7 +42,7 @@ import static io.cdep.cdep.utils.Invariant.require;
  * com.github.google.cdep:firebase/database:2.1.3-rev5
  *
  */
-public class GithubStyleMultipackageUrlCoordinateResolver extends CoordinateResolver {
+class GithubStyleMultipackageUrlCoordinateResolver extends CoordinateResolver {
   final private Pattern pattern = Pattern.compile("^https://(.*)/(.*)/(.*)/releases/download/(.*?)@(.*)/cdep-manifest(.*).yml$");
 
   @Nullable

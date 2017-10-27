@@ -110,7 +110,7 @@ public class CDepManifestYmlUtils {
     @NotNull
     private final Set<String> filesSeen = new HashSet<>();
     @NotNull
-    private final Map<String, AndroidArchive> distinguishableAndroidArchives = new HashMap<>();
+    private final LinkedHashMap<String, AndroidArchive> distinguishableAndroidArchives = new LinkedHashMap<>();
     @Nullable
     private Coordinate coordinate = null;
     @Nullable

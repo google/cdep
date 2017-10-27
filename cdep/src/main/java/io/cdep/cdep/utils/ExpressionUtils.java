@@ -25,8 +25,8 @@ import io.cdep.cdep.ast.finder.ModuleArchiveExpression;
 import io.cdep.cdep.ast.finder.ModuleExpression;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -57,7 +57,7 @@ abstract public class ExpressionUtils {
 
   private static class Finder extends ReadonlyVisitor {
     @NotNull
-    final private Map<Coordinate, List<Expression>> foundModules = new HashMap<>();
+    final private LinkedHashMap<Coordinate, List<Expression>> foundModules = new LinkedHashMap<>();
     @NotNull
     final private Set<String> foundLibraryNames = new HashSet<>();
     @Nullable
