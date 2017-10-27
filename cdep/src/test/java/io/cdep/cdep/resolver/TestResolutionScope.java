@@ -15,19 +15,23 @@
 */
 package io.cdep.cdep.resolver;
 
-import static com.google.common.truth.Truth.assertThat;
-
+import com.google.common.collect.Lists;
 import io.cdep.cdep.Coordinate;
 import io.cdep.cdep.resolver.ResolutionScope.Unresolvable;
+import io.cdep.cdep.utils.CDepRuntimeException;
 import io.cdep.cdep.utils.CoordinateUtils;
 import io.cdep.cdep.yml.cdep.SoftNameDependency;
 import io.cdep.cdep.yml.cdepmanifest.CDepManifestYml;
 import io.cdep.cdep.yml.cdepmanifest.HardNameDependency;
+import org.junit.Test;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Test;
+
+import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.fail;
 
 public class TestResolutionScope {
 
@@ -84,7 +88,44 @@ public class TestResolutionScope {
     transitiveDependencies.add(new HardNameDependency("com.github.jomof:firebase/app:2.1.3-rev7", "shavalue"));
     scope.recordResolved(unresolved, resolved, transitiveDependencies);
     assertThat(scope.isResolutionComplete()).isFalse();
-    assertThat(scope.getResolutions()).hasSize(1);
+
+    // Now resolve the dependency
+    CDepManifestYml appManifest = new CDepManifestYml(CoordinateUtils.tryParse("com.github.jomof:firebase/app:2.1.3-rev7"));
+    SoftNameDependency appUnresolved = scope.getUnresolvedReferences().iterator().next();
+    ResolvedManifest appResolved = new ResolvedManifest(new URL("http://www.google.com"), appManifest);
+    scope.recordResolved(appUnresolved, appResolved, new ArrayList<>());
+    assertThat(scope.isResolutionComplete()).isTrue();
+    List<String> resolutions = Lists.newArrayList(scope.getResolutions());
+    assertThat(resolutions).hasSize(2);
+
+    // Check topo ordering
+    assertThat(resolutions.get(0)).isEqualTo("com.github.jomof:firebase/app");
+    assertThat(resolutions.get(1)).isEqualTo("com.github.jomof:firebase/admob");
+
+  }
+
+  @Test
+  public void testMissingDependency() throws IOException {
+    ResolutionScope scope = new ResolutionScope(new SoftNameDependency[]{new SoftNameDependency("com.github.jomof:firebase/admob:2.1.3-rev7")});
+    assertThat(scope.isResolutionComplete()).isFalse();
+    assertThat(scope.getUnresolvedReferences()).hasSize(1);
+    SoftNameDependency unresolved = scope.getUnresolvedReferences().iterator().next();
+    assertThat(unresolved.compile).isEqualTo("com.github.jomof:firebase/admob:2.1.3-rev7");
+    Coordinate coordinate = CoordinateUtils.tryParse("com.github.jomof:firebase/admob:2.1.3-rev7");
+    assert coordinate != null;
+    CDepManifestYml manifest = new CDepManifestYml(coordinate);
+    ResolvedManifest resolved = new ResolvedManifest(new URL("http://www.google.com"), manifest);
+    List<HardNameDependency> transitiveDependencies = new ArrayList<>();
+    transitiveDependencies.add(new HardNameDependency("com.github.jomof:firebase/app:2.1.3-rev7", "shavalue"));
+    scope.recordResolved(unresolved, resolved, transitiveDependencies);
+    assertThat(scope.isResolutionComplete()).isFalse();
+
+    try {
+      scope.getResolutions();
+      fail("Expected exception");
+    } catch (CDepRuntimeException e) {
+      assertThat(e).hasMessage("Reference com.github.jomof:firebase/admob:2.1.3-rev7 has unresolved dependency com.github.jomof:firebase/app:2.1.3-rev7");
+    }
   }
 
   @Test
@@ -119,7 +160,14 @@ public class TestResolutionScope {
     transitiveDependencies.add(new HardNameDependency("com.github.jomof:firebase/app:2.1.3-rev7", "shavalue"));
     scope.recordResolved(unresolved, resolved, transitiveDependencies);
     assertThat(scope.isResolutionComplete()).isFalse();
-    assertThat(scope.getResolutions()).hasSize(1);
+
+    // Now resolve the dependency
+    CDepManifestYml appManifest = new CDepManifestYml(CoordinateUtils.tryParse("com.github.jomof:firebase/app:2.1.3-rev7"));
+    SoftNameDependency appUnresolved = scope.getUnresolvedReferences().iterator().next();
+    ResolvedManifest appResolved = new ResolvedManifest(new URL("http://www.google.com"), appManifest);
+    scope.recordResolved(appUnresolved, appResolved, new ArrayList<>());
+    assertThat(scope.isResolutionComplete()).isTrue();
+    assertThat(scope.getResolutions()).hasSize(2);
   }
 
   @Test
@@ -202,20 +250,22 @@ public class TestResolutionScope {
     // Resolve the first level dependencies
     for (SoftNameDependency unresolved : scope.getUnresolvedReferences()) {
       Coordinate coordinate = CoordinateUtils.tryParse(unresolved.compile);
-      switch(coordinate.artifactId) {
+      switch (coordinate.artifactId) {
         case "mathfu": {
           CDepManifestYml manifest = new CDepManifestYml(coordinate);
           ResolvedManifest resolved = new ResolvedManifest(new URL("http://www.google.com"), manifest);
           List<HardNameDependency> transitiveDependencies = new ArrayList<>();
           transitiveDependencies.add(new HardNameDependency("com.github.jomof:vectorial:1.0.0", "sha"));
           scope.recordResolved(unresolved, resolved, transitiveDependencies);
-          break; }
+          break;
+        }
         case "vectorial": {
           CDepManifestYml manifest = new CDepManifestYml(coordinate);
           ResolvedManifest resolved = new ResolvedManifest(new URL("http://www.google.com"), manifest);
           List<HardNameDependency> transitiveDependencies = new ArrayList<>();
           scope.recordResolved(unresolved, resolved, transitiveDependencies);
-          break; }
+          break;
+        }
         default:
           throw new RuntimeException(coordinate.artifactId);
       }
@@ -227,13 +277,14 @@ public class TestResolutionScope {
     // Resolve the second level dependencies
     for (SoftNameDependency unresolved : scope.getUnresolvedReferences()) {
       Coordinate coordinate = CoordinateUtils.tryParse(unresolved.compile);
-      switch(coordinate.artifactId) {
+      switch (coordinate.artifactId) {
         case "vectorial": {
           CDepManifestYml manifest = new CDepManifestYml(coordinate);
           ResolvedManifest resolved = new ResolvedManifest(new URL("http://www.google.com"), manifest);
           List<HardNameDependency> transitiveDependencies = new ArrayList<>();
           scope.recordResolved(unresolved, resolved, transitiveDependencies);
-          break; }
+          break;
+        }
         default:
           throw new RuntimeException(coordinate.artifactId);
       }
@@ -262,20 +313,22 @@ public class TestResolutionScope {
     // Resolve the first level dependencies
     for (SoftNameDependency unresolved : scope.getUnresolvedReferences()) {
       Coordinate coordinate = CoordinateUtils.tryParse(unresolved.compile);
-      switch(coordinate.artifactId) {
+      switch (coordinate.artifactId) {
         case "mathfu": {
           CDepManifestYml manifest = new CDepManifestYml(coordinate);
           ResolvedManifest resolved = new ResolvedManifest(new URL("http://www.google.com"), manifest);
           List<HardNameDependency> transitiveDependencies = new ArrayList<>();
           transitiveDependencies.add(new HardNameDependency("com.github.jomof:vectorial:1.0.0", "sha"));
           scope.recordResolved(unresolved, resolved, transitiveDependencies);
-          break; }
+          break;
+        }
         case "vectorial": {
           CDepManifestYml manifest = new CDepManifestYml(coordinate);
           ResolvedManifest resolved = new ResolvedManifest(new URL("http://www.google.com"), manifest);
           List<HardNameDependency> transitiveDependencies = new ArrayList<>();
           scope.recordResolved(unresolved, resolved, transitiveDependencies);
-          break; }
+          break;
+        }
         default:
           throw new RuntimeException(coordinate.artifactId);
       }
@@ -287,13 +340,14 @@ public class TestResolutionScope {
     // Resolve the second level dependencies
     for (SoftNameDependency unresolved : scope.getUnresolvedReferences()) {
       Coordinate coordinate = CoordinateUtils.tryParse(unresolved.compile);
-      switch(coordinate.artifactId) {
+      switch (coordinate.artifactId) {
         case "vectorial": {
           CDepManifestYml manifest = new CDepManifestYml(coordinate);
           ResolvedManifest resolved = new ResolvedManifest(new URL("http://www.google.com"), manifest);
           List<HardNameDependency> transitiveDependencies = new ArrayList<>();
           scope.recordResolved(unresolved, resolved, transitiveDependencies);
-          break; }
+          break;
+        }
         default:
           throw new RuntimeException(coordinate.artifactId);
       }
