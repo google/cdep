@@ -99,7 +99,7 @@ public class CDep {
     AnsiConsole.err.print(AnsiOutputStream.REST_CODE);
   }
 
-  /**
+  /*
    * Return the first constant after matching one of the arguments. Argument and string are removed
    * from the list.
    */
@@ -253,7 +253,7 @@ public class CDep {
     return false;
   }
 
-  /**
+  /*
    * Download packages referenced by cdep.yml. Will also regenerate cmake or ndk-build glue.
    * If forceRedownload is true then packages will redownloaded even if they already exist locally.
    */

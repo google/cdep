@@ -66,8 +66,6 @@ cp build/armeabi/crypto/libcrypto.a staging/lib/armeabi
 The upload folder contains the files we will eventually upload to Github as a Release.
 ```
 mkdir upload
-cp build/armeabi/ssl/libssl.a staging/lib/armeabi
-cp build/armeabi/crypto/libcrypto.a staging/lib/armeabi
 pushd staging
 zip -r ../upload/boringssl-tutorial-armeabi.zip .
 popd
@@ -76,8 +74,6 @@ NB: If your package has generated headers that are specific to the abi, then the
 ```
 mkdir upload
 cp -Rp build/gen/armeabi/include staging/include
-cp build/armeabi/ssl/libssl.a staging/lib/armeabi
-cp build/armeabi/crypto/libcrypto.a staging/lib/armeabi
 pushd staging
 zip -r ../upload/boringssl-tutorial-armeabi.zip .
 popd

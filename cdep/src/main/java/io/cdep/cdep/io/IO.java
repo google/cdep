@@ -26,7 +26,7 @@ import static org.fusesource.jansi.Ansi.Attribute.INTENSITY_FAINT;
 import static org.fusesource.jansi.Ansi.Color.*;
 import static org.fusesource.jansi.Ansi.ansi;
 
-/**
+/*
  * Methods for dealing with command-line IO, messages, errors, etc.
  */
 public class IO {
@@ -35,7 +35,7 @@ public class IO {
   private PrintStream err = AnsiConsole.err;
   private boolean ansi = true;
 
-  /**
+  /*
    * Set the out stream and return the prior out stream.
    */
   public static PrintStream setOut(PrintStream out) {
@@ -44,7 +44,7 @@ public class IO {
     return original;
   }
 
-  /**
+  /*
    * Set the error stream and return the prior out stream.
    */
   public static PrintStream setErr(PrintStream err) {
@@ -53,34 +53,34 @@ public class IO {
     return original;
   }
 
-  /**
+  /*
    * Whether or not streams support ansi codes
    */
   public static void setAnsi(boolean ansi) {
     io.ansi = ansi;
   }
 
-  /**
+  /*
    * Print an info message.
    */
   public static void info(@NotNull String format, Object... args) {
     io.infoImpl(format, args);
   }
 
-  /**
+  /*
    * Print an info message.
    */
   public static void infogreen(@NotNull String format, Object... args) {
     io.infogreenImpl(format, args);
   }
-  /**
+  /*
    * Print an info message with a line-feed.
    */
   public static void infoln(Object format, Object... args) {
     io.infoImpl(format + "\n", args);
   }
 
-  /**
+  /*
    * Print an info message with a line-feed.
    */
   public static void errorln(ErrorInfo errorInfo, String text) {

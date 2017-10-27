@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 import static io.cdep.cdep.utils.Invariant.require;
 
 
-/**
+/*
  * This resolver allows you to reference a github release directly by it's URL. For example,
  *
  * - compile: https://github.com/google/cdep/releases/download/firebase-2.1.3-rev5/cdep-manifest-database.yml

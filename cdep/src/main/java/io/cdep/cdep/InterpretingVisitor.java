@@ -50,7 +50,7 @@ import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
+/*
  * Walks the expression tree and interprets the constant for the supplied state.
  */
 @SuppressWarnings("unused")

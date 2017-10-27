@@ -25,7 +25,7 @@ import java.util.Objects;
 import static io.cdep.cdep.utils.Invariant.require;
 import static io.cdep.cdep.utils.ReflectionUtils.*;
 
-/**
+/*
  * Read-only visitor over a plain object. Uses reflection to find public fields to walk over.
  */
 @SuppressWarnings("unused")
