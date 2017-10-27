@@ -15,36 +15,25 @@
 */
 package io.cdep.cdep.generator;
 
-import static io.cdep.cdep.io.IO.infoln;
-import static io.cdep.cdep.utils.Invariant.require;
-import static io.cdep.cdep.utils.StringUtils.safeFormat;
-
 import io.cdep.API;
 import io.cdep.annotations.NotNull;
 import io.cdep.annotations.Nullable;
 import io.cdep.cdep.Coordinate;
-import io.cdep.cdep.ast.finder.AbortExpression;
-import io.cdep.cdep.ast.finder.AssignmentExpression;
-import io.cdep.cdep.ast.finder.AssignmentReferenceExpression;
-import io.cdep.cdep.ast.finder.ConstantExpression;
-import io.cdep.cdep.ast.finder.Expression;
-import io.cdep.cdep.ast.finder.ExternalFunctionExpression;
-import io.cdep.cdep.ast.finder.FunctionTableExpression;
-import io.cdep.cdep.ast.finder.GlobalBuildEnvironmentExpression;
-import io.cdep.cdep.ast.finder.IfSwitchExpression;
-import io.cdep.cdep.ast.finder.InvokeFunctionExpression;
-import io.cdep.cdep.ast.finder.ModuleArchiveExpression;
-import io.cdep.cdep.ast.finder.ModuleExpression;
-import io.cdep.cdep.ast.finder.ParameterExpression;
-import io.cdep.cdep.ast.finder.StatementExpression;
+import io.cdep.cdep.ast.finder.*;
 import io.cdep.cdep.utils.CommandLineUtils;
 import io.cdep.cdep.utils.ExpressionUtils;
 import io.cdep.cdep.utils.FileUtils;
 import io.cdep.cdep.utils.StringUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import static io.cdep.cdep.io.IO.infoln;
+import static io.cdep.cdep.utils.StringUtils.safeFormat;
 
 public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
 
@@ -63,6 +52,10 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
 
   public NdkBuildGenerator(@NotNull GeneratorEnvironment environment) {
     super(environment);
+  }
+
+  private static String getNdkBuildModuleName(String artifactId) {
+    return artifactId.replace("/", "-");
   }
 
   public String generate(FunctionTableExpression expr) {
@@ -87,9 +80,9 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
     appendIndented("cdep_exploded_root:=%s", environment.unzippedArchivesFolder);
 
     List<String> subModules = new ArrayList<>();
-    for (Coordinate coordinate : expr.findFunctions.keySet()) {
+    for (Coordinate coordinate : expr.orderOfReferences) {
       this.coordinate = coordinate;
-      StatementExpression findFunction = expr.findFunctions.get(coordinate);
+      StatementExpression findFunction = expr.getFindFunction(coordinate);
       Set<String> libs = ExpressionUtils.findReferencedLibraryNames(findFunction);
       this.moduleName = getNdkBuildModuleName(coordinate.artifactId);
 
@@ -187,10 +180,6 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
     super.visitModuleExpression(expr);
   }
 
-  private static String getNdkBuildModuleName(String artifactId) {
-    return artifactId.replace("/", "-");
-  }
-
   @Override
   protected void visitModuleArchiveExpression(@NotNull ModuleArchiveExpression expr) {
     boolean haveDownloaded = false;
@@ -213,8 +202,8 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
         haveDownloaded = true;
       }
       appendIndented("LOCAL_EXPORT_C_INCLUDES+=%s", includePath);
-
     }
+
     if (expr.libraryPaths.length > 0) {
       List<String> saw = new ArrayList<>();
       for (int i = 0; i < expr.libraryPaths.length; ++i) {

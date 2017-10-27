@@ -39,9 +39,12 @@ public class CMakeExamplesGenerator {
     StringBuilder root = new StringBuilder();
     CMakeGenerator cmake = new CMakeGenerator(environment, table);
     root.append("cmake_minimum_required(VERSION 3.0.2)\n");
-    for (Coordinate coordinate : table.examples.keySet()) {
+    for (Coordinate coordinate : table.orderOfReferences) {
+      ExampleExpression example = table.getExample(coordinate);
+      if (example == null) {
+        continue;
+      }
       File exampleFolder = getExampleFolder(coordinate);
-      ExampleExpression example = table.examples.get(coordinate);
       assert exampleFolder != null;
       //noinspection ResultOfMethodCallIgnored
       exampleFolder.mkdirs();

@@ -36,9 +36,9 @@ public class NdkBuildExamplesGenerator {
 
   public void generate(@NotNull FunctionTableExpression table) throws IOException {
     StringBuilder root = new StringBuilder();
-    for (Coordinate coordinate : table.examples.keySet()) {
+    for (Coordinate coordinate : table.orderOfReferences) {
       File exampleFolder = getExampleFolder(coordinate);
-      ExampleExpression example = table.examples.get(coordinate);
+      ExampleExpression example = table.getExample(coordinate);
       assert exampleFolder != null;
       //noinspection ResultOfMethodCallIgnored
       exampleFolder.mkdirs();
