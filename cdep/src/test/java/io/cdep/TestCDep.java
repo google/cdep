@@ -260,7 +260,7 @@ public class TestCDep {
     System.out.printf(new Yaml().dump(config));
     File yaml = new File(".test-files/runVectorial/cdep.yml");
     yaml.getParentFile().mkdirs();
-    Files.write("builders: [cmake, cmakeExamples]\ndependencies:" +
+    Files.write("builders: [cmake, cmakeExamples, ndk-build]\ndependencies:" +
         "\n- compile: com.github.gpx1000:curl:7.56.0\n", yaml, StandardCharsets.UTF_8);
     String result = main("-wf", yaml.getParent());
     System.out.printf(result);
