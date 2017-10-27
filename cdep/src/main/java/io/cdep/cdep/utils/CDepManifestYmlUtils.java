@@ -72,7 +72,7 @@ public class CDepManifestYmlUtils {
     return manifest;
   }
 
-  /**
+  /*
    * Attempt to give a better error message for common failures.
    * YAMLException doesn't expose anything but a cause and a message so this function uses those and
    * does the best job it can.

@@ -102,7 +102,7 @@ public class TestAPI {
       return outputThread.result();
     }
 
-    /**
+    /*
      * Read an input stream off of the main thread
      */
     private static class StreamReaderThread extends Thread {

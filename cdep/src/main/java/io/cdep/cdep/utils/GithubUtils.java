@@ -18,11 +18,11 @@ package io.cdep.cdep.utils;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-/**
+/*
  * Methods for dealing with github.
  */
 public class GithubUtils {
-  /**
+  /*
    * Replace characters that are special to Github URLs (in particular the releases URLs).
    */
   public static URL escapeGithubSpecialCharacters(URL url) throws MalformedURLException {

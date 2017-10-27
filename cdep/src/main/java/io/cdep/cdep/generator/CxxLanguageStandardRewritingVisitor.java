@@ -25,7 +25,7 @@ import java.util.List;
 
 import static io.cdep.cdep.ast.finder.ExpressionBuilder.*;
 
-/**
+/*
  * Expand module requires into logic for setting the compiler standard that should be used.
  */
 public class CxxLanguageStandardRewritingVisitor extends RewritingVisitor {

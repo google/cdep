@@ -28,7 +28,7 @@ import static io.cdep.cdep.utils.LongUtils.nullToZero;
 import static io.cdep.cdep.utils.ObjectUtils.nullToDefault;
 import static io.cdep.cdep.utils.StringUtils.nullToEmpty;
 
-/**
+/*
  * When Yaml is de-serialized, it may contain null in fields marked @NonNull.
  * Fix those
  */
