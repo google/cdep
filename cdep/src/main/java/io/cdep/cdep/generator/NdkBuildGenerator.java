@@ -37,18 +37,21 @@ import static io.cdep.cdep.utils.StringUtils.safeFormat;
 
 public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
 
-  GlobalBuildEnvironmentExpression globals;
+  private GlobalBuildEnvironmentExpression globals;
 
   @Nullable
+  private
   String currentLib = null;
 
   @Nullable
+  private
   Coordinate coordinate = null;
 
   @Nullable
+  private
   String moduleName = null;
 
-  int indent = 0;
+  private int indent = 0;
 
   public NdkBuildGenerator(@NotNull GeneratorEnvironment environment) {
     super(environment);
@@ -198,18 +201,14 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
       visit(expr.includePath);
       String includePath = popStringBuilder();
 
-      if (!haveDownloaded) {
-        fetchSingleArchive(expr, fetchCommand, completionSentinel);
-        haveDownloaded = true;
-      }
+      fetchSingleArchive(expr, fetchCommand, completionSentinel);
+      haveDownloaded = true;
       appendIndented("LOCAL_EXPORT_C_INCLUDES+=%s", includePath);
     }
 
     if (expr.libraryPaths.length > 0) {
-      List<String> saw = new ArrayList<>();
       for (int i = 0; i < expr.libraryPaths.length; ++i) {
         String lib = CommandLineUtils.getLibraryNameFromLibraryFilename(new File(expr.libs[i]));
-        saw.add(lib);
         if (!lib.equals(currentLib)) {
           continue;
         }
@@ -228,13 +227,17 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
     }
   }
 
-  private void fetchSingleArchive(@NotNull ModuleArchiveExpression expr, String fetchCommand, String completionSentinel) {
+  private void fetchSingleArchive(@NotNull ModuleArchiveExpression expr, @NotNull String fetchCommand, @NotNull String completionSentinel) {
+    String guard = String.format("CDEP_%s_DOWNLOAD_GUARD", expr.sha256).toUpperCase();
+    appendIndented("ifneq ($(%s),1)", guard);
     appendIndented("ifeq ($(wildcard %s),)", completionSentinel);
     ++indent;
     appendIndented("$(info CDep downloading %s)", expr.file.toString());
     appendIndented(fetchCommand);
     --indent;
     appendIndented("endif");
+    appendIndented("endif");
+    appendIndented("%s:=1", guard);
   }
 
 
