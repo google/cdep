@@ -208,6 +208,7 @@ public class TestInterpretingVisitor {
     expected.put("zlibAndroid", "Abort: Android ABI x86 is not supported by com.github.gpx1000:zlib:1.2.11 for platform 21. Supported: armeabi ");
     expected.put("boringSSLAndroid", "Abort: Android ABI x86 is not supported by com.github.gpx1000:boringssl:0.0.0 for platform 21. Supported: armeabi ");
     expected.put("curlAndroid", "Abort: Android ABI x86 is not supported by com.github.gpx1000:boringssl:0.0.0 for platform 21. Supported: armeabi ");
+    expected.put("curlAndroid", "Abort: Android ABI x86 is not supported by com.github.gpx1000:zlib:1.2.11 for platform 21. Supported: armeabi ");
 
     boolean unexpectedFailures = false;
     for (ResolvedManifests.NamedManifest manifest : ResolvedManifests.all()) {
@@ -301,6 +302,7 @@ public class TestInterpretingVisitor {
     expected.put("zlibAndroid", "Abort: Target platform Darwin is not supported by com.github.gpx1000:zlib:1.2.11. Supported: Android");
     expected.put("boringSSLAndroid", "Abort: Target platform Darwin is not supported by com.github.gpx1000:boringssl:0.0.0. Supported: Android");
     expected.put("curlAndroid", "Abort: Target platform Darwin is not supported by com.github.gpx1000:boringssl:0.0.0. Supported: Android");
+    expected.put("curlAndroid", "Abort: Target platform Darwin is not supported by com.github.gpx1000:zlib:1.2.11. Supported: Android");
 
     boolean unexpectedFailures = false;
     for (ResolvedManifests.NamedManifest manifest : ResolvedManifests.all()) {
