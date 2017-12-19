@@ -15,35 +15,22 @@
 */
 package io.cdep.cdep.generator;
 
+import io.cdep.API;
+import io.cdep.annotations.NotNull;
+import io.cdep.annotations.Nullable;
+import io.cdep.cdep.Coordinate;
+import io.cdep.cdep.ast.finder.*;
+import io.cdep.cdep.utils.CommandLineUtils;
+import io.cdep.cdep.utils.ExpressionUtils;
+import io.cdep.cdep.utils.FileUtils;
+import io.cdep.cdep.utils.StringUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
-import io.cdep.API;
-import io.cdep.annotations.NotNull;
-import io.cdep.annotations.Nullable;
-import io.cdep.cdep.Coordinate;
-import io.cdep.cdep.ast.finder.AbortExpression;
-import io.cdep.cdep.ast.finder.AssignmentExpression;
-import io.cdep.cdep.ast.finder.AssignmentReferenceExpression;
-import io.cdep.cdep.ast.finder.ConstantExpression;
-import io.cdep.cdep.ast.finder.Expression;
-import io.cdep.cdep.ast.finder.ExternalFunctionExpression;
-import io.cdep.cdep.ast.finder.FunctionTableExpression;
-import io.cdep.cdep.ast.finder.GlobalBuildEnvironmentExpression;
-import io.cdep.cdep.ast.finder.IfSwitchExpression;
-import io.cdep.cdep.ast.finder.InvokeFunctionExpression;
-import io.cdep.cdep.ast.finder.ModuleArchiveExpression;
-import io.cdep.cdep.ast.finder.ModuleExpression;
-import io.cdep.cdep.ast.finder.ParameterExpression;
-import io.cdep.cdep.ast.finder.StatementExpression;
-import io.cdep.cdep.utils.CommandLineUtils;
-import io.cdep.cdep.utils.ExpressionUtils;
-import io.cdep.cdep.utils.FileUtils;
-import io.cdep.cdep.utils.StringUtils;
 
 import static io.cdep.cdep.io.IO.infoln;
 import static io.cdep.cdep.utils.StringUtils.safeFormat;
@@ -53,18 +40,25 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
   private GlobalBuildEnvironmentExpression globals;
 
   @Nullable
-  private String currentLib = null;
+  private
+  String currentLib = null;
 
   @Nullable
-  private Coordinate coordinate = null;
+  private
+  Coordinate coordinate = null;
 
   @Nullable
-  private String moduleName = null;
+  private
+  String moduleName = null;
 
   private int indent = 0;
 
   public NdkBuildGenerator(@NotNull GeneratorEnvironment environment) {
     super(environment);
+  }
+
+  private static String getNdkBuildModuleName(String artifactId) {
+    return artifactId.replace("/", "-");
   }
 
   public String generate(FunctionTableExpression expr) {
@@ -79,7 +73,6 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
     globals = expr.globals;
     File moduleFolder = new File(environment.modulesFolder, "ndk-build");
     moduleFolder = new File(moduleFolder, "cdep-dependencies");
-    //noinspection ResultOfMethodCallIgnored
     moduleFolder.mkdirs();
     File androidMk = new File(moduleFolder, "Android.mk");
     infoln("Generating %s", androidMk);
@@ -90,9 +83,9 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
     appendIndented("cdep_exploded_root:=%s", environment.unzippedArchivesFolder);
 
     List<String> subModules = new ArrayList<>();
-    for (Coordinate coordinate : expr.findFunctions.keySet()) {
+    for (Coordinate coordinate : expr.orderOfReferences) {
       this.coordinate = coordinate;
-      StatementExpression findFunction = expr.findFunctions.get(coordinate);
+      StatementExpression findFunction = expr.getFindFunction(coordinate);
       Set<String> libs = ExpressionUtils.findReferencedLibraryNames(findFunction);
       this.moduleName = getNdkBuildModuleName(coordinate.artifactId);
 
@@ -152,6 +145,7 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
         appendIndented("LOCAL_MODULE:=%s", getNdkBuildModuleName(coordinate.artifactId));
         appendIndented("LOCAL_STATIC_LIBRARIES:=${%s}", getAllModulesVariable());
         appendIndented("include $(BUILD_STATIC_LIBRARY)");
+        appendIndented("%s:=", getAllModulesVariable());
       }
       subModules = new ArrayList<>();
     }
@@ -190,10 +184,6 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
     super.visitModuleExpression(expr);
   }
 
-  private static String getNdkBuildModuleName(String artifactId) {
-    return artifactId.replace("/", "-");
-  }
-
   @Override
   protected void visitModuleArchiveExpression(@NotNull ModuleArchiveExpression expr) {
     boolean haveDownloaded = false;
@@ -211,20 +201,14 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
       visit(expr.includePath);
       String includePath = popStringBuilder();
 
-      // @TODO: this always passes the check.  I'm assuming there's missing logic determining if the download has already happened.
-      if (!haveDownloaded) {
-        fetchSingleArchive(expr, fetchCommand, completionSentinel);
-        haveDownloaded = true;
-      }
+      fetchSingleArchive(expr, fetchCommand, completionSentinel);
+      haveDownloaded = true;
       appendIndented("LOCAL_EXPORT_C_INCLUDES+=%s", includePath);
-
     }
+
     if (expr.libraryPaths.length > 0) {
-      // @TODO: saw will go away within this scope and is never used other than to update.  Can likely lose it unless missing functionality WIP. For now will go off assumption that "saw" means desire for creating a uniques only array and skipping if seen before.
-      List<String> saw = new ArrayList<>();
       for (int i = 0; i < expr.libraryPaths.length; ++i) {
         String lib = CommandLineUtils.getLibraryNameFromLibraryFilename(new File(expr.libs[i]));
-        saw.add(lib);
         if (!lib.equals(currentLib)) {
           continue;
         }
@@ -243,13 +227,17 @@ public class NdkBuildGenerator extends AbstractNdkBuildGenerator {
     }
   }
 
-  private void fetchSingleArchive(@NotNull ModuleArchiveExpression expr, String fetchCommand, String completionSentinel) {
+  private void fetchSingleArchive(@NotNull ModuleArchiveExpression expr, @NotNull String fetchCommand, @NotNull String completionSentinel) {
+    String guard = String.format("CDEP_%s_DOWNLOAD_GUARD", expr.sha256).toUpperCase();
+    appendIndented("ifneq ($(%s),1)", guard);
     appendIndented("ifeq ($(wildcard %s),)", completionSentinel);
     ++indent;
     appendIndented("$(info CDep downloading %s)", expr.file.toString());
     appendIndented(fetchCommand);
     --indent;
     appendIndented("endif");
+    appendIndented("endif");
+    appendIndented("%s:=1", guard);
   }
 
 

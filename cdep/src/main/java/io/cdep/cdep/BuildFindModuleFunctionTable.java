@@ -15,90 +15,60 @@
 */
 package io.cdep.cdep;
 
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.abort;
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.archive;
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.arrayHasOnlyElement;
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.assign;
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.constant;
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.eq;
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.getFileName;
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.gte;
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.ifSwitch;
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.joinFileSegments;
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.lastIndexOfString;
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.module;
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.multi;
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.nop;
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.stringStartsWith;
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.substring;
-import static io.cdep.cdep.utils.Invariant.fail;
-import static io.cdep.cdep.utils.Invariant.failIf;
-import static io.cdep.cdep.utils.Invariant.require;
-import static io.cdep.cdep.utils.StringUtils.safeFormat;
-
 import io.cdep.annotations.NotNull;
 import io.cdep.annotations.Nullable;
-import io.cdep.cdep.ast.finder.AbortExpression;
-import io.cdep.cdep.ast.finder.AssignmentExpression;
-import io.cdep.cdep.ast.finder.ExampleExpression;
-import io.cdep.cdep.ast.finder.Expression;
-import io.cdep.cdep.ast.finder.FindModuleExpression;
-import io.cdep.cdep.ast.finder.FunctionTableExpression;
-import io.cdep.cdep.ast.finder.GlobalBuildEnvironmentExpression;
-import io.cdep.cdep.ast.finder.ModuleArchiveExpression;
-import io.cdep.cdep.ast.finder.StatementExpression;
+import io.cdep.cdep.ast.finder.*;
 import io.cdep.cdep.resolver.ResolvedManifest;
 import io.cdep.cdep.utils.ArrayUtils;
 import io.cdep.cdep.utils.CoordinateUtils;
 import io.cdep.cdep.utils.StringUtils;
-import io.cdep.cdep.yml.cdepmanifest.AndroidABI;
-import io.cdep.cdep.yml.cdepmanifest.AndroidArchive;
-import io.cdep.cdep.yml.cdepmanifest.Archive;
-import io.cdep.cdep.yml.cdepmanifest.CDepManifestYml;
-import io.cdep.cdep.yml.cdepmanifest.CxxLanguageFeatures;
-import io.cdep.cdep.yml.cdepmanifest.HardNameDependency;
-import io.cdep.cdep.yml.cdepmanifest.Interfaces;
-import io.cdep.cdep.yml.cdepmanifest.LinuxArchive;
-import io.cdep.cdep.yml.cdepmanifest.iOSArchitecture;
-import io.cdep.cdep.yml.cdepmanifest.iOSArchive;
+import io.cdep.cdep.yml.cdepmanifest.*;
+
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
+import static io.cdep.cdep.ast.finder.ExpressionBuilder.*;
+import static io.cdep.cdep.utils.Invariant.*;
+import static io.cdep.cdep.utils.StringUtils.safeFormat;
 
 @SuppressWarnings("Java8ReplaceMapGet")
 public class BuildFindModuleFunctionTable {
 
   @NotNull
+  private final List<Coordinate> orderedManifests = new ArrayList<>();
+
+  @NotNull
   private final Map<Coordinate, ResolvedManifest> manifests = new HashMap<>();
 
   public void addManifest(@NotNull ResolvedManifest resolved) {
+    orderedManifests.add(resolved.cdepManifestYml.coordinate);
     manifests.put(resolved.cdepManifestYml.coordinate, resolved);
   }
 
   @NotNull
   public FunctionTableExpression build() {
-    FunctionTableExpression functionTable = new FunctionTableExpression();
+    GlobalBuildEnvironmentExpression globals = new GlobalBuildEnvironmentExpression();
+    Map<Coordinate, StatementExpression> findFunctions = new HashMap<>();
+    Map<Coordinate, ExampleExpression> examples = new HashMap<>();
 
     // Build module lookup findFunctions
-    for (ResolvedManifest resolved : manifests.values()) {
-      functionTable.findFunctions.put(resolved.cdepManifestYml.coordinate, buildFindModule(
-          functionTable.globals, resolved));
+    for (Coordinate coordinate : orderedManifests) {
+      ResolvedManifest resolved = manifests.get(coordinate);
+      findFunctions.put(resolved.cdepManifestYml.coordinate, buildFindModule(globals, resolved));
     }
 
     // Build examples
-    for (ResolvedManifest resolved : manifests.values()) {
+    for (Coordinate coordinate : orderedManifests) {
+      ResolvedManifest resolved = manifests.get(coordinate);
       if (resolved.cdepManifestYml.example.isEmpty()) {
         continue;
       }
-      functionTable.examples.put(resolved.cdepManifestYml.coordinate, new ExampleExpression(resolved.cdepManifestYml.example));
+      examples.put(resolved.cdepManifestYml.coordinate, new ExampleExpression(resolved.cdepManifestYml.example));
     }
+
+    FunctionTableExpression functionTable = new FunctionTableExpression(globals, orderedManifests, findFunctions, examples);
 
     // Lift assignments up to the highest correct scope
     functionTable = (FunctionTableExpression) new ReplaceAssignmentWithReference().visit(functionTable);

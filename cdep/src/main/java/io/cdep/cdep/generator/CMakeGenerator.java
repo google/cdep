@@ -15,40 +15,20 @@
 */
 package io.cdep.cdep.generator;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.IllegalFormatException;
-import java.util.Objects;
-
 import io.cdep.API;
 import io.cdep.annotations.NotNull;
 import io.cdep.annotations.Nullable;
 import io.cdep.cdep.Coordinate;
-import io.cdep.cdep.ast.finder.AbortExpression;
-import io.cdep.cdep.ast.finder.ArrayExpression;
-import io.cdep.cdep.ast.finder.AssignmentBlockExpression;
-import io.cdep.cdep.ast.finder.AssignmentExpression;
-import io.cdep.cdep.ast.finder.AssignmentReferenceExpression;
-import io.cdep.cdep.ast.finder.ConstantExpression;
-import io.cdep.cdep.ast.finder.Expression;
-import io.cdep.cdep.ast.finder.ExternalFunctionExpression;
-import io.cdep.cdep.ast.finder.FindModuleExpression;
-import io.cdep.cdep.ast.finder.FunctionTableExpression;
-import io.cdep.cdep.ast.finder.GlobalBuildEnvironmentExpression;
-import io.cdep.cdep.ast.finder.IfSwitchExpression;
-import io.cdep.cdep.ast.finder.InvokeFunctionExpression;
-import io.cdep.cdep.ast.finder.ModuleArchiveExpression;
-import io.cdep.cdep.ast.finder.ModuleExpression;
-import io.cdep.cdep.ast.finder.MultiStatementExpression;
-import io.cdep.cdep.ast.finder.NopExpression;
-import io.cdep.cdep.ast.finder.ParameterAssignmentExpression;
-import io.cdep.cdep.ast.finder.ParameterExpression;
-import io.cdep.cdep.ast.finder.StatementExpression;
+import io.cdep.cdep.ast.finder.*;
 import io.cdep.cdep.utils.FileUtils;
 import io.cdep.cdep.utils.StringUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.util.IllegalFormatException;
+import java.util.Objects;
 
 import static io.cdep.cdep.io.IO.info;
 import static io.cdep.cdep.utils.Invariant.require;
@@ -70,96 +50,6 @@ public class CMakeGenerator {
   @Nullable
   private Coordinate coordinate = null;
 
-  private class ModuleDependsItem {
-    private ArrayList<String> dependsList;
-    private ArrayList<Expression> commonIncludes;
-    private String compilerFeatures;
-    private int insertingIndex = 0;
-    private int dependsInsert = 0;
-    private String insertingPrefix;
-    private String dependsInsertPrefix;
-
-    ModuleDependsItem() {
-      dependsList = new ArrayList<>();
-      commonIncludes = new ArrayList<>();
-      insertingIndex = 0;
-      dependsInsert = 0;
-    }
-
-    void InsertAndFlush() {
-      // The following cover the case that there's a header only dependency with header only dependency along with maintaining old behavior.
-      // A better solution would be to create a dependency type so we'd know in the in the visit function if the librarypath will never get called in subsequent visits.
-      if(insertingIndex > 0) {
-        if(!commonIncludes.isEmpty()) {
-          for(Expression includer : commonIncludes) {
-            sb.insert(insertingIndex, "\n" + insertingPrefix + "target_include_directories(${target} PUBLIC " + includer.toString() + ")\n");
-          }
-        }
-        commonIncludes = new ArrayList<>();
-        if(compilerFeatures != null) {
-          sb.insert(insertingIndex, "\n" + insertingPrefix + "target_compile_features(${target} PUBLIC " + compilerFeatures + ")\n");
-        }
-        compilerFeatures = null;
-        insertingIndex = 0;
-      }
-      if(!dependsList.isEmpty() && dependsInsert > 0) {
-        for(String depends : dependsList) {
-          sb.insert(dependsInsert, "\n" + dependsInsertPrefix + depends + "(${target} \"NoAutoTargetLink\")\n");
-        }
-        dependsInsert = 0;
-      }
-      dependsList = new ArrayList<>();
-    }
-
-    void initalizeNewModule() {
-      commonIncludes = new ArrayList<>();
-      compilerFeatures = null;
-    }
-
-    void setCompilerFeatures(String parms) {
-      compilerFeatures = (compilerFeatures == null)? parms : compilerFeatures + " " + parms;
-    }
-
-    void insertDependency(String DependencyFunctionName) {
-      dependsList.add(DependencyFunctionName);
-    }
-
-    void setDependsInsertMark(int _length, String _prefix) {
-      dependsInsert = _length;
-      dependsInsertPrefix = _prefix;
-    }
-
-    void insertIncludeData(Expression includePath, int _length, String _prefix) {
-      if (commonIncludes != null) {
-        commonIncludes.add(includePath);
-      }
-      insertingIndex = _length;
-      insertingPrefix = _prefix;
-    }
-
-    void setHasLibs() {
-      dependsInsert = 0;
-    }
-
-    ArrayList<Expression> getCommonIncludes() {
-      return commonIncludes;
-    }
-
-    String getCompilerFeatures() {
-      return compilerFeatures;
-    }
-
-    ArrayList<String> getDependsList() {
-      return dependsList;
-    }
-
-    void setHasInclude() {
-      insertingIndex = 0;
-    }
-  }
-
-  private ModuleDependsItem dependsItem;
-
   public CMakeGenerator(@NotNull GeneratorEnvironment environment, @NotNull FunctionTableExpression table) {
     this.environment = environment;
     this.globals = table.globals;
@@ -167,7 +57,6 @@ public class CMakeGenerator {
     table = (FunctionTableExpression) new CxxLanguageStandardRewritingVisitor().visit(table);
     this.table = table;
     this.sb = new StringBuilder();
-    this.dependsItem = new ModuleDependsItem();
   }
 
   public void generate() throws IOException {
@@ -178,18 +67,19 @@ public class CMakeGenerator {
   }
 
   @NotNull
-  String create() {
+  public String create() {
     append("# GENERATED FILE. DO NOT EDIT.\n");
     append(readCmakeLibraryFunctions());
-    for (StatementExpression findFunction : table.findFunctions.values()) {
+    for (Coordinate coordinate : table.orderOfReferences) {
+      StatementExpression findFunction = table.getFindFunction(coordinate);
       indent = 0;
       visit(findFunction);
-      dependsItem.InsertAndFlush();
       require(indent == 0);
     }
 
     append("\nfunction(add_all_cdep_dependencies target)\n");
-    for (StatementExpression findFunction : table.findFunctions.values()) {
+    for (Coordinate coordinate : table.orderOfReferences) {
+      StatementExpression findFunction = table.getFindFunction(coordinate);
       FindModuleExpression finder = getFindFunction(findFunction);
       String function = getAddDependencyFunctionName(finder.coordinate);
       append("  %s(${target})\n", function);
@@ -227,28 +117,11 @@ public class CMakeGenerator {
     return FileUtils.readAllText(stream);
   }
 
-  // We need to get a reasonable target name.  This approach chooses one based around what the path is to the dependency library target.
-  private String getLibNameFromFullPath(String fullPath) {
-    String libName;
-    if(fullPath.contains(".") && fullPath.contains("/") && fullPath.lastIndexOf(".") - fullPath.lastIndexOf("/") > 0) {
-      // This is a file system path; libname is the name from the last folder separator to the beginning of the extension.
-      libName = fullPath.substring(fullPath.lastIndexOf("/") + 1, fullPath.lastIndexOf("."));
-    } else if(fullPath.contains("//")) {
-      // This is where no extension was found (headers only or multiple libs and container extension).
-      libName = fullPath.substring(fullPath.lastIndexOf("/") + 1);
-    } else {
-      // All else fails then we got a reasonable libName to start with.
-      libName = fullPath;
-    }
-    return libName;
-  }
-
   private void visit(@NotNull Expression expression) {
 
     String prefix = new String(new char[indent * 2]).replace('\0', ' ');
 
     if (expression instanceof FindModuleExpression) {
-      dependsItem.initalizeNewModule();
       FindModuleExpression specific = (FindModuleExpression) expression;
       this.coordinate = specific.coordinate;
       append("\n###\n");
@@ -283,10 +156,8 @@ public class CMakeGenerator {
           + "    set(cdep_determined_android_abi ${ANDROID_ABI})\n"
           + "    set(cdep_supports_compiler_features FALSE)\n"
           + "  endif()\n\n");
-      append("  set(cdep_exploded_root \"%s\")\n", getCMakePath(environment.unzippedArchivesFolder));
+      append("  set(cdep_exploded_root \"%s\")", getCMakePath(environment.unzippedArchivesFolder));
       ++indent;
-      append("  set (extra_macro_args ${ARGN})\n");
-      append("  list(LENGTH extra_macro_args num_extra_args)\n");
       visit(specific.body);
       --indent;
       append("endfunction({appenderFunctionName})\n".replace("{appenderFunctionName}", appenderFunctionName));
@@ -345,10 +216,7 @@ public class CMakeGenerator {
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.ARRAY_HAS_ONLY_ELEMENT)) {
         append("%s STREQUAL %s", parms[0], parms[1]);
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.REQUIRES_COMPILER_FEATURES)) {
-        append("\n%sif (${num_extra_args} EQUAL 0)\n", prefix);
-        append("%s   target_compile_features(${target} PUBLIC %s )\n", prefix, parms[0]);
-        append("%sendif()\n", prefix);
-        dependsItem.setCompilerFeatures(parms[0]);
+        append("\r\n%starget_compile_features(${target} PRIVATE %s)\r\n", prefix, parms[0]);
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.SUPPORTS_COMPILER_FEATURES)) {
         append("cdep_supports_compiler_features");
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.NOT)) {
@@ -380,9 +248,8 @@ public class CMakeGenerator {
     } else if (expression instanceof ModuleExpression) {
       ModuleExpression specific = (ModuleExpression) expression;
       for (Coordinate dependency : specific.dependencies) {
-        dependsItem.insertDependency(getAddDependencyFunctionName(dependency));
+        append("\n%s%s(${target})", prefix, getAddDependencyFunctionName(dependency));
       }
-      dependsItem.setDependsInsertMark(sb.length(), prefix);
       append("\n");
       visit(specific.archive);
       return;
@@ -436,69 +303,15 @@ public class CMakeGenerator {
               specific.size.toString(),
               specific.sha256));
       if (specific.includePath != null) {
-        dependsItem.insertIncludeData(specific.includePath, sb.length(), prefix);
+        append("%starget_include_directories(${target} PRIVATE ", prefix);
+        visit(specific.includePath);
+        append(")\n");
       }
 
       for(Expression libraryPath : specific.libraryPaths) {
-        dependsItem.setHasLibs();
-        String libName = getLibNameFromFullPath(libraryPath.toString());
-        append("%sif(NOT (TARGET %s))\n", prefix, libName);
-        append("%s  add_library(%s STATIC IMPORTED )\n", prefix, libName);
-        append("%sendif()\n", prefix);
-        append("%sset_target_properties(%s PROPERTIES IMPORTED_LOCATION ", prefix, libName);
+        append("%starget_link_libraries(${target} ", prefix);
         visit(libraryPath);
-        ArrayList<Expression> commonIncludes = dependsItem.getCommonIncludes();
-        if(specific.includePath != null || !commonIncludes.isEmpty())
-        {
-          if(specific.includePath != null) {
-            append(" INTERFACE_INCLUDE_DIRECTORIES ");
-            visit(specific.includePath);
-          }
-          if(!commonIncludes.isEmpty()) {
-            for(Expression includer : commonIncludes) {
-              append(" INTERFACE_INCLUDE_DIRECTORIES ");
-              visit(includer);
-            }
-          }
-        }
-        String compilerFeatures = dependsItem.getCompilerFeatures();
-        if(compilerFeatures != null)
-        {
-          append(" INTERFACE_COMPILE_FEATURES %s", compilerFeatures.replaceAll("\\s", " INTERFACE_COMPILE_FEATURES "));
-        }
         append(")\n");
-        for(String depends : dependsItem.getDependsList()) {
-          append("%s%s(%s \"NoAutoTargetLink\")\n", prefix, depends, libName);
-        }
-
-        append("%sif (${num_extra_args} EQUAL 0)\n", prefix);
-        append("%s   target_link_libraries(${target} %s)\n", prefix, libName);
-        if(compilerFeatures != null) {
-          append("%s  target_compile_features(${target} PUBLIC %s)\n", prefix, compilerFeatures);
-        }
-        append("%selse ()\n", prefix);
-        if(compilerFeatures != null) {
-          append("%s   set_property(TARGET ${target} APPEND PROPERTY INTERFACE_COMPILE_FEATURES %s)\n", prefix, compilerFeatures.replaceAll("\\s", " INTERFACE_COMPILE_FEATURES "));
-        }
-        append("%s   set_property(TARGET ${target} APPEND PROPERTY INTERFACE_LINK_LIBRARIES ", prefix);
-        visit(libraryPath);
-        append(" )\n");
-        append("%sendif()\n", prefix);
-        if(specific.includePath != null || !commonIncludes.isEmpty()) {
-          if(specific.includePath != null) {
-            append("%sset_property(TARGET ${target} APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES ", prefix);
-            visit(specific.includePath);
-            append(" )\n");
-          }
-          if(!commonIncludes.isEmpty() && !commonIncludes.contains(specific.includePath)) {
-            for(Expression includer : commonIncludes) {
-              append("%sset_property(TARGET ${target} APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES ", prefix);
-              visit(includer);
-              append(" )\n");
-            }
-          }
-          dependsItem.setHasInclude();
-        }
       }
       return;
     } else if (expression instanceof ArrayExpression) {
