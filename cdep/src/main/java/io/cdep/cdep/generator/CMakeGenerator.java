@@ -216,7 +216,7 @@ public class CMakeGenerator {
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.ARRAY_HAS_ONLY_ELEMENT)) {
         append("%s STREQUAL %s", parms[0], parms[1]);
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.REQUIRES_COMPILER_FEATURES)) {
-        append("\r\n%starget_compile_features(${target} PRIVATE %s)\r\n", prefix, parms[0]);
+        append("\r\n%starget_compile_features(${target} PUBLIC %s)\r\n", prefix, parms[0]);
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.SUPPORTS_COMPILER_FEATURES)) {
         append("cdep_supports_compiler_features");
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.NOT)) {
@@ -303,7 +303,7 @@ public class CMakeGenerator {
               specific.size.toString(),
               specific.sha256));
       if (specific.includePath != null) {
-        append("%starget_include_directories(${target} INTERFACE ", prefix);
+        append("%starget_include_directories(${target} PUBLIC ", prefix);
         visit(specific.includePath);
         append(")\n");
       }
