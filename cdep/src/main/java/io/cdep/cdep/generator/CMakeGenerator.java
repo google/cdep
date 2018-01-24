@@ -69,6 +69,7 @@ public class CMakeGenerator {
   @NotNull
   public String create() {
     append("# GENERATED FILE. DO NOT EDIT.\n");
+    append("if(ANDROID_SYSTEM_VERSION)\n\tset(CMAKE_SYSTEM_VERSION ${ANDROID_SYSTEM_VERSION})\nendif(ANDROID_SYSTEM_VERSION)\n");
     append(readCmakeLibraryFunctions());
     for (Coordinate coordinate : table.orderOfReferences) {
       StatementExpression findFunction = table.getFindFunction(coordinate);
@@ -247,11 +248,11 @@ public class CMakeGenerator {
       return;
     } else if (expression instanceof ModuleExpression) {
       ModuleExpression specific = (ModuleExpression) expression;
-      for (Coordinate dependency : specific.dependencies) {
-        append("\n%s%s(${target})", prefix, getAddDependencyFunctionName(dependency));
-      }
       append("\n");
       visit(specific.archive);
+      for (Coordinate dependency : specific.dependencies) {
+        append("\n%s%s(${target})\n", prefix, getAddDependencyFunctionName(dependency));
+      }
       return;
     } else if (expression instanceof AbortExpression) {
       AbortExpression specific = (AbortExpression) expression;
