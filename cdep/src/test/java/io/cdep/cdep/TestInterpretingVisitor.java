@@ -129,6 +129,8 @@ public class TestInterpretingVisitor {
     expected.put("curlAndroid", "Reference com.github.gpx1000:boringssl:0.0.0 was not found, needed by com.github.gpx1000:curl:7.56.0");
     expected.put("zlibAndroid", "Abort: Target platform Linux is not supported by com.github.gpx1000:zlib:1.2.11. Supported: Android");
     expected.put("boringSSLAndroid", "Abort: Target platform Linux is not supported by com.github.gpx1000:boringssl:0.0.0. Supported: Android");
+    expected.put("curlAndroid", "Reference com.github.gpx1000:zlib:1.2.11 was not found, needed by com.github.gpx1000:curl:7.56.0");
+    expected.put("curlAndroid", "Reference com.github.gpx1000:zlib:1.2.11 was not found, needed by com.github.gpx1000:curl:7.56.0");
 
     boolean unexpectedFailures = false;
     for (ResolvedManifests.NamedManifest manifest : ResolvedManifests.all()) {
