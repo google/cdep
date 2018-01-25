@@ -25,7 +25,7 @@ import io.cdep.cdep.ast.finder.ModuleArchiveExpression;
 import io.cdep.cdep.ast.finder.ModuleExpression;
 import io.cdep.cdep.utils.StringUtils;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,11 +39,11 @@ import java.util.Map;
 public class CheckReferenceAndDependencyConsistency extends ReadonlyVisitor {
 
   // Map of dependency edges. Key is dependant and constant is dependees.
-  private final Map<Coordinate, List<Coordinate>> forwardEdges = new HashMap<>();
+  private final Map<Coordinate, List<Coordinate>> forwardEdges = new LinkedHashMap<>();
   // Map of dependency edges. Key is dependee and constant is dependants.
-  private final Map<Coordinate, List<Coordinate>> backwardEdges = new HashMap<>();
+  private final Map<Coordinate, List<Coordinate>> backwardEdges = new LinkedHashMap<>();
   // Map from module coordinate to the archives that it references
-  private final Map<Coordinate, List<ModuleArchiveExpression>> moduleArchives = new HashMap<>();
+  private final Map<Coordinate, List<ModuleArchiveExpression>> moduleArchives = new LinkedHashMap<>();
   @Nullable
   private Coordinate currentFindModule = null;
 
@@ -116,7 +116,7 @@ public class CheckReferenceAndDependencyConsistency extends ReadonlyVisitor {
    */
   @NotNull
   private Map<String, Coordinate> copyArchivesInto(Coordinate coordinate) {
-    Map<String, Coordinate> copy = new HashMap<>();
+    Map<String, Coordinate> copy = new LinkedHashMap<>();
     for (ModuleArchiveExpression archive : moduleArchives.get(coordinate)) {
       copy.put(archive.sha256, coordinate);
     }

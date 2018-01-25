@@ -20,7 +20,7 @@ import io.cdep.cdep.yml.cdepmanifest.CxxLanguageFeatures;
 import org.junit.Test;
 
 import java.net.URL;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -37,7 +37,7 @@ public class TestRewritingVisitor {
 
   @Test
   public void testAllResolvedManifests() throws Exception {
-    Map<String, String> expected = new HashMap<>();
+    Map<String, String> expected = new LinkedHashMap<>();
     expected.put("admob", "Reference com.github.jomof:firebase/app:2.1.3-rev8 was not found");
     expected.put("fuzz1", "Could not parse main manifest coordinate []");
     for (ResolvedManifests.NamedManifest manifest : ResolvedManifests.all()) {

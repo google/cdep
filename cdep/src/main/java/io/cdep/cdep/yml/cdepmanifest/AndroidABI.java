@@ -3,7 +3,7 @@ package io.cdep.cdep.yml.cdepmanifest;
 import io.cdep.annotations.NotNull;
 
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class AndroidABI {
@@ -15,7 +15,7 @@ public class AndroidABI {
   final public static AndroidABI MIPS = new AndroidABI("mips");
   final public static AndroidABI MIPS64 = new AndroidABI("mips64");
   public static final AndroidABI EMPTY_ABI = new AndroidABI("");
-  final static private HashSet<AndroidABI> values = new HashSet<>();
+  final static private LinkedHashSet<AndroidABI> values = new LinkedHashSet<>();
 
   static {
     values.add(X86);

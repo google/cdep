@@ -24,7 +24,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -271,7 +271,7 @@ public class TestCDepManifestYmlUtils {
 
   @Test
   public void testAllResolvedManifests() throws Exception {
-    Map<String, String> expected = new HashMap<>();
+    Map<String, String> expected = new LinkedHashMap<>();
     expected.put("admob", "Archive com.github.jomof:firebase/admob:2.1.3-rev8 is missing include");
     expected.put("archiveMissingSha256", "Archive com.github.jomof:vectorial:0.0.0 is missing sha256");
     expected.put("sqliteLinuxMultiple",
@@ -309,7 +309,7 @@ public class TestCDepManifestYmlUtils {
 
   @Test
   public void testTwoWayMergeSanity() throws Exception {
-    Map<String, String> expected = new HashMap<>();
+    Map<String, String> expected = new LinkedHashMap<>();
     expected.put("archiveMissingFile-archiveMissingFile", "Archive com.github.jomof:vectorial:0.0.0 is missing file");
     expected.put("archiveMissingSha256-archiveMissingSha256", "Archive com.github.jomof:vectorial:0.0.0 is missing sha256");
     expected.put("sqliteLinuxMultiple-sqliteLinuxMultiple",

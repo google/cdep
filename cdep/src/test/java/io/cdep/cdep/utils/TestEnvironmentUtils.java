@@ -20,7 +20,7 @@ import io.cdep.cdep.generator.GeneratorEnvironment;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.junit.Assert.fail;
@@ -31,7 +31,7 @@ public class TestEnvironmentUtils {
 
   @Test
   public void testAllResolvedManifests() throws Exception {
-    Map<String, String> expected = new HashMap<>();
+    Map<String, String> expected = new LinkedHashMap<>();
     expected.put("sqliteiOS", "'sqliteiOS' does not have archive");
     expected.put("sqliteAndroid", "'sqliteAndroid' does not have archive");
     expected.put("sqliteLinuxMultiple", "'sqliteLinuxMultiple' does not have archive");

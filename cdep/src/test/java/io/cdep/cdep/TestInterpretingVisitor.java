@@ -30,7 +30,7 @@ import io.cdep.cdep.yml.CDepManifestYmlGenerator;
 import io.cdep.cdep.yml.cdepmanifest.CDepManifestYml;
 import io.cdep.cdep.yml.cdepmanifest.CxxLanguageFeatures;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -101,7 +101,7 @@ public class TestInterpretingVisitor {
 
   @Test
   public void testAllResolvedManifestsLinux() throws Exception {
-    Map<String, String> expected = new HashMap<>();
+    Map<String, String> expected = new LinkedHashMap<>();
     expected.put("archiveMissingSize", "Abort: Archive in http://google.com/cdep-manifest.yml was malformed");
     expected.put("archiveMissingSha256", "Abort: Archive in http://google.com/cdep-manifest.yml was malformed");
     expected.put("archiveMissingFile", "Abort: Archive in http://google.com/cdep-manifest.yml was malformed");
@@ -186,7 +186,7 @@ public class TestInterpretingVisitor {
 
   @Test
   public void testAllResolvedManifestsAndroid() throws Exception {
-    Map<String, String> expected = new HashMap<>();
+    Map<String, String> expected = new LinkedHashMap<>();
     expected.put("sqliteLinux",
         "Abort: Target platform Android is not supported by com.github.jomof:sqlite:0.0.0. Supported: Linux");
     expected.put("sqliteLinuxMultiple",
@@ -274,7 +274,7 @@ public class TestInterpretingVisitor {
 
   @Test
   public void testAllResolvedManifestsiOS() throws Exception {
-    Map<String, String> expected = new HashMap<>();
+    Map<String, String> expected = new LinkedHashMap<>();
     expected.put("sqliteLinuxMultiple",
         "Abort: Target platform Darwin is not supported by com.github.jomof:sqlite:0.0.0. Supported: Linux");
     expected.put("archiveMissingSha256", "Abort: Archive in http://google.com/cdep-manifest.yml was malformed");
