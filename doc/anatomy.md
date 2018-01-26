@@ -110,9 +110,9 @@ This section contains any external dependencies the package might need in order 
 
 ```
 dependencies:
-- compile: "com.github.gpx1000:zlib:1.2.11"
+- compile: com.github.gpx1000:zlib:1.2.11
   sha256: cbdb96db3b4e07f41cbbe0407863b6ae3cecfaf34821b6b252c816791d70196a
-- compile: "com.github.gpx1000:boringssl:0.0.2"
+- compile: com.github.gpx1000:boringssl:0.0.2
   sha256: f83f6197d8191c06fdb99d7bb7c3d7e1dad5915d7fa1d73e7cdb2aed938d0985
 ```
 
