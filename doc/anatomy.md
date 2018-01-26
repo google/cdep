@@ -104,6 +104,17 @@ example: |
 The purpose of this is to help the user get started and also so that tools can automatically prove that the package can link.
 
 
+## Optional
+### Dependencies
+This section contains any external dependencies the package might need in order to link.
 
+```
+dependencies:
+- compile: com.github.gpx1000:zlib:1.2.11
+  sha256: cbdb96db3b4e07f41cbbe0407863b6ae3cecfaf34821b6b252c816791d70196a
+- compile: com.github.gpx1000:boringssl:0.0.2
+  sha256: f83f6197d8191c06fdb99d7bb7c3d7e1dad5915d7fa1d73e7cdb2aed938d0985
+```
 
+The above is taken from curl's cdep manifest, which can be found [here](https://github.com/gpx1000/curl/releases/download/7.56.2/cdep-manifest.yml).  In this example, Curl was minimally built with zlib and boringssl as dependencies.
 
