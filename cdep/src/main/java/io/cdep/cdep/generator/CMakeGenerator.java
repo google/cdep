@@ -15,41 +15,23 @@
 */
 package io.cdep.cdep.generator;
 
-import static io.cdep.cdep.io.IO.info;
-import static io.cdep.cdep.utils.Invariant.require;
-
 import io.cdep.API;
 import io.cdep.annotations.NotNull;
 import io.cdep.annotations.Nullable;
 import io.cdep.cdep.Coordinate;
-import io.cdep.cdep.ast.finder.AbortExpression;
-import io.cdep.cdep.ast.finder.ArrayExpression;
-import io.cdep.cdep.ast.finder.AssignmentBlockExpression;
-import io.cdep.cdep.ast.finder.AssignmentExpression;
-import io.cdep.cdep.ast.finder.AssignmentReferenceExpression;
-import io.cdep.cdep.ast.finder.ConstantExpression;
-import io.cdep.cdep.ast.finder.Expression;
-import io.cdep.cdep.ast.finder.ExternalFunctionExpression;
-import io.cdep.cdep.ast.finder.FindModuleExpression;
-import io.cdep.cdep.ast.finder.FunctionTableExpression;
-import io.cdep.cdep.ast.finder.GlobalBuildEnvironmentExpression;
-import io.cdep.cdep.ast.finder.IfSwitchExpression;
-import io.cdep.cdep.ast.finder.InvokeFunctionExpression;
-import io.cdep.cdep.ast.finder.ModuleArchiveExpression;
-import io.cdep.cdep.ast.finder.ModuleExpression;
-import io.cdep.cdep.ast.finder.MultiStatementExpression;
-import io.cdep.cdep.ast.finder.NopExpression;
-import io.cdep.cdep.ast.finder.ParameterAssignmentExpression;
-import io.cdep.cdep.ast.finder.ParameterExpression;
-import io.cdep.cdep.ast.finder.StatementExpression;
+import io.cdep.cdep.ast.finder.*;
 import io.cdep.cdep.utils.FileUtils;
 import io.cdep.cdep.utils.StringUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.IllegalFormatException;
 import java.util.Objects;
+
+import static io.cdep.cdep.io.IO.info;
+import static io.cdep.cdep.utils.Invariant.require;
 
 public class CMakeGenerator {
 
@@ -87,15 +69,18 @@ public class CMakeGenerator {
   @NotNull
   public String create() {
     append("# GENERATED FILE. DO NOT EDIT.\n");
+    append("if(ANDROID_SYSTEM_VERSION)\n\tset(CMAKE_SYSTEM_VERSION ${ANDROID_SYSTEM_VERSION})\nendif(ANDROID_SYSTEM_VERSION)\n");
     append(readCmakeLibraryFunctions());
-    for (StatementExpression findFunction : table.findFunctions.values()) {
+    for (Coordinate coordinate : table.orderOfReferences) {
+      StatementExpression findFunction = table.getFindFunction(coordinate);
       indent = 0;
       visit(findFunction);
       require(indent == 0);
     }
 
     append("\nfunction(add_all_cdep_dependencies target)\n");
-    for (StatementExpression findFunction : table.findFunctions.values()) {
+    for (Coordinate coordinate : table.orderOfReferences) {
+      StatementExpression findFunction = table.getFindFunction(coordinate);
       FindModuleExpression finder = getFindFunction(findFunction);
       String function = getAddDependencyFunctionName(finder.coordinate);
       append("  %s(${target})\n", function);
@@ -232,7 +217,7 @@ public class CMakeGenerator {
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.ARRAY_HAS_ONLY_ELEMENT)) {
         append("%s STREQUAL %s", parms[0], parms[1]);
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.REQUIRES_COMPILER_FEATURES)) {
-        append("\r\n%starget_compile_features(${target} PRIVATE %s)\r\n", prefix, parms[0]);
+        append("\r\n%starget_compile_features(${target} PUBLIC %s)\r\n", prefix, parms[0]);
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.SUPPORTS_COMPILER_FEATURES)) {
         append("cdep_supports_compiler_features");
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.NOT)) {
@@ -263,11 +248,11 @@ public class CMakeGenerator {
       return;
     } else if (expression instanceof ModuleExpression) {
       ModuleExpression specific = (ModuleExpression) expression;
-      for (Coordinate dependency : specific.dependencies) {
-        append("\n%s%s(${target})", prefix, getAddDependencyFunctionName(dependency));
-      }
       append("\n");
       visit(specific.archive);
+      for (Coordinate dependency : specific.dependencies) {
+        append("\n%s%s(${target})\n", prefix, getAddDependencyFunctionName(dependency));
+      }
       return;
     } else if (expression instanceof AbortExpression) {
       AbortExpression specific = (AbortExpression) expression;
@@ -319,7 +304,7 @@ public class CMakeGenerator {
               specific.size.toString(),
               specific.sha256));
       if (specific.includePath != null) {
-        append("%starget_include_directories(${target} PRIVATE ", prefix);
+        append("%starget_include_directories(${target} PUBLIC ", prefix);
         visit(specific.includePath);
         append(")\n");
       }

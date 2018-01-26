@@ -210,7 +210,7 @@ public class TestCDep {
         "com.github.jomof:boost:1.0.63-rev18"
     ));
   }
-  
+
   @Test
   public void callerID() throws Exception {
     main(main("lint",
@@ -254,17 +254,29 @@ public class TestCDep {
     assertThat(main("--working-folder", "non-existing-blah")).contains("non-existing-blah");
   }
 
-  //  @Test
-  //  public void runVectorial() throws Exception {
-  //    CDepYml config = new CDepYml();
-  //    System.out.printf(new Yaml().dump(config));
-  //    File yaml = new File(".test-files/runVectorial/cdep.yml");
-  //    yaml.getParentFile().mkdirs();
-  //    Files.write("builders: [cmake, cmakeExamples]\ndependencies:\n- compile: com.github" +
-  //        ".jomof:vectorial:0.0.0-rev13\n", yaml, StandardCharsets.UTF_8);
-  //    String result = main("-wf", yaml.getParent());
-  //    System.out.printf(result);
-  //  }
+  @Test
+  public void runCurl() throws Exception {
+    CDepYml config = new CDepYml();
+    System.out.printf(new Yaml().dump(config));
+    File yaml = new File(".test-files/runVectorial/cdep.yml");
+    yaml.getParentFile().mkdirs();
+    Files.write("builders: [cmake, cmakeExamples, ndk-build]\ndependencies:" +
+        "\n- compile: com.github.gpx1000:curl:7.56.0\n", yaml, StandardCharsets.UTF_8);
+    String result = main("-wf", yaml.getParent());
+    System.out.printf(result);
+  }
+
+  @Test
+  public void runBoringSSL() throws Exception {
+    CDepYml config = new CDepYml();
+    System.out.printf(new Yaml().dump(config));
+    File yaml = new File(".test-files/runVectorial/cdep.yml");
+    yaml.getParentFile().mkdirs();
+    Files.write("builders: [cmake, cmakeExamples, ndk-build]\ndependencies:" +
+        "\n- compile: com.github.gpx1000:boringssl:0.0.0\n", yaml, StandardCharsets.UTF_8);
+    String result = main("-wf", yaml.getParent());
+    System.out.printf(result);
+  }
 
   //  @Test
   //  public void runMathfu() throws Exception {
@@ -745,6 +757,17 @@ public class TestCDep {
   //    System.out.printf(result);
   //    assertThat(result).contains("Fetch complete");
   //  }
+
+//  @Test
+//  public void fetchCurl() throws Exception {
+//    File folder = new File(".test-files/fetchCurl");
+//    folder.mkdirs();
+//    String result = main(
+//        "com.github.gpx1000:curl:7.56.0",
+//        "-wf", folder.toString());
+//    System.out.printf(result);
+//    assertThat(result).contains("Fetch complete");
+//  }
 
   @Test
   public void fetchNotFound() throws Exception {

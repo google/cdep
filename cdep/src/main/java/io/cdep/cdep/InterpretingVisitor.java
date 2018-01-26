@@ -15,40 +15,23 @@
 */
 package io.cdep.cdep;
 
-import static io.cdep.cdep.utils.Invariant.fail;
-import static io.cdep.cdep.utils.Invariant.require;
-import static io.cdep.cdep.utils.ReflectionUtils.invoke;
-import static io.cdep.cdep.utils.StringUtils.safeFormat;
-
 import io.cdep.annotations.NotNull;
 import io.cdep.annotations.Nullable;
-import io.cdep.cdep.ast.finder.AbortExpression;
-import io.cdep.cdep.ast.finder.ArrayExpression;
-import io.cdep.cdep.ast.finder.AssignmentBlockExpression;
-import io.cdep.cdep.ast.finder.AssignmentExpression;
-import io.cdep.cdep.ast.finder.AssignmentReferenceExpression;
-import io.cdep.cdep.ast.finder.ConstantExpression;
-import io.cdep.cdep.ast.finder.ExampleExpression;
-import io.cdep.cdep.ast.finder.Expression;
-import io.cdep.cdep.ast.finder.ExternalFunctionExpression;
-import io.cdep.cdep.ast.finder.FindModuleExpression;
-import io.cdep.cdep.ast.finder.FunctionTableExpression;
-import io.cdep.cdep.ast.finder.GlobalBuildEnvironmentExpression;
-import io.cdep.cdep.ast.finder.IfSwitchExpression;
-import io.cdep.cdep.ast.finder.InvokeFunctionExpression;
-import io.cdep.cdep.ast.finder.ModuleArchiveExpression;
-import io.cdep.cdep.ast.finder.ModuleExpression;
-import io.cdep.cdep.ast.finder.MultiStatementExpression;
-import io.cdep.cdep.ast.finder.NopExpression;
-import io.cdep.cdep.ast.finder.ParameterExpression;
+import io.cdep.cdep.ast.finder.*;
 import io.cdep.cdep.yml.cdepmanifest.CxxLanguageFeatures;
+
 import java.io.File;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static io.cdep.cdep.utils.Invariant.fail;
+import static io.cdep.cdep.utils.Invariant.require;
+import static io.cdep.cdep.utils.ReflectionUtils.invoke;
+import static io.cdep.cdep.utils.StringUtils.safeFormat;
 
 /*
  * Walks the expression tree and interprets the constant for the supplied state.
@@ -326,13 +309,13 @@ public class InterpretingVisitor {
   @Nullable
   private Object visitFunctionTableExpression(@NotNull FunctionTableExpression expr) {
     visit(expr.globals);
-    for (Coordinate coordinate : expr.findFunctions.keySet()) {
+    for (Coordinate coordinate : expr.orderOfReferences) {
       stack = new Frame(stack);
-      visit(expr.findFunctions.get(coordinate));
+      visit(expr.getFindFunction(coordinate));
       stack = stack.prior;
     }
-    for (Coordinate coordinate : expr.examples.keySet()) {
-      visit(expr.examples.get(coordinate));
+    for (Coordinate coordinate : expr.orderOfReferences) {
+      visit(expr.getExample(coordinate));
     }
     return null;
   }
@@ -362,7 +345,7 @@ public class InterpretingVisitor {
 
     Frame(Frame prior) {
       this.prior = prior;
-      this.assignments = new HashMap<>();
+      this.assignments = new LinkedHashMap<>();
     }
 
     AssignmentFuture lookup(@NotNull AssignmentExpression assignment) {

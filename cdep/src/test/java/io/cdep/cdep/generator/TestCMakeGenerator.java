@@ -29,8 +29,9 @@ import org.junit.Test;
 
 import java.io.File;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
@@ -77,19 +78,36 @@ public class TestCMakeGenerator {
     FunctionTableExpression table = builder.build();
     String result = new CMakeGenerator(environment, table).create();
     System.out.printf(result);
-    assertThat(result).contains("target_compile_features(${target} PRIVATE " +
-        "cxx_auto_type cxx_decltype)");
+    boolean headerOnly = result.contains("target_compile_features(${target} PUBLIC cxx_auto_type cxx_decltype)");
+    boolean archive = result.contains("INTERFACE_COMPILE_FEATURES cxx_auto_type cxx_decltype");
+    assert(headerOnly || archive);
+  }
+
+  @Test
+  public void testCurl() throws Exception {
+    BuildFindModuleFunctionTable builder = new BuildFindModuleFunctionTable();
+    builder.addManifest(ResolvedManifests.zlibAndroid().manifest);
+    builder.addManifest(ResolvedManifests.boringSSLAndroid().manifest);
+    builder.addManifest(ResolvedManifests.curlAndroid().manifest);
+    FunctionTableExpression table = builder.build();
+    String script = new CMakeGenerator(environment, table).create();
+    System.out.printf(script);
   }
 
   @Test
   public void testAllResolvedManifests() throws Exception {
-    Map<String, String> expected = new HashMap<>();
+    Map<String, String> expected = new LinkedHashMap<>();
     expected.put("admob", "Reference com.github.jomof:firebase/app:2.1.3-rev8 was not found, "
         + "needed by com.github.jomof:firebase/admob:2.1.3-rev8");
     expected.put("fuzz1", "Could not parse main manifest coordinate []");
     boolean unexpectedFailures = false;
     for (ResolvedManifests.NamedManifest manifest : ResolvedManifests.all()) {
       BuildFindModuleFunctionTable builder = new BuildFindModuleFunctionTable();
+      if(Objects.equals(manifest.name, "curlAndroid"))
+      {
+        builder.addManifest(ResolvedManifests.zlibAndroid().manifest);
+        builder.addManifest(ResolvedManifests.boringSSLAndroid().manifest);
+      }
       builder.addManifest(manifest.resolved);
       String expectedFailure = expected.get(manifest.name);
       try {

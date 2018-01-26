@@ -24,7 +24,7 @@ import io.cdep.cdep.Coordinate;
 import io.cdep.cdep.yml.cdepmanifest.CDepManifestYml;
 import io.cdep.cdep.yml.cdepmanifest.CDepManifestYmlReadonlyVisitor;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static com.google.common.truth.Truth.assertAbout;
@@ -56,7 +56,7 @@ public class CDepManifestYmlSubject extends Subject<CDepManifestYmlSubject, CDep
   }
 
   public void hasArchiveNamed(String archive) {
-    final Set<String> archives = new HashSet<>();
+    final Set<String> archives = new LinkedHashSet<>();
 
     // Gather archive names
     (new GatherArchivesYmlReadonlyVisitor(archives)).visitCDepManifestYml(null, actual());

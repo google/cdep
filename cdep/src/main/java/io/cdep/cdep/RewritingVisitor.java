@@ -15,48 +15,20 @@
 */
 package io.cdep.cdep;
 
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.abort;
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.archive;
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.array;
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.assign;
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.assignmentBlock;
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.constant;
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.ifSwitch;
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.invoke;
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.module;
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.multi;
-import static io.cdep.cdep.ast.finder.ExpressionBuilder.nop;
-
 import io.cdep.annotations.NotNull;
 import io.cdep.annotations.Nullable;
-import io.cdep.cdep.ast.finder.AbortExpression;
-import io.cdep.cdep.ast.finder.ArrayExpression;
-import io.cdep.cdep.ast.finder.AssignmentBlockExpression;
-import io.cdep.cdep.ast.finder.AssignmentExpression;
-import io.cdep.cdep.ast.finder.AssignmentReferenceExpression;
-import io.cdep.cdep.ast.finder.ConstantExpression;
-import io.cdep.cdep.ast.finder.ExampleExpression;
-import io.cdep.cdep.ast.finder.Expression;
-import io.cdep.cdep.ast.finder.ExternalFunctionExpression;
-import io.cdep.cdep.ast.finder.FindModuleExpression;
-import io.cdep.cdep.ast.finder.FunctionTableExpression;
-import io.cdep.cdep.ast.finder.GlobalBuildEnvironmentExpression;
-import io.cdep.cdep.ast.finder.IfSwitchExpression;
-import io.cdep.cdep.ast.finder.InvokeFunctionExpression;
-import io.cdep.cdep.ast.finder.ModuleArchiveExpression;
-import io.cdep.cdep.ast.finder.ModuleExpression;
-import io.cdep.cdep.ast.finder.MultiStatementExpression;
-import io.cdep.cdep.ast.finder.NopExpression;
-import io.cdep.cdep.ast.finder.ParameterExpression;
-import io.cdep.cdep.ast.finder.StatementExpression;
+import io.cdep.cdep.ast.finder.*;
+
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static io.cdep.cdep.ast.finder.ExpressionBuilder.*;
+
 @SuppressWarnings("unused")
 public class RewritingVisitor {
-  private final Map<Expression, Expression> identity = new HashMap<>();
+  private final Map<Expression, Expression> identity = new LinkedHashMap<>();
 
   @NotNull
   public Expression visit(@NotNull Expression expr) {
@@ -251,15 +223,20 @@ public class RewritingVisitor {
 
   @NotNull
   public Expression visitFunctionTableExpression(@NotNull FunctionTableExpression expr) {
-    FunctionTableExpression newExpr = new FunctionTableExpression(expr.globals);
+    Map<Coordinate, StatementExpression> findFunctions = new LinkedHashMap<>();
+    Map<Coordinate, ExampleExpression> examples = new LinkedHashMap<>();
 
-    for (Coordinate coordinate : expr.findFunctions.keySet()) {
-      newExpr.findFunctions.put(coordinate, (StatementExpression) visit(expr.findFunctions.get(coordinate)));
+    for (Coordinate coordinate : expr.orderOfReferences) {
+      findFunctions.put(coordinate, (StatementExpression) visit(expr.getFindFunction(coordinate)));
     }
-    for (Coordinate coordinate : expr.examples.keySet()) {
-      newExpr.examples.put(coordinate, (ExampleExpression) visit(expr.examples.get(coordinate)));
+    for (Coordinate coordinate : expr.orderOfReferences) {
+      ExampleExpression example = expr.getExample(coordinate);
+      if (example == null) {
+        continue;
+      }
+      examples.put(coordinate, (ExampleExpression) visit(example));
     }
-    return newExpr;
+    return new FunctionTableExpression(expr.globals, expr.orderOfReferences, findFunctions, examples);
   }
 
   @NotNull

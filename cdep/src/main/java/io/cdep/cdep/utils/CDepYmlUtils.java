@@ -26,7 +26,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static io.cdep.cdep.utils.Invariant.fail;
@@ -34,7 +34,7 @@ import static io.cdep.cdep.utils.Invariant.require;
 
 abstract public class CDepYmlUtils {
   public static void checkSanity(@NotNull CDepYml cdepYml, File configFile) {
-    Set<BuildSystem> builders = new HashSet<>();
+    Set<BuildSystem> builders = new LinkedHashSet<>();
     for (BuildSystem builder : cdepYml.builders) {
       require(!builders.contains(builder), "'builders' contains '%s' more than once", builder);
       builders.add(builder);

@@ -21,7 +21,7 @@ import io.cdep.cdep.yml.cdepmanifest.*;
 import org.junit.Test;
 
 import java.net.MalformedURLException;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -57,7 +57,7 @@ public class TestMergeCDepManifestYmls {
 
   @Test
   public void testTwoWayMerges() throws Exception {
-    Set<String> commonDifferences = new HashSet<>();
+    Set<String> commonDifferences = new LinkedHashSet<>();
     commonDifferences.add("Manifests were different at requires.requires.headers.interfaces.[constant]");
     commonDifferences.add("Manifests were different at groupId.coordinate.[constant]");
     commonDifferences.add("Manifests were different at artifactId.coordinate.[constant]");
@@ -70,7 +70,7 @@ public class TestMergeCDepManifestYmls {
 
     // Some manifest strings don't round trip because we don't have concept of null scalars
     // only empty
-    Set<String> stringsDontRoundTrip = new HashSet<>();
+    Set<String> stringsDontRoundTrip = new LinkedHashSet<>();
     stringsDontRoundTrip.add("fuzz1-fuzz1");
     boolean somethingUnexpected = false;
     for (ResolvedManifests.NamedManifest manifest1 : ResolvedManifests.all()) {

@@ -15,26 +15,21 @@
 */
 package io.cdep.cdep.resolver;
 
-import static io.cdep.cdep.resolver.ResolutionScope.Unresolvable.DIDNT_EXIST;
-import static io.cdep.cdep.resolver.ResolutionScope.Unresolvable.UNPARSEABLE;
-import static io.cdep.cdep.utils.Invariant.require;
-
 import io.cdep.annotations.NotNull;
 import io.cdep.annotations.Nullable;
 import io.cdep.cdep.Coordinate;
 import io.cdep.cdep.Version;
 import io.cdep.cdep.utils.CoordinateUtils;
+import io.cdep.cdep.utils.Invariant;
 import io.cdep.cdep.utils.VersionUtils;
 import io.cdep.cdep.yml.cdep.SoftNameDependency;
 import io.cdep.cdep.yml.cdepmanifest.HardNameDependency;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import java.util.*;
+
+import static io.cdep.cdep.resolver.ResolutionScope.Unresolvable.DIDNT_EXIST;
+import static io.cdep.cdep.resolver.ResolutionScope.Unresolvable.UNPARSEABLE;
+import static io.cdep.cdep.utils.Invariant.require;
 
 /*
  * Records the current state of resolving top-level and transitive dependencies.
@@ -44,26 +39,26 @@ public class ResolutionScope {
 
   // Map of dependency edges. Key is dependant and value is dependees.
   @NotNull
-  final public Map<Coordinate, List<Coordinate>> forwardEdges = new HashMap<>();
+  final public Map<Coordinate, List<Coordinate>> forwardEdges = new LinkedHashMap<>();
   // Map of dependency edges. Key is dependee and value is dependants.
   @NotNull
-  final public Map<Coordinate, List<Coordinate>> backwardEdges = new HashMap<>();
+  final public Map<Coordinate, List<Coordinate>> backwardEdges = new LinkedHashMap<>();
   // Map of dependency edges. Key is dependant and value is dependees.
   @NotNull
-  private final Map<Coordinate, List<Coordinate>> unificationWinnersToLosers = new HashMap<>();
+  private final Map<Coordinate, List<Coordinate>> unificationWinnersToLosers = new LinkedHashMap<>();
   // Map of dependency edges. Key is dependee and value is dependants.
   @NotNull
-  private final Map<Coordinate, List<Coordinate>> unificationLosersToWinners = new HashMap<>();
+  private final Map<Coordinate, List<Coordinate>> unificationLosersToWinners = new LinkedHashMap<>();
   // Dependencies that are not yet resolved but where resolution is possible
   @NotNull
-  final private Map<String, SoftNameDependency> unresolved = new HashMap<>();
+  final private Map<String, SoftNameDependency> unresolved = new LinkedHashMap<>();
   // Dependencies that have been resolved (successfully or unsuccessfully)
   @NotNull
-  final private Set<String> resolved = new HashSet<>();
+  final private Set<String> resolved = new LinkedHashSet<>();
   @NotNull
-  final private Map<String, Unresolvable> unresolveable = new HashMap<>();
+  final private Map<String, Unresolvable> unresolveable = new LinkedHashMap<>();
   @NotNull
-  final private Map<String, ResolvedManifest> versionlessKeyedManifests = new HashMap<>();
+  final private Map<String, ResolvedManifest> versionlessKeyedManifests = new LinkedHashMap<>();
 
   /*
    * Construct a fresh resolution scope.
@@ -188,13 +183,11 @@ public class ResolutionScope {
   @SuppressWarnings("Java8ListSort")
   @Nullable
   private Coordinate determineUnificationWinner(@NotNull ResolvedManifest resolved) {
-    Coordinate versionless = new Coordinate(
-        resolved.cdepManifestYml.coordinate.groupId,
-        resolved.cdepManifestYml.coordinate.artifactId);
+    Coordinate versionless = CoordinateUtils.getVersionless(resolved.cdepManifestYml.coordinate);
 
     ResolvedManifest preexisting = versionlessKeyedManifests.get(versionless.toString());
     if (preexisting != null) {
-      Map<Version, ResolvedManifest> manifests = new HashMap<>();
+      Map<Version, ResolvedManifest> manifests = new LinkedHashMap<>();
       manifests.put(resolved.cdepManifestYml.coordinate.version, resolved);
       manifests.put(preexisting.cdepManifestYml.coordinate.version, preexisting);
       List<Version> versions = new ArrayList<>();
@@ -228,7 +221,8 @@ public class ResolutionScope {
   }
 
   /*
-   * Return the set of resolved names (coordinates or soft names).
+   * Return the set of resolved names (coordinates or soft names) toposorted by dependency order (dependees before
+   * dependers)
    */
   @NotNull
   public ResolvedManifest getResolution(@NotNull String name) {
@@ -240,6 +234,77 @@ public class ResolutionScope {
    */
   @NotNull
   public Collection<String> getResolutions() {
+    Set<Coordinate> seen = new LinkedHashSet<>();
+    List<String> result = new ArrayList<>();
+
+    // In case of bugs, don't loop forever. Choose a number that would be a ridiculous
+    // dependency depth but not so many it would take long.
+    int maximumDepth = 200;
+
+    for (int loop = 0; loop < maximumDepth; ++loop) {
+      int resolutionsInLoop = 0;
+      for (String name : versionlessKeyedManifests.keySet()) {
+        ResolvedManifest resolved = getResolution(name);
+        Coordinate resolvedVersionless = CoordinateUtils.getVersionless(resolved.cdepManifestYml.coordinate);
+        if (seen.contains(resolvedVersionless)) {
+          continue;
+        }
+
+        List<Coordinate> dependencies = forwardEdges.get(resolved.cdepManifestYml.coordinate);
+        boolean missingDependencies = false;
+        if (dependencies != null) {
+          for (Coordinate dependency : dependencies) {
+            if (seen.contains(CoordinateUtils.getVersionless(dependency))) {
+              continue;
+            }
+            missingDependencies = true;
+            break;
+          }
+        }
+
+        // Some dependencies of this resolution have not been written yet.
+        if (missingDependencies) {
+          continue;
+        }
+
+        // All dependencies present so write this dependency.
+        result.add(name);
+        seen.add(resolvedVersionless);
+        ++resolutionsInLoop;
+      }
+
+      if (result.size() == versionlessKeyedManifests.keySet().size()) {
+        return result;
+      }
+
+      if (resolutionsInLoop == 0) {
+        // Transited the whole list and there were no resolutions. This means there was a missing dependency.
+        // Issue an error for unresolved dependencies.
+        for (String name : versionlessKeyedManifests.keySet()) {
+          ResolvedManifest resolved = getResolution(name);
+          Coordinate resolvedVersionless = CoordinateUtils.getVersionless(resolved.cdepManifestYml.coordinate);
+          if (seen.contains(resolvedVersionless)) {
+            continue;
+          }
+
+          List<Coordinate> dependencies = forwardEdges.get(resolved.cdepManifestYml.coordinate);
+          boolean missingDependencies = false;
+          String missing = "";
+          for (Coordinate dependency : dependencies) {
+            if (seen.contains(CoordinateUtils.getVersionless(dependency))) {
+              continue;
+            }
+            missing += " " + dependency.toString();
+          }
+
+          Invariant.fail("Reference %s has unresolved dependency%s", resolved.cdepManifestYml.coordinate, missing);
+        }
+        return versionlessKeyedManifests.keySet();
+      }
+    }
+
+    // Unreachable outside of bugs in resolution logic
+    Invariant.fail("Exceeded maximum dependency depth %s", maximumDepth);
     return versionlessKeyedManifests.keySet();
   }
 

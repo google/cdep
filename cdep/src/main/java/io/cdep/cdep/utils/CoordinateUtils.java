@@ -18,8 +18,8 @@ package io.cdep.cdep.utils;
 import io.cdep.annotations.NotNull;
 import io.cdep.annotations.Nullable;
 import io.cdep.cdep.Coordinate;
-
 import io.cdep.cdep.Version;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,5 +38,13 @@ public class CoordinateUtils {
     String artifactId = match.group(2);
     String version = match.group(3);
     return new Coordinate(groupId, artifactId, new Version(version));
+  }
+
+  /*
+  Return the same coordinate with version removed.
+   */
+  @NotNull
+  public static Coordinate getVersionless(@NotNull Coordinate coordinate) {
+    return new Coordinate(coordinate.groupId, coordinate.artifactId);
   }
 }

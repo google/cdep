@@ -17,25 +17,7 @@ package io.cdep.cdep;
 
 import io.cdep.annotations.NotNull;
 import io.cdep.annotations.Nullable;
-import io.cdep.cdep.ast.finder.AbortExpression;
-import io.cdep.cdep.ast.finder.ArrayExpression;
-import io.cdep.cdep.ast.finder.AssignmentBlockExpression;
-import io.cdep.cdep.ast.finder.AssignmentExpression;
-import io.cdep.cdep.ast.finder.AssignmentReferenceExpression;
-import io.cdep.cdep.ast.finder.ConstantExpression;
-import io.cdep.cdep.ast.finder.ExampleExpression;
-import io.cdep.cdep.ast.finder.Expression;
-import io.cdep.cdep.ast.finder.ExternalFunctionExpression;
-import io.cdep.cdep.ast.finder.FindModuleExpression;
-import io.cdep.cdep.ast.finder.FunctionTableExpression;
-import io.cdep.cdep.ast.finder.GlobalBuildEnvironmentExpression;
-import io.cdep.cdep.ast.finder.IfSwitchExpression;
-import io.cdep.cdep.ast.finder.InvokeFunctionExpression;
-import io.cdep.cdep.ast.finder.ModuleArchiveExpression;
-import io.cdep.cdep.ast.finder.ModuleExpression;
-import io.cdep.cdep.ast.finder.MultiStatementExpression;
-import io.cdep.cdep.ast.finder.NopExpression;
-import io.cdep.cdep.ast.finder.ParameterExpression;
+import io.cdep.cdep.ast.finder.*;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class ReadonlyVisitor {
@@ -209,11 +191,11 @@ public class ReadonlyVisitor {
 
   protected void visitFunctionTableExpression(@NotNull FunctionTableExpression expr) {
     visit(expr.globals);
-    for (Coordinate coordinate : expr.findFunctions.keySet()) {
-      visit(expr.findFunctions.get(coordinate));
+    for (Coordinate coordinate : expr.orderOfReferences) {
+      visit(expr.getFindFunction(coordinate));
     }
-    for (Coordinate coordinate : expr.examples.keySet()) {
-      visit(expr.examples.get(coordinate));
+    for (Coordinate coordinate : expr.orderOfReferences) {
+      visit(expr.getExample(coordinate));
     }
   }
 }

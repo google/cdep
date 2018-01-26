@@ -36,7 +36,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -56,7 +56,7 @@ public class GeneratorEnvironmentUtils {
       @NotNull Map<Coordinate, List<Expression>> foundModules)
       throws IOException, NoSuchAlgorithmException {
 
-    Set<File> alreadyExploded = new HashSet<>();
+    Set<File> alreadyExploded = new LinkedHashSet<>();
 
     // Download and unzip any modules.
     for (Coordinate coordinate : foundModules.keySet()) {
