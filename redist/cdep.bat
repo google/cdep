@@ -68,7 +68,7 @@ set CMD_LINE_ARGS=%*
 set CLASSPATH=%APP_HOME%\bootstrap\wrapper\bootstrap.jar
 
 @rem Execute Bootstrap
-"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %CDEP_OPTS% "-Dio.cdep.appname=%APP_BASE_NAME%" -classpath "%CLASSPATH%" io.cdep.bootstrap.Bootstrap %MANIFEST% %CMD_LINE_ARGS%
+"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %CDEP_OPTS% "-Dio.cdep.appname=%APP_BASE_NAME%" -classpath "%CLASSPATH%" "-Dhttps.protocols=TLSv1,TLSv1.1,TLSv1.2" io.cdep.bootstrap.Bootstrap %MANIFEST% %CMD_LINE_ARGS%
 
 :end
 @rem End local scope for the variables with windows NT shell
