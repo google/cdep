@@ -1,11 +1,9 @@
 language: java
-dist: precise
 git:
   depth: 3
 matrix:
   include:
-  - jdk: oraclejdk7
-    os: linux
+  - os: linux
     addons:
       apt:
         sources:
