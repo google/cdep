@@ -40,7 +40,7 @@ public class BuildFindModuleFunctionTable {
   private final List<Coordinate> orderedManifests = new ArrayList<>();
 
   @NotNull
-  private final Map<Coordinate, ResolvedManifest> manifests = new HashMap<>();
+  private final Map<Coordinate, ResolvedManifest> manifests = new LinkedHashMap<>();
 
   public void addManifest(@NotNull ResolvedManifest resolved) {
     orderedManifests.add(resolved.cdepManifestYml.coordinate);
@@ -50,8 +50,8 @@ public class BuildFindModuleFunctionTable {
   @NotNull
   public FunctionTableExpression build() {
     GlobalBuildEnvironmentExpression globals = new GlobalBuildEnvironmentExpression();
-    Map<Coordinate, StatementExpression> findFunctions = new HashMap<>();
-    Map<Coordinate, ExampleExpression> examples = new HashMap<>();
+    Map<Coordinate, StatementExpression> findFunctions = new LinkedHashMap<>();
+    Map<Coordinate, ExampleExpression> examples = new LinkedHashMap<>();
 
     // Build module lookup findFunctions
     for (Coordinate coordinate : orderedManifests) {
@@ -85,8 +85,8 @@ public class BuildFindModuleFunctionTable {
       @NotNull GlobalBuildEnvironmentExpression globals,
       @NotNull ResolvedManifest resolved) {
 
-    Map<Expression, Expression> cases = new HashMap<>();
-    Set<Coordinate> dependencies = new HashSet<>();
+    Map<Expression, Expression> cases = new LinkedHashMap<>();
+    Set<Coordinate> dependencies = new LinkedHashSet<>();
     CDepManifestYml manifest = resolved.cdepManifestYml;
     for (HardNameDependency dependency : manifest.dependencies) {
       Coordinate coordinate = CoordinateUtils.tryParse(dependency.compile);
@@ -436,7 +436,7 @@ public class BuildFindModuleFunctionTable {
 
   @NotNull
   private Map<iOSArchitecture, List<iOSArchive>> groupByArchitecture(@NotNull iOSArchive archives[]) {
-    Map<iOSArchitecture, List<iOSArchive>> result = new HashMap<>();
+    Map<iOSArchitecture, List<iOSArchive>> result = new LinkedHashMap<>();
     for (iOSArchive archive : archives) {
       List<iOSArchive> list = result.get(archive.architecture);
       if (list == null) {
@@ -456,7 +456,7 @@ public class BuildFindModuleFunctionTable {
       @NotNull Set<Coordinate> dependencies) {
 
     // Gather up the runtime names
-    Map<String, List<AndroidArchive>> stlTypes = new HashMap<>();
+    Map<String, List<AndroidArchive>> stlTypes = new LinkedHashMap<>();
     assert resolved.cdepManifestYml.android != null;
     assert resolved.cdepManifestYml.android.archives != null;
     for (AndroidArchive android : resolved.cdepManifestYml.android.archives) {
@@ -478,7 +478,7 @@ public class BuildFindModuleFunctionTable {
       return buildAndroidPlatformExpression(globals, resolved, noRuntimeAndroids, explodedArchiveFolder, dependencies);
     }
 
-    Map<Expression, Expression> cases = new HashMap<>();
+    Map<Expression, Expression> cases = new LinkedHashMap<>();
     String runtimes = "";
     for (String stlType : stlTypes.keySet()) {
       runtimes += stlType + " ";
@@ -535,7 +535,7 @@ public class BuildFindModuleFunctionTable {
       return buildAndroidAbiExpression(globals, resolved, androids, explodedArchiveFolder, dependencies);
     }
 
-    Map<Integer, List<AndroidArchive>> grouped = new HashMap<>();
+    Map<Integer, List<AndroidArchive>> grouped = new LinkedHashMap<>();
     for (AndroidArchive android : androids) {
       Integer platform;
       try {
@@ -586,11 +586,11 @@ public class BuildFindModuleFunctionTable {
       @NotNull AssignmentExpression explodedArchiveFolder,
       @NotNull Set<Coordinate> dependencies) {
     CDepManifestYml manifest = resolved.cdepManifestYml;
-    Map<Expression, Expression> cases = new HashMap<>();
+    Map<Expression, Expression> cases = new LinkedHashMap<>();
     String supported = "";
 
     // Group ABI (ABI may be empty for header-only)
-    Map<AndroidABI, List<AndroidArchive>> grouped = new HashMap<>();
+    Map<AndroidABI, List<AndroidArchive>> grouped = new LinkedHashMap<>();
     for (AndroidArchive android : androids) {
       AndroidABI abi = android.abi;
       List<AndroidArchive> group = grouped.get(abi);

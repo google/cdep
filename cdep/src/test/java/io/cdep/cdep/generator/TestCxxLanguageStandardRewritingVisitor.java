@@ -22,7 +22,7 @@ import io.cdep.cdep.yml.cdepmanifest.CxxLanguageFeatures;
 import org.junit.Test;
 
 import java.net.URL;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -48,7 +48,7 @@ public class TestCxxLanguageStandardRewritingVisitor {
     rewriter.visit(globals);
 
     ModuleArchiveExpression archive = makeArchive(CxxLanguageFeatures.cxx_alignof);
-    ModuleExpression module = new ModuleExpression(archive, new HashSet<Coordinate>());
+    ModuleExpression module = new ModuleExpression(archive, new LinkedHashSet<Coordinate>());
     Expression result = ((MultiStatementExpression) rewriter.visitModuleExpression(module)).statements[0];
 
     InterpretingVisitor interpreter = new InterpretingVisitor();
@@ -63,7 +63,7 @@ public class TestCxxLanguageStandardRewritingVisitor {
     rewriter.visit(globals);
 
     ModuleArchiveExpression archive = makeArchive(CxxLanguageFeatures.cxx_std_17);
-    ModuleExpression module = new ModuleExpression(archive, new HashSet<Coordinate>());
+    ModuleExpression module = new ModuleExpression(archive, new LinkedHashSet<Coordinate>());
     Expression result = ((MultiStatementExpression) rewriter.visitModuleExpression(module)).statements[0];
 
     InterpretingVisitor interpreter = new InterpretingVisitor();

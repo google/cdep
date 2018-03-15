@@ -29,8 +29,9 @@ import org.junit.Test;
 
 import java.io.File;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.junit.Assert.fail;
 
@@ -104,14 +105,31 @@ public class TestNdkBuildGenerator {
   }
 
   @Test
+  public void testCurl() throws Exception {
+    // OpenCV has different libraries depending on target ABI
+    BuildFindModuleFunctionTable builder = new BuildFindModuleFunctionTable();
+    builder.addManifest(ResolvedManifests.zlibAndroid().manifest);
+    builder.addManifest(ResolvedManifests.boringSSLAndroid().manifest);
+    builder.addManifest(ResolvedManifests.curlAndroid().manifest);
+    FunctionTableExpression table = builder.build();
+    String script = new NdkBuildGenerator(environment).generate(table);
+    System.out.printf(script);
+  }
+
+  @Test
   public void testAllResolvedManifests() throws Exception {
-    Map<String, String> expected = new HashMap<>();
+    Map<String, String> expected = new LinkedHashMap<>();
     expected.put("admob", "Reference com.github.jomof:firebase/app:2.1.3-rev8 was not found, "
         + "needed by com.github.jomof:firebase/admob:2.1.3-rev8");
     expected.put("fuzz1", "Could not parse main manifest coordinate []");
     boolean unexpectedFailures = false;
     for (ResolvedManifests.NamedManifest manifest : ResolvedManifests.all()) {
       BuildFindModuleFunctionTable builder = new BuildFindModuleFunctionTable();
+      if(Objects.equals(manifest.name, "curlAndroid"))
+      {
+        builder.addManifest(ResolvedManifests.zlibAndroid().manifest);
+        builder.addManifest(ResolvedManifests.boringSSLAndroid().manifest);
+      }
       builder.addManifest(manifest.resolved);
       String expectedFailure = expected.get(manifest.name);
       try {

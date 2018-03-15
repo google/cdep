@@ -30,8 +30,10 @@ import io.cdep.cdep.yml.CDepManifestYmlGenerator;
 import io.cdep.cdep.yml.cdepmanifest.CDepManifestYml;
 import io.cdep.cdep.yml.cdepmanifest.CxxLanguageFeatures;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
+
 import net.java.quickcheck.QuickCheck;
 import net.java.quickcheck.characteristic.AbstractCharacteristic;
 import org.junit.Test;
@@ -99,7 +101,7 @@ public class TestInterpretingVisitor {
 
   @Test
   public void testAllResolvedManifestsLinux() throws Exception {
-    Map<String, String> expected = new HashMap<>();
+    Map<String, String> expected = new LinkedHashMap<>();
     expected.put("archiveMissingSize", "Abort: Archive in http://google.com/cdep-manifest.yml was malformed");
     expected.put("archiveMissingSha256", "Abort: Archive in http://google.com/cdep-manifest.yml was malformed");
     expected.put("archiveMissingFile", "Abort: Archive in http://google.com/cdep-manifest.yml was malformed");
@@ -124,6 +126,11 @@ public class TestInterpretingVisitor {
     expected.put("fuzz2", "Abort: Archive file could not be converted to URL. It is likely an illegal path.");
     expected.put("openssl", "Abort: Target platform Linux is not supported by com.github.jomof:openssl:1.0.1-e-rev6. Supported: Android");
     expected.put("opencv", "Abort: Target platform Linux is not supported by com.github.jomof:opencv:3.2.0-rev2. Supported: Android");
+    expected.put("curlAndroid", "Reference com.github.gpx1000:boringssl:0.0.0 was not found, needed by com.github.gpx1000:curl:7.56.0");
+    expected.put("zlibAndroid", "Abort: Target platform Linux is not supported by com.github.gpx1000:zlib:1.2.11. Supported: Android");
+    expected.put("boringSSLAndroid", "Abort: Target platform Linux is not supported by com.github.gpx1000:boringssl:0.0.0. Supported: Android");
+    expected.put("curlAndroid", "Reference com.github.gpx1000:zlib:1.2.11 was not found, needed by com.github.gpx1000:curl:7.56.0");
+    expected.put("curlAndroid", "Reference com.github.gpx1000:zlib:1.2.11 was not found, needed by com.github.gpx1000:curl:7.56.0");
 
     boolean unexpectedFailures = false;
     for (ResolvedManifests.NamedManifest manifest : ResolvedManifests.all()) {
@@ -181,7 +188,7 @@ public class TestInterpretingVisitor {
 
   @Test
   public void testAllResolvedManifestsAndroid() throws Exception {
-    Map<String, String> expected = new HashMap<>();
+    Map<String, String> expected = new LinkedHashMap<>();
     expected.put("sqliteLinux",
         "Abort: Target platform Android is not supported by com.github.jomof:sqlite:0.0.0. Supported: Linux");
     expected.put("sqliteLinuxMultiple",
@@ -200,9 +207,19 @@ public class TestInterpretingVisitor {
         + "com.github.jomof:firebase/app:0.0.0 for platform 21. Supported: arm64-v8a ");
     expected.put("fuzz1", "Could not parse main manifest coordinate []");
     expected.put("fuzz2", "Abort: Archive file could not be converted to URL. It is likely an illegal path.");
+    expected.put("zlibAndroid", "Abort: Android ABI x86 is not supported by com.github.gpx1000:zlib:1.2.11 for platform 21. Supported: armeabi ");
+    expected.put("boringSSLAndroid", "Abort: Android ABI x86 is not supported by com.github.gpx1000:boringssl:0.0.0 for platform 21. Supported: armeabi ");
+    expected.put("curlAndroid", "Abort: Android ABI x86 is not supported by com.github.gpx1000:boringssl:0.0.0 for platform 21. Supported: armeabi ");
+    expected.put("curlAndroid", "Abort: Android ABI x86 is not supported by com.github.gpx1000:zlib:1.2.11 for platform 21. Supported: armeabi ");
+
     boolean unexpectedFailures = false;
     for (ResolvedManifests.NamedManifest manifest : ResolvedManifests.all()) {
       BuildFindModuleFunctionTable builder = new BuildFindModuleFunctionTable();
+      if(Objects.equals(manifest.name, "curlAndroid"))
+      {
+        builder.addManifest(ResolvedManifests.zlibAndroid().manifest);
+        builder.addManifest(ResolvedManifests.boringSSLAndroid().manifest);
+      }
       builder.addManifest(manifest.resolved);
       String expectedFailure = expected.get(manifest.name);
       try {
@@ -259,7 +276,7 @@ public class TestInterpretingVisitor {
 
   @Test
   public void testAllResolvedManifestsiOS() throws Exception {
-    Map<String, String> expected = new HashMap<>();
+    Map<String, String> expected = new LinkedHashMap<>();
     expected.put("sqliteLinuxMultiple",
         "Abort: Target platform Darwin is not supported by com.github.jomof:sqlite:0.0.0. Supported: Linux");
     expected.put("archiveMissingSha256", "Abort: Archive in http://google.com/cdep-manifest.yml was malformed");
@@ -284,9 +301,19 @@ public class TestInterpretingVisitor {
     expected.put("fuzz2", "Abort: Archive file could not be converted to URL. It is likely an illegal path.");
     expected.put("openssl", "Abort: Target platform Darwin is not supported by com.github.jomof:openssl:1.0.1-e-rev6. Supported: Android");
     expected.put("opencv", "Abort: Target platform Darwin is not supported by com.github.jomof:opencv:3.2.0-rev2. Supported: Android");
+    expected.put("zlibAndroid", "Abort: Target platform Darwin is not supported by com.github.gpx1000:zlib:1.2.11. Supported: Android");
+    expected.put("boringSSLAndroid", "Abort: Target platform Darwin is not supported by com.github.gpx1000:boringssl:0.0.0. Supported: Android");
+    expected.put("curlAndroid", "Abort: Target platform Darwin is not supported by com.github.gpx1000:boringssl:0.0.0. Supported: Android");
+    expected.put("curlAndroid", "Abort: Target platform Darwin is not supported by com.github.gpx1000:zlib:1.2.11. Supported: Android");
+
     boolean unexpectedFailures = false;
     for (ResolvedManifests.NamedManifest manifest : ResolvedManifests.all()) {
       final BuildFindModuleFunctionTable builder = new BuildFindModuleFunctionTable();
+      if(Objects.equals(manifest.name, "curlAndroid"))
+      {
+        builder.addManifest(ResolvedManifests.zlibAndroid().manifest);
+        builder.addManifest(ResolvedManifests.boringSSLAndroid().manifest);
+      }
       builder.addManifest(manifest.resolved);
       String expectedFailure = expected.get(manifest.name);
       try {

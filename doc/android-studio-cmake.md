@@ -9,18 +9,18 @@ This step creates a new Android Studio CMake project to use in this tutorial. If
 
 Follow these steps:
 1. Start Android Studio 2.2 or later
-2. File->New->New project...
-3. Click Include C++ Support checkbox
-4. Next, next
-5. Choose Empty Activity
-6. Next, next, finish
+2. `File`->`New`->`New project...`
+3. Click `Include C++ Support` checkbox
+4. `Next`, `next`
+5. Choose `Empty Activity`
+6. `Next`, `next`, `finish`
 
 ## Step 1 -- Clone the cdep-redist project
 At this point you should have a project open in Android Studio. Open a terminal window by clicking Terminal. It is usually in the lower part of Android Studio.
 
 ![Terminal](Terminal.png)
  
-In the terminal clone the cdep redist project.
+In the terminal, clone the cdep redist project.
 ```
 pushd ..
 git clone https://github.com/jomof/cdep-redist.git
@@ -40,13 +40,13 @@ Installing ./bootstrap/wrapper/bootstrap.jar
 Installing ./cdep.yml
 ```
 These four files form the CDep 'wrapper'. The files are very small and are meant to be checked in to source control. Briefly, this is the purpose of each file.
-* cdep.bat is the cdep wrapper that will run on Windows
+* `cdep.bat` is the cdep wrapper that will run on Windows
 * cdep is the cdep wrapper script that will run on Linux and MacOS
-* bootstrap/wrapper/bootstrap.jar is a small executable that has a function to download the main cdep executable
-* cdep.yml is where you place references to CDep packages
+* `bootstrap/wrapper/bootstrap.jar` is a small executable that has a function to download the main cdep executable
+* `cdep.yml` is where you place references to CDep packages
 
 ## Step 3 -- Add a reference to SQLite in cdep.yml
-Open cdep.yml in Android Studio and replace the existing text there with the following.
+Open `cdep.yml` in Android Studio and replace the existing text there with the following.
 ```
 builders: [cmake]
 
@@ -74,7 +74,7 @@ Generating .cdep/modules/cdep-dependencies-config.cmake
 At this point, CDep has only downloaded the package manifest. The parts of the package needed to build will be downloaded on demand.
 
 ## Step 5 -- Reduce ABIs built to those that SQLite supports
-Most CDep packages, including SQLite, don't support mips and mips64. However, some versions of Android Studio still build those ABIs by default. Let's reduce the set of ABIs. Open the file app/build.gradle in Android Studio (not the root build.gradle). Add the following to `defaultConfig`.
+Most CDep packages, including SQLite, don't support mips and mips64. However, some versions of Android Studio still build those ABIs by default. Let's reduce the set of ABIs. Open the file `app/build.gradle` in Android Studio (not the root `build.gradle). Add the following to `defaultConfig`.
 ```
 defaultConfig{
     ndk {
@@ -97,7 +97,7 @@ defaultConfig {
 After this, Android Studio may prompt you to sync. Don't worry about this yet because we're still making changes. It's okay to sync if you want to get rid of the banner message.
 
 ## Step 7 -- Modify CMakeLists.txt to add CDep dependencies to native-lib target
-Now open CMakeLists.txt and add the following code at the end of the file.
+Now open `CMakeLists.txt` and add the following code at the end of the file.
 ```
 find_package(cdep-dependencies REQUIRED)
 add_all_cdep_dependencies(native-lib)
@@ -105,7 +105,7 @@ add_all_cdep_dependencies(native-lib)
 This tells CMake to locate the module glue file and then to add all the dependencies in that file to the native-lib target.
 
 ## Step 8 -- Modify native-lib.cpp to actually use SQLite
-Open up native-lib.cpp in Android Studio and replace the text there with the following
+Open up `native-lib.cpp` in Android Studio and replace the text there with the following
 ```
 #include <jni.h>
 #include <string>
@@ -123,10 +123,10 @@ Java_com_example_jomof_myapplication_MainActivity_stringFromJNI(
 ```
 
 ## Step 9 -- Build the project
-In Android Studio do Build->Rebuild Project. If everything above worked, the project should build with no errors.
+In Android Studio do `Build`->`Rebuild Project`. If everything above worked, the project should build with no errors.
 
 ## Congratulations!
-You have a project with a working CDep dependency. Most of the steps above are only needed the first time. To add the next CDep dependency just edit cdep.yml and then re-run cdep from the command-line.
+You have a project with a working CDep dependency. Most of the steps above are only needed the first time. To add the next CDep dependency just edit `cdep.yml` and then re-run cdep from the command-line.
 
 
 

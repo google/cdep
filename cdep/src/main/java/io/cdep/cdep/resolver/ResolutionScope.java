@@ -39,26 +39,26 @@ public class ResolutionScope {
 
   // Map of dependency edges. Key is dependant and value is dependees.
   @NotNull
-  final public Map<Coordinate, List<Coordinate>> forwardEdges = new HashMap<>();
+  final public Map<Coordinate, List<Coordinate>> forwardEdges = new LinkedHashMap<>();
   // Map of dependency edges. Key is dependee and value is dependants.
   @NotNull
-  final public Map<Coordinate, List<Coordinate>> backwardEdges = new HashMap<>();
+  final public Map<Coordinate, List<Coordinate>> backwardEdges = new LinkedHashMap<>();
   // Map of dependency edges. Key is dependant and value is dependees.
   @NotNull
-  private final Map<Coordinate, List<Coordinate>> unificationWinnersToLosers = new HashMap<>();
+  private final Map<Coordinate, List<Coordinate>> unificationWinnersToLosers = new LinkedHashMap<>();
   // Map of dependency edges. Key is dependee and value is dependants.
   @NotNull
-  private final Map<Coordinate, List<Coordinate>> unificationLosersToWinners = new HashMap<>();
+  private final Map<Coordinate, List<Coordinate>> unificationLosersToWinners = new LinkedHashMap<>();
   // Dependencies that are not yet resolved but where resolution is possible
   @NotNull
-  final private Map<String, SoftNameDependency> unresolved = new HashMap<>();
+  final private Map<String, SoftNameDependency> unresolved = new LinkedHashMap<>();
   // Dependencies that have been resolved (successfully or unsuccessfully)
   @NotNull
-  final private Set<String> resolved = new HashSet<>();
+  final private Set<String> resolved = new LinkedHashSet<>();
   @NotNull
-  final private Map<String, Unresolvable> unresolveable = new HashMap<>();
+  final private Map<String, Unresolvable> unresolveable = new LinkedHashMap<>();
   @NotNull
-  final private Map<String, ResolvedManifest> versionlessKeyedManifests = new HashMap<>();
+  final private Map<String, ResolvedManifest> versionlessKeyedManifests = new LinkedHashMap<>();
 
   /*
    * Construct a fresh resolution scope.
@@ -187,7 +187,7 @@ public class ResolutionScope {
 
     ResolvedManifest preexisting = versionlessKeyedManifests.get(versionless.toString());
     if (preexisting != null) {
-      Map<Version, ResolvedManifest> manifests = new HashMap<>();
+      Map<Version, ResolvedManifest> manifests = new LinkedHashMap<>();
       manifests.put(resolved.cdepManifestYml.coordinate.version, resolved);
       manifests.put(preexisting.cdepManifestYml.coordinate.version, preexisting);
       List<Version> versions = new ArrayList<>();
@@ -234,7 +234,7 @@ public class ResolutionScope {
    */
   @NotNull
   public Collection<String> getResolutions() {
-    Set<Coordinate> seen = new HashSet<>();
+    Set<Coordinate> seen = new LinkedHashSet<>();
     List<String> result = new ArrayList<>();
 
     // In case of bugs, don't loop forever. Choose a number that would be a ridiculous

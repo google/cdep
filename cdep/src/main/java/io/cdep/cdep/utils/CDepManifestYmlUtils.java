@@ -108,9 +108,9 @@ public class CDepManifestYmlUtils {
 
   public static class Checker extends CDepManifestYmlReadonlyVisitor {
     @NotNull
-    private final Set<String> filesSeen = new HashSet<>();
+    private final Set<String> filesSeen = new LinkedHashSet<>();
     @NotNull
-    private final Map<String, AndroidArchive> distinguishableAndroidArchives = new HashMap<>();
+    private final Map<String, AndroidArchive> distinguishableAndroidArchives = new LinkedHashMap<>();
     @Nullable
     private Coordinate coordinate = null;
     @Nullable

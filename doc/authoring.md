@@ -156,7 +156,7 @@ Specify the Android platform that the libraries are built for.
 ```
 printf "    %s\r\n" "  platform: 16" >> upload/cdep-manifest.yml
 ```
-Specify the libraries that the archive holds.
+Specify the libraries that the archive holds. Ensure that the order is correct as the linker will maintain it for the link line.  The linker will read from left to right noting missing objects as it goes.  The library that needs symbols must be on the left.  In this case, libssl.a depends upon objects in libcrypto.a so the line below is proper.
 ```
 printf "      libs: [libssl.a, libcrypto.a]\r\n" >> upload/cdep-manifest.yml
 ```

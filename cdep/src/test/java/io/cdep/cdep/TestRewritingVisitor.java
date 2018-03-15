@@ -20,8 +20,9 @@ import io.cdep.cdep.yml.cdepmanifest.CxxLanguageFeatures;
 import org.junit.Test;
 
 import java.net.URL;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.cdep.cdep.ast.finder.ExpressionBuilder.archive;
@@ -36,11 +37,16 @@ public class TestRewritingVisitor {
 
   @Test
   public void testAllResolvedManifests() throws Exception {
-    Map<String, String> expected = new HashMap<>();
+    Map<String, String> expected = new LinkedHashMap<>();
     expected.put("admob", "Reference com.github.jomof:firebase/app:2.1.3-rev8 was not found");
     expected.put("fuzz1", "Could not parse main manifest coordinate []");
     for (ResolvedManifests.NamedManifest manifest : ResolvedManifests.all()) {
       BuildFindModuleFunctionTable builder = new BuildFindModuleFunctionTable();
+      if(Objects.equals(manifest.name, "curlAndroid"))
+      {
+        builder.addManifest(ResolvedManifests.zlibAndroid().manifest);
+        builder.addManifest(ResolvedManifests.boringSSLAndroid().manifest);
+      }
       builder.addManifest(manifest.resolved);
       String expectedFailure = expected.get(manifest.name);
       try {

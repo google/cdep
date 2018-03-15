@@ -23,7 +23,7 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -76,7 +76,7 @@ public class FileUtils {
 
   @NotNull
   public static Collection<File> listFileTree(@Nullable File dir) {
-    Set<File> fileTree = new HashSet<>();
+    Set<File> fileTree = new LinkedHashSet<>();
     if (dir == null || dir.listFiles() == null) {
       return fileTree;
     }

@@ -19,19 +19,19 @@ import io.cdep.annotations.NotNull;
 import org.yaml.snakeyaml.nodes.*;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import static io.cdep.cdep.utils.Invariant.fail;
 
-public final class SnakeYmlUtils {
+final class SnakeYmlUtils {
   /*
    * Given a deserialized object and the corresponding SnakeYML node. Construct a map of object field value to node.
    * The purpose is to map data to line number for error message purposes.
    */
   public static <T> void mapAndRegisterNodes(@NotNull String url, @NotNull T object, @NotNull Node node) {
-    Map<Object, Node> nodeMap = new HashMap<>();
+    Map<Object, Node> nodeMap = new LinkedHashMap<>();
     mapAndRegisterNodes(object, node, nodeMap);
     Invariant.registerYamlNodes(url, nodeMap);
   }

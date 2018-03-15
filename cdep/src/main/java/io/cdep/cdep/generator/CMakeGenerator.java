@@ -69,6 +69,7 @@ public class CMakeGenerator {
   @NotNull
   public String create() {
     append("# GENERATED FILE. DO NOT EDIT.\n");
+    append("if(ANDROID_SYSTEM_VERSION)\n\tset(CMAKE_SYSTEM_VERSION ${ANDROID_SYSTEM_VERSION})\nendif(ANDROID_SYSTEM_VERSION)\n");
     append(readCmakeLibraryFunctions());
     for (Coordinate coordinate : table.orderOfReferences) {
       StatementExpression findFunction = table.getFindFunction(coordinate);
@@ -218,7 +219,7 @@ public class CMakeGenerator {
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.ARRAY_HAS_ONLY_ELEMENT)) {
         append("%s STREQUAL %s", parms[0], parms[1]);
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.REQUIRES_COMPILER_FEATURES)) {
-        append("\r\n%starget_compile_features(${target} PRIVATE %s)\r\n", prefix, parms[0]);
+        append("\r\n%starget_compile_features(${target} PUBLIC %s)\r\n", prefix, parms[0]);
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.SUPPORTS_COMPILER_FEATURES)) {
         append("cdep_supports_compiler_features");
       } else if (Objects.equals(specific.function, ExternalFunctionExpression.NOT)) {
@@ -249,11 +250,11 @@ public class CMakeGenerator {
       return;
     } else if (expression instanceof ModuleExpression) {
       ModuleExpression specific = (ModuleExpression) expression;
-      for (Coordinate dependency : specific.dependencies) {
-        append("\n%s%s(${target})", prefix, getAddDependencyFunctionName(dependency));
-      }
       append("\n");
       visit(specific.archive);
+      for (Coordinate dependency : specific.dependencies) {
+        append("\n%s%s(${target})\n", prefix, getAddDependencyFunctionName(dependency));
+      }
       return;
     } else if (expression instanceof AbortExpression) {
       AbortExpression specific = (AbortExpression) expression;
@@ -305,7 +306,7 @@ public class CMakeGenerator {
               specific.size.toString(),
               specific.sha256));
       if (specific.includePath != null) {
-        append("%starget_include_directories(${target} PRIVATE ", prefix);
+        append("%starget_include_directories(${target} PUBLIC ", prefix);
         visit(specific.includePath);
         append(")\n");
       }

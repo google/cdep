@@ -20,7 +20,7 @@ import io.cdep.annotations.Nullable;
 import io.cdep.cdep.ast.finder.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +28,7 @@ import static io.cdep.cdep.ast.finder.ExpressionBuilder.*;
 
 @SuppressWarnings("unused")
 public class RewritingVisitor {
-  private final Map<Expression, Expression> identity = new HashMap<>();
+  private final Map<Expression, Expression> identity = new LinkedHashMap<>();
 
   @NotNull
   public Expression visit(@NotNull Expression expr) {
@@ -223,8 +223,8 @@ public class RewritingVisitor {
 
   @NotNull
   public Expression visitFunctionTableExpression(@NotNull FunctionTableExpression expr) {
-    Map<Coordinate, StatementExpression> findFunctions = new HashMap<>();
-    Map<Coordinate, ExampleExpression> examples = new HashMap<>();
+    Map<Coordinate, StatementExpression> findFunctions = new LinkedHashMap<>();
+    Map<Coordinate, ExampleExpression> examples = new LinkedHashMap<>();
 
     for (Coordinate coordinate : expr.orderOfReferences) {
       findFunctions.put(coordinate, (StatementExpression) visit(expr.getFindFunction(coordinate)));

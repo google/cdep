@@ -25,9 +25,9 @@ import static io.cdep.cdep.utils.Invariant.require;
 
 public class LiftAssignmentToCommonAncestor extends RewritingVisitor {
   @NotNull
-  private final Set<AssignmentExpression> captured = new HashSet<>();
+  private final Set<AssignmentExpression> captured = new LinkedHashSet<>();
   @NotNull
-  private Map<AssignmentExpression, Integer> functionCounts = new HashMap<>();
+  private Map<AssignmentExpression, Integer> functionCounts = new LinkedHashMap<>();
 
   public LiftAssignmentToCommonAncestor() {
   }
@@ -36,7 +36,7 @@ public class LiftAssignmentToCommonAncestor extends RewritingVisitor {
   @Override
   protected Expression visitFindModuleExpression(@NotNull FindModuleExpression expr) {
     List<AssignmentExpression> order = new ArrayList<>();
-    Map<AssignmentExpression, Integer> counts = new HashMap<>();
+    Map<AssignmentExpression, Integer> counts = new LinkedHashMap<>();
     assignments(expr, order, counts);
     this.functionCounts = counts;
     StatementExpression body = (StatementExpression) visit(expr.body);
@@ -84,7 +84,7 @@ public class LiftAssignmentToCommonAncestor extends RewritingVisitor {
   @NotNull
   private List<AssignmentExpression> extractBlocks(Expression result) {
     List<AssignmentExpression> order = new ArrayList<>();
-    Map<AssignmentExpression, Integer> count = new HashMap<>();
+    Map<AssignmentExpression, Integer> count = new LinkedHashMap<>();
     assignments(result, order, count);
     List<AssignmentExpression> block = new ArrayList<>();
 

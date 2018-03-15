@@ -23,7 +23,7 @@ import io.cdep.cdep.Coordinate;
 import io.cdep.cdep.yml.cdepmanifest.CxxLanguageFeatures;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -63,7 +63,7 @@ public class ExpressionBuilder {
   @NotNull
   public static ModuleExpression module(@NotNull ModuleArchiveExpression archive, @Nullable Set<Coordinate> dependencies) {
     if (dependencies == null) {
-      dependencies = new HashSet<>();
+      dependencies = new LinkedHashSet<>();
     }
     return new ModuleExpression(archive, dependencies);
   }
