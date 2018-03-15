@@ -149,12 +149,14 @@ public class CMakeGenerator {
 
       append("  # Choose between Android NDK Toolchain and CMake Android Toolchain\n"
           + "  set(cdep_supports_compiler_features TRUE)\n"
-          + "  if(DEFINED CMAKE_ANDROID_STL_TYPE)\n"
+          + "  if(NOT CMAKE_SYSTEM_VERSION EQUAL 1)\n"
           + "    set(cdep_determined_android_runtime ${CMAKE_ANDROID_STL_TYPE})\n"
           + "    set(cdep_determined_android_abi ${CMAKE_ANDROID_ARCH_ABI})\n"
+          + "    set(cdep_determined_android_platform_level ${CMAKE_SYSTEM_VERSION})\n"
           + "  else()\n"
           + "    set(cdep_determined_android_runtime ${ANDROID_STL})\n"
           + "    set(cdep_determined_android_abi ${ANDROID_ABI})\n"
+          + "    set(cdep_determined_android_platform_level ${ANDROID_PLATFORM_LEVEL})\n"
           + "    set(cdep_supports_compiler_features FALSE)\n"
           + "  endif()\n\n");
       append("  set(cdep_exploded_root \"%s\")", getCMakePath(environment.unzippedArchivesFolder));
@@ -374,7 +376,7 @@ public class CMakeGenerator {
       return "CMAKE_SYSTEM_NAME";
     }
     if (Objects.equals(expr, globals.buildSystemTargetPlatform)) {
-      return "CMAKE_SYSTEM_VERSION";
+      return "cdep_determined_android_platform_level";
     }
     if (Objects.equals(expr, globals.buildSystemNoneRuntime)) {
       return "\"none\"";
