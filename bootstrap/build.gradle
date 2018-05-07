@@ -1,4 +1,5 @@
 apply plugin: 'java'
+apply plugin: 'kotlin'
 group 'io.cdep'
 
 if (System.getenv()["TRAVIS_TAG"] != null && System.getenv()["TRAVIS_TAG"].length() > 0) {
@@ -11,9 +12,13 @@ repositories {
 }
 
 buildscript {
-  repositories {
+    ext.kotlin_version = '1.2.30'
+    repositories {
       jcenter()
   }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
 }
 
 class GenerateBuildInfo extends DefaultTask {
@@ -56,4 +61,15 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
     testCompile group: 'com.google.guava', name: 'guava', version: '20.0'
     testCompile group: 'com.google.truth', name: 'truth', version: '0.31'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+}
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
