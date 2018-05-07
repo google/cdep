@@ -39,4 +39,4 @@ dependencies:
 - compile: com.github.gpx1000:curl:7.56.2
 - compile: com.github.gpx1000:zlib:1.2.11
 - compile: com.github.gpx1000:boringssl:0.0.2
-- compile: com.github.ggfan:shaderc:0.0.1
+#- compile: com.github.ggfan:shaderc:0.0.1
