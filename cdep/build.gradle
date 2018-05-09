@@ -1,4 +1,5 @@
 apply plugin: 'java'
+apply plugin: 'kotlin'
 group 'io.cdep'
 
 
@@ -7,11 +8,15 @@ repositories {
 }
 
 buildscript {
+    ext.kotlin_version = '1.2.30'
     repositories {
         maven {
             url "https://plugins.gradle.org/m2/"
         }
         jcenter()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -75,8 +80,19 @@ dependencies {
     testCompile group: 'com.google.truth', name: 'truth', version: '0.31'
     testCompile "org.mockito:mockito-core:2.+"
     testCompile group: 'net.java', name: 'quickcheck', version: '0.6'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 
 jar {
     from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+}
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
