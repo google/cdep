@@ -69,7 +69,7 @@ public class CMakeGenerator {
   @NotNull
   public String create() {
     append("# GENERATED FILE. DO NOT EDIT.\n");
-    append("if(ANDROID_SYSTEM_VERSION)\n\tset(CMAKE_SYSTEM_VERSION ${ANDROID_SYSTEM_VERSION})\nendif(ANDROID_SYSTEM_VERSION)\n");
+   // append("if(ANDROID_SYSTEM_VERSION)\n\tset(CMAKE_SYSTEM_VERSION ${ANDROID_SYSTEM_VERSION})\nendif(ANDROID_SYSTEM_VERSION)\n");
     append(readCmakeLibraryFunctions());
     for (Coordinate coordinate : table.orderOfReferences) {
       StatementExpression findFunction = table.getFindFunction(coordinate);
