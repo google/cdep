@@ -64,23 +64,12 @@ public class CMakeGenerator {
         String text = create();
         info("Generating %s\n", file);
         FileUtils.writeTextToFile(file, text);
-
-  @NotNull
-  public String create() {
-    append("# GENERATED FILE. DO NOT EDIT.\n");
-   // append("if(ANDROID_SYSTEM_VERSION)\n\tset(CMAKE_SYSTEM_VERSION ${ANDROID_SYSTEM_VERSION})\nendif(ANDROID_SYSTEM_VERSION)\n");
-    append(readCmakeLibraryFunctions());
-    for (Coordinate coordinate : table.orderOfReferences) {
-      StatementExpression findFunction = table.getFindFunction(coordinate);
-      indent = 0;
-      visit(findFunction);
-      require(indent == 0);
     }
 
     @NotNull
     public String create() {
         append("# GENERATED FILE. DO NOT EDIT.\n");
-        append("if(ANDROID_SYSTEM_VERSION)\n\tset(CMAKE_SYSTEM_VERSION ${ANDROID_SYSTEM_VERSION})\nendif(ANDROID_SYSTEM_VERSION)\n");
+        //append("if(ANDROID_SYSTEM_VERSION)\n\tset(CMAKE_SYSTEM_VERSION ${ANDROID_SYSTEM_VERSION})\nendif(ANDROID_SYSTEM_VERSION)\n");
         append(readCmakeLibraryFunctions());
         for (Coordinate coordinate : table.orderOfReferences) {
             StatementExpression findFunction = table.getFindFunction(coordinate);
