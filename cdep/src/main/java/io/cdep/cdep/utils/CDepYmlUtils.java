@@ -41,7 +41,7 @@ abstract public class CDepYmlUtils {
     }
 
     if (cdepYml.builders.length == 0) {
-      String allowed = StringUtils.joinOn(" ", BuildSystem.values());
+      String allowed = StringUtils.joinOn(" ", BuildSystem.values);
       fail("'builders' section is " + "missing or empty. Valid values are: %s.", allowed);
     }
   }
