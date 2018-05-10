@@ -275,7 +275,7 @@ public class CMakeGenerator {
                     "CMAKE_SYSTEM_VERSION=${CMAKE_SYSTEM_VERSION} " +
                     "ANDROID_SYSTEM_VERSION=${ANDROID_SYSTEM_VERSION} " +
                     "CMAKE_ANDROID_STL_TYPE=${CMAKE_ANDROID_STL_TYPE} " +
-                    "ANDROID_STL=${ANDROID_STL}\"\n", prefix, message);
+                    "ANDROID_STL=${ANDROID_STL}\")\n", prefix, message);
             return;
         } else if (expression instanceof AssignmentBlockExpression) {
             append("\n");
