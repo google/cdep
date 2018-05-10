@@ -1,11 +1,7 @@
 targets: [android]
-buildTarget: hello
+buildTarget: [crypto, ssl]
 includes: [include]
 android:
-  flavors:
-    default: >
-      -Dcdep-dependencies_DIR=$(pwd)/.cdep/modules
-      -DCMAKE_SYSTEM_VERSION=21
   ndk:
     platforms: [15, 21]
 
