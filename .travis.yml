@@ -12,6 +12,9 @@ matrix:
         - gcc-4.8
         - g++-4.8
     script:
+    - pushd boringssl
+    - ./build-boringssl.sh
+    - popd
     - curl -L -o proguard.tgz https://sourceforge.net/projects/proguard/files/proguard/6.0/proguard6.0.3.tar.gz
     - tar -xvzf proguard.tgz > unzip.log
     - ./gradlew assemble
