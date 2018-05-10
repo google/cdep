@@ -38,6 +38,7 @@ deploy:
   - cdep/build/libs/cdep-${TRAVIS_TAG}-sources.jar
   - cdep/build/libs/cdep-${TRAVIS_TAG}-javadoc.jar
   - ".package/redist.zip"
+  - proguard.map
   provider: releases
   skip_cleanup: true
   on:
