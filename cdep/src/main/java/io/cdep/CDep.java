@@ -472,8 +472,7 @@ public class CDep {
     return false;
   }
 
-  private boolean handleShowManifest(@NotNull List<String> args)
-      throws IOException, NoSuchAlgorithmException, URISyntaxException {
+  private boolean handleShowManifest(@NotNull List<String> args) {
     if (args.size() > 0 && "show".equals(args.get(0))) {
       if (args.size() > 1 && "manifest".equals(args.get(1))) {
         assert config != null;
@@ -640,7 +639,7 @@ public class CDep {
   }
 
   @NotNull
-  private GeneratorEnvironment getGeneratorEnvironment(boolean forceRedownload, boolean ignoreManifestHashes) throws IOException {
+  private GeneratorEnvironment getGeneratorEnvironment(boolean forceRedownload, boolean ignoreManifestHashes) {
     String downloadedPackagesFolder = null;
     String generatedModulesFolder = null;
     if (this.config != null) {
@@ -729,7 +728,7 @@ public class CDep {
   private void handleOverrideBuildSystem(@NotNull List<String> args) {
     for (String overrideBuildSystem : eatStringArgument("-b", "--builder", args)) {
       BuildSystem result = null;
-      for (BuildSystem buildSystem : BuildSystem.values()) {
+      for (BuildSystem buildSystem : BuildSystem.values) {
         if (buildSystem.name.equals(overrideBuildSystem)) {
           result = buildSystem;
         }
