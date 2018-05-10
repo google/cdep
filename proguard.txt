@@ -5,10 +5,10 @@
 -printmapping proguard.map
 
 # Keep filenames and line numbers
--keepattributes SourceFile, LineNumberTable
+#-keepattributes SourceFile, LineNumberTable
 
 # Disable certain proguard optimizations which remove stackframes (same as Android defaults)
--optimizations !method/inlining/*
+#-optimizations !method/inlining/*
 
 -keep public class * {
     public protected *;
