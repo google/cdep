@@ -271,7 +271,7 @@ public class CMakeGenerator {
                 parms[i] = "${" + argBuilder.toString() + "}";
             }
             String message = StringUtils.safeFormat(specific.message, parms);
-            append("%smessage(FATAL_ERROR \"%s " +
+            append("\n%smessage(FATAL_ERROR \"%s " +
                     "CMAKE_SYSTEM_VERSION=${CMAKE_SYSTEM_VERSION} " +
                     "ANDROID_SYSTEM_VERSION=${ANDROID_SYSTEM_VERSION} " +
                     "CMAKE_ANDROID_STL_TYPE=${CMAKE_ANDROID_STL_TYPE} " +
