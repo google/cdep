@@ -17,7 +17,7 @@ matrix:
     - ln -rs proguard6.0.3/bin/proguard.sh /usr/bin/proguard
     - ./gradlew assemble
     - mv cdep/build/libs/cdep-${TRAVIS_TAG}.jar cdep/build/libs/cdep-${TRAVIS_TAG}-unopt.jar
-    - proguard @proguard.txt -injars cdep/build/libs/cdep-${TRAVIS_TAG}-unopt.jar -outjars cdep/build/libs/cdep-${TRAVIS_TAG}.jar
+    - proguard6.0.3/bin/proguard.sh @proguard.txt -injars cdep/build/libs/cdep-${TRAVIS_TAG}-unopt.jar -outjars cdep/build/libs/cdep-${TRAVIS_TAG}.jar
     - ./gradlew check
     - ./gradlew packageArtifacts
     - pushd smoke-test
