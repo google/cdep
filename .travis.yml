@@ -18,6 +18,7 @@ matrix:
     - ./gradlew assemble
     - ./gradlew check
     - ./gradlew packageArtifacts
+    #- proguard @proguard.txt -injars cdep/build/libs/cdep-${TRAVIS_TAG}.jar -outjars cdep/build/libs/cdep-${TRAVIS_TAG}.jar
     - pushd smoke-test
     - ../travis_cdep
     # Build smoke-test
