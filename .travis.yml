@@ -15,10 +15,10 @@ matrix:
     - curl -L -o proguard.tgz https://sourceforge.net/projects/proguard/files/proguard/6.0/proguard6.0.3.tar.gz
     - tar -xvzf proguard.tgz > unzip.log
     - ./gradlew assemble
-    - mv cdep/build/libs/cdep-${TRAVIS_TAG:-dev}.jar cdep/build/libs/cdep-${TRAVIS_TAG:-dev}-unopt.jar
-    - proguard6.0.3/bin/proguard.sh @proguard.txt -injars cdep/build/libs/cdep-${TRAVIS_TAG:-dev}-unopt.jar -outjars cdep/build/libs/cdep-${TRAVIS_TAG:-dev}.jar > proguard.log
     - ./gradlew check
     - ./gradlew packageArtifacts
+    - mv cdep/build/libs/cdep-${TRAVIS_TAG:-dev}.jar cdep/build/libs/cdep-${TRAVIS_TAG:-dev}-unopt.jar
+    - proguard6.0.3/bin/proguard.sh @proguard.txt -injars cdep/build/libs/cdep-${TRAVIS_TAG:-dev}-unopt.jar -outjars cdep/build/libs/cdep-${TRAVIS_TAG:-dev}.jar > proguard.log
     - pushd smoke-test
     - ../travis_cdep
     # Build smoke-test
