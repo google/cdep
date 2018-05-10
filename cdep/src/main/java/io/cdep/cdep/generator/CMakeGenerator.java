@@ -271,8 +271,11 @@ public class CMakeGenerator {
                 parms[i] = "${" + argBuilder.toString() + "}";
             }
             String message = StringUtils.safeFormat(specific.message, parms);
-            append("\n%sget_cmake_property(_variableNames VARIABLES)\n", prefix, message);
-            append("%smessage(FATAL_ERROR \"%s ${_variableNames}\")\n", prefix, message);
+            append("%smessage(FATAL_ERROR \"%s " +
+                    "CMAKE_SYSTEM_VERSION=${CMAKE_SYSTEM_VERSION} " +
+                    "ANDROID_SYSTEM_VERSION=${ANDROID_SYSTEM_VERSION} " +
+                    "CMAKE_ANDROID_STL_TYPE=${CMAKE_ANDROID_STL_TYPE} " +
+                    "ANDROID_STL=${ANDROID_STL}\"\n", prefix, message);
             return;
         } else if (expression instanceof AssignmentBlockExpression) {
             append("\n");
