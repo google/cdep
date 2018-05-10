@@ -16,7 +16,7 @@ matrix:
     - tar -xvzf proguard.tgz > unzip.log
     - ./gradlew assemble
     - mv cdep/build/libs/cdep-${TRAVIS_TAG:-dev}.jar cdep/build/libs/cdep-${TRAVIS_TAG:-dev}-unopt.jar
-    - proguard6.0.3/bin/proguard.sh @proguard.txt -injars cdep/build/libs/cdep-${TRAVIS_TAG:-dev}-unopt.jar -outjars cdep/build/libs/cdep-${TRAVIS_TAG:-dev}.jar
+    - proguard6.0.3/bin/proguard.sh @proguard.txt -injars cdep/build/libs/cdep-${TRAVIS_TAG:-dev}-unopt.jar -outjars cdep/build/libs/cdep-${TRAVIS_TAG:-dev}.jar > proguard.log
     - ./gradlew check
     - ./gradlew packageArtifacts
     - pushd smoke-test
@@ -38,6 +38,7 @@ deploy:
   - cdep/build/libs/cdep-${TRAVIS_TAG}-javadoc.jar
   - ".package/redist.zip"
   - proguard.map
+  - proguard.log
   provider: releases
   skip_cleanup: true
   on:
