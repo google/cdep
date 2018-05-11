@@ -12,6 +12,10 @@ matrix:
         - gcc-4.8
         - g++-4.8
     script:
+    - pushd boringssl
+    - ./build-boringssl.sh
+    - rm -rf boringssl*
+    - popd
     - curl -L -o proguard.tgz https://sourceforge.net/projects/proguard/files/proguard/6.0/proguard6.0.3.tar.gz
     - tar -xvzf proguard.tgz > unzip.log
     - ./gradlew assemble
@@ -39,6 +43,18 @@ deploy:
   - ".package/redist.zip"
   - proguard.map
   - proguard.log
+  - boringssl/boringssl-sources.zip
+  - boringssl/boringssl-sources-url.txt
+  - boringssl/cdep-boringssl-android-platform-14-armeabi-v7a.zip
+  - boringssl/cdep-boringssl-android-platform-14-x86.zip
+  - boringssl/cdep-boringssl-android-platform-21-arm64-v8a.zip
+  - boringssl/cdep-boringssl-android-platform-21-armeabi-v7a.zip
+  - boringssl/cdep-boringssl-android-platform-21-armeabi-v7a.zip
+  - boringssl/cdep-boringssl-android-platform-21-x86_64.zip
+  - boringssl/cdep-boringssl-android-platform-21-x86.zip
+  - boringssl/cdep-boringssl-headers.zip
+  - boringssl/cdep-manifest-boringssl.yml
+
   provider: releases
   skip_cleanup: true
   on:
