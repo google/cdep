@@ -4,5 +4,7 @@ curl -L -o boringssl.zip https://github.com/google/boringssl/archive/${BORINGSSL
 unzip boringssl.zip > boringssl-unzip.log
 
 cd boringssl-${BORINGSSL_STAMP}
-cp ../cmakeify.yml .
-../../cmakeify --group-id com.github.google --artifact-id boringssl --target-version 0.0.0
+cp ../cmakeify.ssl.yml cmakeify.yml
+../../cmakeify --group-id com.github.google --artifact-id boringssl/ssl --target-version 0.0.0
+cp ../cmakeify.crypto.yml cmakeify.yml
+../../cmakeify --group-id com.github.google --artifact-id boringssl/crypto --target-version 0.0.0
