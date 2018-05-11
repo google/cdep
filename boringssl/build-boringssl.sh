@@ -5,7 +5,11 @@ unzip boringssl.zip > boringssl-unzip.log
 
 echo cd boringssl-${BORINGSSL_STAMP}
 cd boringssl-${BORINGSSL_STAMP}
+mkdir -p build/zips/boringssl
+mkdir -p build/Android
 cp ../cmakeify-ssl.yml cmakeify.yml
-../../cmakeify --group-id com.github.google --artifact-id boringssl/ssl --target-version 0.0.0
+cp ../cdep .
+chmod +x cdep
+../../cmakeify --group-id com.github.google --artifact-id boringssl-ssl --target-version 0.0.0
 cp ../cmakeify-crypto.yml cmakeify.yml
-../../cmakeify --group-id com.github.google --artifact-id boringssl/crypto --target-version 0.0.0
+../../cmakeify --group-id com.github.google --artifact-id boringssl-crypto --target-version 0.0.0
