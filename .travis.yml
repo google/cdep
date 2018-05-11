@@ -42,6 +42,8 @@ deploy:
   - ".package/redist.zip"
   - proguard.map
   - proguard.log
+  - boringssl/boringssl-sources.zip
+  - boringssl/boringssl-sources-url.txt
   provider: releases
   skip_cleanup: true
   on:
