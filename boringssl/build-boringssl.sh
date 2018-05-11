@@ -12,5 +12,5 @@ cp ../cmakeify.yml cmakeify.yml
 cp ../cdep .
 chmod +x cdep
 ../../cmakeify --group-id com.github.google --artifact-id cdep/boringssl --target-version 0.0.0
-mv build/zips redist
+cp build/zips/* ..
 
