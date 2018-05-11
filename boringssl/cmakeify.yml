@@ -1,5 +1,4 @@
 targets: [android]
-buildTarget: [crypto, ssl]
 includes: [include]
 android:
   ndk:
