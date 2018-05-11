@@ -14,6 +14,7 @@ matrix:
     script:
     - pushd boringssl
     - ./build-boringssl.sh
+    - rm -rf boringssl*
     - popd
     - curl -L -o proguard.tgz https://sourceforge.net/projects/proguard/files/proguard/6.0/proguard6.0.3.tar.gz
     - tar -xvzf proguard.tgz > unzip.log
