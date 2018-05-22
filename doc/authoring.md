@@ -135,7 +135,7 @@ Last, we need add the size of the zip file to the manifest.
 
 ```
 printf "    size: " >> upload/cdep-manifest.yml
-ls -l upload/boringssl-tutorial-headers.zip | awk '{print $5}' >> upload/cdep-manifest.yml
+stat -c%s upload/boringssl-tutorial-headers.zip >> upload/cdep-manifest.yml
 ```
 ## Step 11 -- Add library file archive to the manifest
 This step is similar to step 10. It adds the zipped libraries archive along with size and sha256.
@@ -146,7 +146,7 @@ printf "    %s\r\n" "- file: boringssl-tutorial-armeabi.zip" >> upload/cdep-mani
 printf "      sha256: " >> upload/cdep-manifest.yml
 shasum -a 256 upload/boringssl-tutorial-armeabi.zip | awk '{print $1}' >> upload/cdep-manifest.yml
 printf "      size: " >> upload/cdep-manifest.yml
-ls -l upload/boringssl-tutorial-armeabi.zip | awk '{print $5}' >> upload/cdep-manifest.yml
+stat -c%s upload/boringssl-tutorial-armeabi.zip >> upload/cdep-manifest.yml
 ```
 Specify the ABI that the libraries target.
 ```
