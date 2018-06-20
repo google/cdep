@@ -30,8 +30,8 @@ script:
   # Build smoke-test
   - ../cmakeify --group-id com.github.jomof --artifact-id smoke-test --target-version 0.0.0
   # Build ndk-build examples
-#  - rm -rf downloaded-packages/
-#  - .cmakeify/tools/android-ndk-r13b/ndk-build NDK_PROJECT_PATH=.cdep/examples/ndk-build
+  - rm -rf downloaded-packages/
+  - .cmakeify/tools/android-ndk-r13b/ndk-build NDK_PROJECT_PATH=.cdep/examples/ndk-build
   # Build CMake examples
 #  - ../cmakeify -wf .cdep/examples/cmake --group-id com.github.jomof --artifact-id smoke-test-examples --target-version 0.0.0
   - popd
