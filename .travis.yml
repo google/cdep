@@ -1,16 +1,9 @@
-language: java
+language: android
 git:
   depth: 3
 matrix:
   include:
-  - os: linux
-    addons:
-      apt:
-        sources:
-        - ubuntu-toolchain-r-test
-        packages:
-        - gcc-4.8
-        - g++-4.8
+  - language: objective-c
     script:
     - pushd boringssl
     - ./build-boringssl.sh
