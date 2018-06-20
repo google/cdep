@@ -52,3 +52,11 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
+
+cache:
+  yarn: true
+
+install:
+  - brew update
+  - brew install yarn
+  - yarn install
