@@ -1,24 +1,15 @@
+language: android
 git:
   depth: 3
+os:
+  - linux
+  - osx
 matrix:
   include:
-  - language: android
-      os: linux
-      jdk: oraclejdk8
-      android:
-        components:
-          - tools
-          - android-25
-          - build-tools-25.0.3
   - language: objective-c
-      os: osx
-cache:
-  yarn: true
 
 install:
   - brew update
-  - brew install yarn
-  - yarn install
 
 script:
   - pushd boringssl
@@ -69,5 +60,5 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
-    condition: "$TRAVIS_OS_NAME" == "linux"
+    condition: $TRAVIS_OS_NAME == linux
 
