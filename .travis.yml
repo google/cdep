@@ -1,15 +1,21 @@
 language: android
 git:
   depth: 3
-os:
-  - linux
-  - osx
 matrix:
   include:
-  - language: objective-c
+    - language: android
+      jdk: oraclejdk8
+      android:
+        components:
+          - tools
+          - android-25
+          - build-tools-25.0.3
+
+    - language: objective-c
+      os: osx
 
 install:
-  - brew update
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update          ; fi
 
 script:
   - pushd boringssl
