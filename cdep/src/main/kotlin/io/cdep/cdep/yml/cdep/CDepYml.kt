@@ -17,13 +17,13 @@ package io.cdep.cdep.yml.cdep
 
 class CDepYml {
     @JvmField
-    val builders = arrayOfNulls<BuildSystem>(0)
+    var builders = arrayOfNulls<BuildSystem>(0)
     @JvmField
-    val dependencies: Array<SoftNameDependency?>? = arrayOfNulls(0)
+    var dependencies: Array<SoftNameDependency?>? = arrayOfNulls(0)
     @JvmField
-    val downloadedPackagesFolder: String? = null
+    var downloadedPackagesFolder: String? = null
     @JvmField
-    val generatedModulesFolder: String? = null
+    var generatedModulesFolder: String? = null
 
     private fun toYaml(indent: Int): String {
         val prefix = " ".repeat(indent * 2)
@@ -32,19 +32,19 @@ class CDepYml {
         sb.append(builders.joinToString())
         sb.append("]\r\n")
 
-        if (dependencies != null && dependencies.isNotEmpty()) {
+        if (dependencies != null && dependencies!!.isNotEmpty()) {
             sb.append("${prefix}dependencies:\r\n", prefix)
-            for (dependency in dependencies) {
+            for (dependency in dependencies!!) {
                 sb.append("- ")
                 sb.append(dependency!!.toYaml(indent + 1))
             }
         }
 
-        if (downloadedPackagesFolder != null && downloadedPackagesFolder.isNotEmpty()) {
+        if (downloadedPackagesFolder != null && downloadedPackagesFolder!!.isNotEmpty()) {
             sb.append("${prefix}downloadedPackagesFolder: $downloadedPackagesFolder\r\n")
         }
 
-        if (generatedModulesFolder != null && generatedModulesFolder.isNotEmpty()) {
+        if (generatedModulesFolder != null && generatedModulesFolder!!.isNotEmpty()) {
             sb.append("${prefix}generatedModulesFolder: $generatedModulesFolder\r\n")
         }
         return sb.toString()

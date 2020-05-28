@@ -20,17 +20,15 @@ import io.cdep.cdep.yml.cdep.BuildSystem;
 import io.cdep.cdep.yml.cdep.CDepYml;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
-import org.yaml.snakeyaml.nodes.Node;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+import java.io.StringReader;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static io.cdep.cdep.utils.Invariant.fail;
 import static io.cdep.cdep.utils.Invariant.require;
+import static io.cdep.cdep.utils.PrimitiveOnlyYamlParserKt.parseCDep;
 
 abstract public class CDepYmlUtils {
   public static void checkSanity(@NotNull CDepYml cdepYml, File configFile) {
@@ -53,15 +51,12 @@ abstract public class CDepYmlUtils {
     }
     Invariant.registerYamlFile(url);
     Yaml yaml = new Yaml(new Constructor(CDepYml.class));
-    byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
-    CDepYml cdepYml = (CDepYml) yaml.load(new ByteArrayInputStream(bytes));
+    CDepYml cdepYml = content.isEmpty() ? null : parseCDep(yaml.parse(new StringReader(content)));
     require(cdepYml != null, "cdep.yml was empty");
     if (Invariant.errorsInScope() > 0) {
       return new CDepYml();
     }
     assert cdepYml != null;
-    Node node = yaml.compose(new InputStreamReader(new ByteArrayInputStream(bytes)));
-    SnakeYmlUtils.mapAndRegisterNodes(url, cdepYml, node);
     return cdepYml;
   }
 }
