@@ -1,38 +1,45 @@
-language: java
+language: android
 git:
   depth: 3
 matrix:
   include:
-  - os: linux
-    addons:
-      apt:
-        sources:
-        - ubuntu-toolchain-r-test
-        packages:
-        - gcc-4.8
-        - g++-4.8
-    script:
-    - pushd boringssl
-    - ./build-boringssl.sh
-    - rm -rf boringssl*
-    - popd
-    - curl -L -o proguard.tgz https://sourceforge.net/projects/proguard/files/proguard/6.0/proguard6.0.3.tar.gz
-    - tar -xvzf proguard.tgz > unzip.log
-    - ./gradlew assemble
-    - ./gradlew check
-    - ./gradlew packageArtifacts
-    - mv cdep/build/libs/cdep-${TRAVIS_TAG:-dev}.jar cdep/build/libs/cdep-${TRAVIS_TAG:-dev}-unopt.jar
-    - proguard6.0.3/bin/proguard.sh @proguard.txt -injars cdep/build/libs/cdep-${TRAVIS_TAG:-dev}-unopt.jar -outjars cdep/build/libs/cdep-${TRAVIS_TAG:-dev}.jar > proguard.log
-    - pushd smoke-test
-    - ../travis_cdep
-    # Build smoke-test
-    - ../cmakeify --group-id com.github.jomof --artifact-id smoke-test --target-version 0.0.0
-    # Build ndk-build examples
-    - rm -rf downloaded-packages/
-    - .cmakeify/tools/android-ndk-r13b/ndk-build NDK_PROJECT_PATH=.cdep/examples/ndk-build
-    # Build CMake examples
-    - ../cmakeify -wf .cdep/examples/cmake --group-id com.github.jomof --artifact-id smoke-test-examples --target-version 0.0.0
-    - popd
+    - language: android
+      jdk: oraclejdk8
+      android:
+        components:
+          - tools
+          - android-25
+          - build-tools-25.0.3
+
+    - language: objective-c
+      os: osx
+
+install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update          ; fi
+
+script:
+  - pushd boringssl
+  - ./build-boringssl.sh
+  - rm -rf boringssl*
+  - popd
+  - curl -L -o proguard.tgz https://sourceforge.net/projects/proguard/files/proguard/6.0/proguard6.0.3.tar.gz
+  - tar -xvzf proguard.tgz > unzip.log
+  - ./gradlew assemble
+  - ./gradlew check
+  - ./gradlew packageArtifacts
+  - mv cdep/build/libs/cdep-${TRAVIS_TAG:-dev}.jar cdep/build/libs/cdep-${TRAVIS_TAG:-dev}-unopt.jar
+  - proguard6.0.3/bin/proguard.sh @proguard.txt -injars cdep/build/libs/cdep-${TRAVIS_TAG:-dev}-unopt.jar -outjars cdep/build/libs/cdep-${TRAVIS_TAG:-dev}.jar > proguard.log
+  - pushd smoke-test
+  - ../travis_cdep
+  # Build smoke-test
+  - ../cmakeify --group-id com.github.jomof --artifact-id smoke-test --target-version 0.0.0
+  # Build ndk-build examples
+#  - rm -rf downloaded-packages/
+  - .cmakeify/tools/android-ndk-r13b/ndk-build NDK_PROJECT_PATH=.cdep/examples/ndk-build
+  # Build CMake examples
+  - ../cmakeify -wf .cdep/examples/cmake --group-id com.github.jomof --artifact-id smoke-test-examples --target-version 0.0.0
+  - popd
+
 deploy:
   api_key:
     secure: sn6zm8ubAhImViHMUnTi+tbY10Xgk9vVRw+MP0MMZjmfZfLlbtsAD+zhrC//hfif9kSnM/ME8BezSbStwlkXveR53hUHp8R2KqN5EifVRe7OXHTOE/uzA6nKhw7oqliuOA8BM3VeugTx0mrLT/tVi5/S/MCPakcuS163W+w6kGe9xCDEwy1DeBIPLiMusw+uaaXzxJp813kLOPAPVgO3rBO29xG9+7Pttll7TARDO4TuKuJXBJ6EkYbH08W+OeD77jSRp1fN0RT/lagABh496/PrwKqo3XOj+Lx1IJmx2xuo3Hwt7O/2llisvcf/ZHFRNT53RCqVGJBo7E7+6gZ7jxgrLdQgDLvISOuzIBSQE6Zp4T193h8iKTSOb6SRZZf/gomS7Zr28zP3vXApr9vKVRCRsLJZS72hahSTVzYZkqErAt3x9VsF1E+uQvC8iWmk8Scy41I2QCkAXsZp29FuuT76RNkdkPvy5GOtIC52Rn9lKx7vGhDseHv9wrHiYB7ZDYsCIaIzowx5qQO2CZ9vuMJIMxbDSNW329O54IdcWfnlk7lTsoNIZWy0WAq5h8A/6aGhCjEAWFUXywIhsScgP2niU3joa+hkzOcrgj6lSLMUu6nEffQ945ogMHcAmL6z0wQXk9V5E12YXTVkd+OzUxgL0/PNmx8Hs7gfz32DvNM=
@@ -59,3 +66,5 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
+    condition: $TRAVIS_OS_NAME == linux
+
